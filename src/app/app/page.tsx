@@ -16,46 +16,25 @@ export default function AppHome() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const supabase = createClient();
-    let active = true;
+    async function load() {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
 
-    async function tryRestoreSession() {
-      const { data: { session: existing } } = await supabase.auth.getSession();
-      if (!existing) {
-        try {
-          const refreshToken = sessionStorage.getItem("nutre_refresh");
-          if (refreshToken) {
-            await supabase.auth.refreshSession({ refresh_token: refreshToken });
-          }
-        } catch (_) {}
-      }
-    }
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!active) return;
-
-      if (session) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("nome, streak, fotos_hoje, plano")
-          .eq("id", session.user.id)
-          .single();
-
-        if (active) {
-          setProfile(data);
-          setLoading(false);
-        }
-      } else if (event === "INITIAL_SESSION" || event === "SIGNED_OUT") {
+      if (!session) {
         window.location.href = "/login";
+        return;
       }
-    });
 
-    tryRestoreSession();
+      const { data } = await supabase
+        .from("profiles")
+        .select("nome, streak, fotos_hoje, plano")
+        .eq("id", session.user.id)
+        .single();
 
-    return () => {
-      active = false;
-      subscription.unsubscribe();
-    };
+      setProfile(data);
+      setLoading(false);
+    }
+    load();
   }, []);
 
   const limitefotos = profile?.plano === "gratis" ? 2 : 999;

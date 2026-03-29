@@ -16,29 +16,20 @@ export default function Perfil() {
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
-    const supabase = createClient();
-    let active = true;
+    async function load() {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { router.push("/login"); return; }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!active) return;
+      const { data } = await supabase
+        .from("profiles")
+        .select("nome, email, plano, streak")
+        .eq("id", session.user.id)
+        .single();
 
-      if (session) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("nome, email, plano, streak")
-          .eq("id", session.user.id)
-          .single();
-
-        if (active) setProfile(data);
-      } else if (event === "INITIAL_SESSION" || event === "SIGNED_OUT") {
-        router.push("/login");
-      }
-    });
-
-    return () => {
-      active = false;
-      subscription.unsubscribe();
-    };
+      setProfile(data);
+    }
+    load();
   }, []);
 
   async function handleSair() {
