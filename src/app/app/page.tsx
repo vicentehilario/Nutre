@@ -107,7 +107,7 @@ export default function AppHome() {
           </p>
         ) : (
           <p className="text-sm text-green-600 font-medium">
-            ✓ {profile.fotos_hoje} {profile.fotos_hoje === 1 ? "refeição registrada" : "refeições registradas"} hoje
+            ✓ {profile?.fotos_hoje} {profile?.fotos_hoje === 1 ? "refeição registrada" : "refeições registradas"} hoje
           </p>
         )}
 
