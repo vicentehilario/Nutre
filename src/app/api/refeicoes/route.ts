@@ -30,9 +30,8 @@ export async function GET(req: NextRequest) {
   } else if (mes) {
     const [year, month] = mes.split("-");
     const firstDay = `${year}-${month}-01`;
-    const lastDay = new Date(Number(year), Number(month), 0).toDate?.() ??
-      new Date(new Date(Number(year), Number(month), 1).getTime() - 1);
-    query = query.gte("data", firstDay).lte("data", typeof lastDay === "string" ? lastDay : (lastDay as Date).toISOString().split("T")[0]);
+    const lastDay = new Date(Number(year), Number(month), 0).toISOString().split("T")[0];
+    query = query.gte("data", firstDay).lte("data", lastDay);
   }
 
   const { data, error } = await query;
