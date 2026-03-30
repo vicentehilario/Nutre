@@ -67,11 +67,16 @@ export default function Metas() {
 
   async function salvar() {
     setSaving(true);
-    await fetch("/api/metas", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(metas),
-    });
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      await supabase.from("profiles").update({
+        meta_calorica: metas.meta_calorica,
+        meta_proteina: metas.meta_proteina,
+        objetivo: metas.objetivo,
+        refeicoes_por_dia: metas.refeicoes_por_dia,
+      }).eq("id", session.user.id);
+    }
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
