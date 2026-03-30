@@ -11,6 +11,12 @@ interface Profile {
   streak: number;
 }
 
+const planoLabel: Record<string, string> = {
+  gratis: "Grátis",
+  premium: "Premium",
+  nutri: "Nutre + Nutri",
+};
+
 export default function Perfil() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -20,17 +26,15 @@ export default function Perfil() {
       const supabase = createClient();
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { router.push("/login"); return; }
-
       const { data } = await supabase
         .from("profiles")
         .select("nome, email, plano, streak")
         .eq("id", session.user.id)
         .single();
-
       setProfile(data);
     }
     load();
-  }, []);
+  }, [router]);
 
   async function handleSair() {
     const supabase = createClient();
@@ -38,70 +42,69 @@ export default function Perfil() {
     router.push("/");
   }
 
-  const planoLabel: Record<string, string> = {
-    gratis: "Grátis",
-    premium: "Premium",
-    nutri: "Nutre + Nutri",
-  };
-
   return (
-    <div className="px-5 py-6 space-y-6">
-      <h1 className="text-xl font-bold text-gray-900">Meu perfil</h1>
+    <div className="bg-[#fafafa] min-h-screen">
+      {/* Header */}
+      <div className="bg-white px-6 pt-5 pb-4 border-b border-[#f0f0f0]">
+        <h1 className="text-2xl font-bold text-[#111] tracking-tight">Meu perfil</h1>
+      </div>
 
-      {profile && (
-        <>
-          <div className="bg-white border border-gray-200 rounded-2xl p-5 space-y-3">
-            <div>
-              <p className="text-xs text-gray-400">Nome</p>
-              <p className="font-semibold text-gray-900">{profile.nome}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-400">E-mail</p>
-              <p className="font-semibold text-gray-900">{profile.email}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-400">Plano atual</p>
-              <p className="font-semibold text-gray-900">{planoLabel[profile.plano] ?? profile.plano}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-400">Sequência atual</p>
-              <p className="font-semibold text-gray-900">🔥 {profile.streak} dias</p>
-            </div>
-          </div>
-
-          {profile.plano === "gratis" && (
-            <div className="bg-green-50 border border-green-200 rounded-2xl p-5 space-y-3">
-              <p className="font-semibold text-green-800">Upgrade para Premium</p>
-              <p className="text-sm text-green-700">
-                Fotos ilimitadas, substituições inteligentes, alertas personalizados e muito mais.
-              </p>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center bg-white border border-green-200 rounded-xl p-3">
-                  <div>
-                    <p className="font-semibold text-gray-800">Premium</p>
-                    <p className="text-xs text-gray-500">App completo com IA</p>
-                  </div>
-                  <p className="font-bold text-green-700">R$47/mês</p>
+      <div className="px-4 pt-4 space-y-3 pb-6">
+        {profile && (
+          <>
+            {/* Info card */}
+            <div className="bg-white rounded-[20px] border border-[#f0f0f0] overflow-hidden">
+              {[
+                { label: "Nome", value: profile.nome },
+                { label: "E-mail", value: profile.email },
+                { label: "Plano", value: planoLabel[profile.plano] ?? profile.plano },
+                { label: "Sequência", value: `🔥 ${profile.streak} dias` },
+              ].map((item, i, arr) => (
+                <div
+                  key={item.label}
+                  className={`px-[18px] py-4 ${i < arr.length - 1 ? "border-b border-[#f5f5f5]" : ""}`}
+                >
+                  <p className="text-[11px] text-[#aaa] font-semibold uppercase tracking-wide mb-0.5">{item.label}</p>
+                  <p className="text-[15px] font-semibold text-[#111]">{item.value}</p>
                 </div>
-                <div className="flex justify-between items-center bg-white border border-green-200 rounded-xl p-3">
-                  <div>
-                    <p className="font-semibold text-gray-800">Nutre + Nutri</p>
-                    <p className="text-xs text-gray-500">App + dieta personalizada</p>
+              ))}
+            </div>
+
+            {/* Upgrade card */}
+            {profile.plano === "gratis" && (
+              <div className="bg-[#111] rounded-[20px] p-5">
+                <p className="text-[14px] font-bold text-white mb-1">Upgrade para Premium</p>
+                <p className="text-[12px] text-[#888] mb-4 leading-relaxed">
+                  Registros ilimitados, histórico completo, metas personalizadas e muito mais.
+                </p>
+                <div className="space-y-2.5">
+                  <div className="bg-white/10 rounded-[14px] px-4 py-3 flex justify-between items-center">
+                    <div>
+                      <p className="text-[13px] font-bold text-white">Premium</p>
+                      <p className="text-[11px] text-[#888]">App completo com IA</p>
+                    </div>
+                    <p className="text-[14px] font-bold text-[#22c55e]">R$47/mês</p>
                   </div>
-                  <p className="font-bold text-green-700">R$150/mês</p>
+                  <div className="bg-white/10 rounded-[14px] px-4 py-3 flex justify-between items-center">
+                    <div>
+                      <p className="text-[13px] font-bold text-white">Nutre + Nutri</p>
+                      <p className="text-[11px] text-[#888]">App + dieta personalizada</p>
+                    </div>
+                    <p className="text-[14px] font-bold text-[#22c55e]">R$150/mês</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </>
-      )}
+            )}
+          </>
+        )}
 
-      <button
-        onClick={handleSair}
-        className="w-full border border-gray-300 text-gray-600 py-3 rounded-xl font-semibold hover:bg-gray-50 transition"
-      >
-        Sair da conta
-      </button>
+        <button
+          onClick={handleSair}
+          className="w-full border border-[#e5e5e5] text-[#555] rounded-[14px] py-3.5 text-[14px] font-semibold bg-white"
+        >
+          Sair da conta
+        </button>
+      </div>
     </div>
   );
 }
