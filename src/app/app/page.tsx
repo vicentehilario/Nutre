@@ -48,7 +48,7 @@ export default function AppHome() {
       setProfile(profileRes.data);
 
       if (refeicoesRes.data && refeicoesRes.data.length > 0) {
-        const sum = refeicoesRes.data.reduce(
+        const sum = refeicoesRes.data.reduce<DailySummary>(
           (acc, r) => ({
             calorias: acc.calorias + (r.calorias ?? 0),
             proteinas: acc.proteinas + (r.proteinas ?? 0),
