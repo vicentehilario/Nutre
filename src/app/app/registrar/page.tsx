@@ -85,10 +85,12 @@ export default function Registrar() {
     const analise = await res.json();
 
     // Salva no banco
+    const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
     await supabase.from("refeicoes").insert({
       user_id: user.id,
       foto_url: fotoUrl,
       descricao,
+      data: hoje,
       calorias: analise.calorias,
       proteinas: analise.proteinas,
       carboidratos: analise.carboidratos,

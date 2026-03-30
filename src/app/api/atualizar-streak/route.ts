@@ -14,7 +14,7 @@ export async function POST() {
 
   if (!profile) return NextResponse.json({ error: "perfil não encontrado" }, { status: 404 });
 
-  const hoje = new Date().toISOString().split("T")[0];
+  const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
   const ultimoRegistro = profile.ultimo_registro;
 
   const jaRegistrouHoje = ultimoRegistro === hoje;

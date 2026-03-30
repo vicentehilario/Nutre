@@ -19,9 +19,15 @@ const objetivoLabel: Record<string, string> = {
 };
 
 const dicas: Record<string, string> = {
-  perda_de_peso: "Esse plano foi montado especificamente pra você. Segue as metas, registra as refeições e acompanha seu saldo diário aqui no app.",
+  perda_de_peso: "Déficit calórico é a base da perda de peso. Registra tudo, inclusive os pequenos beliscos — eles somam mais do que parece.",
   manutencao: "Manutenção exige consistência. Registra tudo, mesmo nos dias que parece que comeu pouco — as calorias invisíveis aparecem quando você anota.",
   ganho_de_massa: "Ganho de massa sem controle vira acúmulo de gordura. Bate a meta calórica, prioriza proteína e registra pra garantir que tá no caminho.",
+};
+
+const dicasPdf: Record<string, string> = {
+  perda_de_peso: "Esse plano foi montado especificamente pra você. Segue as metas, registra as refeições e acompanha seu saldo diário aqui no app.",
+  manutencao: "Esse plano foi feito pra você manter o peso com qualidade. Registra tudo e acompanha se tá batendo as metas.",
+  ganho_de_massa: "Esse plano foi prescrito pra você ganhar massa com controle. Bate a meta calórica e proteica todo dia, sem exceção.",
 };
 
 export default function Metas() {
@@ -159,7 +165,7 @@ export default function Metas() {
             ))}
           </div>
           {pdfImportado && (
-            <p className="text-[11px] text-[#aaa] text-center mb-3">
+            <p className="text-[11px] text-[#aaa] text-center">
               Definido pelo seu plano ·{" "}
               <button
                 onClick={() => setMetas((p) => ({ ...p, plano_origem: "manual" }))}
@@ -169,13 +175,6 @@ export default function Metas() {
               </button>
             </p>
           )}
-          <button
-            onClick={salvar}
-            disabled={saving}
-            className="w-full bg-[#16a34a] text-white rounded-[14px] py-3.5 text-[14px] font-bold disabled:opacity-60"
-          >
-            {saving ? "Salvando..." : saved ? "✓ Salvo!" : "Salvar meta"}
-          </button>
         </div>
 
         {/* Outras metas */}
@@ -214,9 +213,20 @@ export default function Metas() {
         <div className="bg-[#f0fdf4] rounded-[18px] p-4 border border-[#bbf7d0]">
           <p className="text-[12px] font-bold text-[#16a34a] mb-1">💡 {pdfImportado ? "Do Vicente" : "Dica do Vicente"}</p>
           <p className="text-[12px] text-[#166534] leading-relaxed">
-            {dicas[metas.objetivo] ?? dicas.manutencao}
+            {pdfImportado
+              ? (dicasPdf[metas.objetivo] ?? dicasPdf.manutencao)
+              : (dicas[metas.objetivo] ?? dicas.manutencao)}
           </p>
         </div>
+
+        {/* Botão salvar — salva todas as metas */}
+        <button
+          onClick={salvar}
+          disabled={saving}
+          className="w-full bg-[#16a34a] text-white rounded-[14px] py-3.5 text-[14px] font-bold disabled:opacity-60"
+        >
+          {saving ? "Salvando..." : saved ? "✓ Salvo!" : "Salvar todas as metas"}
+        </button>
 
         {/* Divisor */}
         <div className="flex items-center gap-3 py-1">

@@ -38,7 +38,7 @@ export default function AppHome() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { window.location.href = "/login"; return; }
 
-      const today = new Date().toISOString().split("T")[0];
+      const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
 
       const [profileRes, refeicoesRes] = await Promise.all([
         supabase.from("profiles").select("nome, streak, fotos_hoje, plano, meta_calorica").eq("id", session.user.id).single(),
