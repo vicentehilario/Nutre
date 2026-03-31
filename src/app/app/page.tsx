@@ -48,15 +48,15 @@ export default function AppHome() {
       setProfile(profileRes.data);
 
       if (refeicoesRes.data && refeicoesRes.data.length > 0) {
-        const sum = refeicoesRes.data.reduce<DailySummary>(
-          (acc, r) => ({
+        const sum = refeicoesRes.data.reduce(
+          (acc: DailySummary, r) => ({
             calorias: acc.calorias + (r.calorias ?? 0),
             proteinas: acc.proteinas + (r.proteinas ?? 0),
             carboidratos: acc.carboidratos + (r.carboidratos ?? 0),
             gorduras: acc.gorduras + (r.gorduras ?? 0),
             count: acc.count + 1,
           }),
-          { calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0, count: 0 }
+          { calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0, count: 0 } as DailySummary
         );
         setDaily(sum);
       }
