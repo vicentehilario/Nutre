@@ -49,7 +49,7 @@ export default function AppHome() {
 
       if (refeicoesRes.data && refeicoesRes.data.length > 0) {
         const sum = refeicoesRes.data.reduce(
-          (acc: DailySummary, r) => ({
+          (acc: DailySummary, r: { calorias: number | null; proteinas: number | null; carboidratos: number | null; gorduras: number | null }) => ({
             calorias: acc.calorias + (r.calorias ?? 0),
             proteinas: acc.proteinas + (r.proteinas ?? 0),
             carboidratos: acc.carboidratos + (r.carboidratos ?? 0),
