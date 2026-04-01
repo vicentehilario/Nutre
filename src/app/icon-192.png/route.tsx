@@ -17,24 +17,19 @@ export async function GET() {
           position: "relative",
         }}
       >
-        <div
-          style={{
-            fontSize: 120,
-            fontWeight: 900,
-            color: "white",
-            lineHeight: 1,
-            marginTop: 8,
-          }}
-        >
-          N
-        </div>
+        <svg width="100" height="118" viewBox="0 0 95 110" fill="none">
+          <path
+            d="M8 8 L8 102 L26 102 L26 38 L69 102 L87 102 L87 8 L69 8 L69 72 L26 8 Z"
+            fill="white"
+          />
+        </svg>
         <div
           style={{
             position: "absolute",
-            top: 30,
-            right: 36,
-            width: 32,
-            height: 16,
+            top: 28,
+            right: 34,
+            width: 30,
+            height: 15,
             background: "#22c55e",
             borderRadius: "50%",
             transform: "rotate(-35deg)",
