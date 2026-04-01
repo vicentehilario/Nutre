@@ -25,16 +25,15 @@ function extractOfferCode(checkoutUrl: string): string | null {
 export async function POST(req: NextRequest) {
   const hotmartToken = process.env.HOTMART_WEBHOOK_TOKEN;
 
-  // Validate Hotmart webhook token (v2.0.0 sends it as query param or header)
-  const urlToken = new URL(req.url).searchParams.get("hottok");
-  const headerToken = req.headers.get("x-hotmart-webhook-token") ?? req.headers.get("authorization");
-  const receivedToken = urlToken ?? headerToken;
-  if (hotmartToken && receivedToken !== hotmartToken && receivedToken !== `Bearer ${hotmartToken}`) {
+  const body = await req.json();
+
+  // Validate Hotmart webhook token (v2.0.0 sends it in the body as "hottok")
+  const receivedToken = body?.hottok ?? req.headers.get("x-hotmart-webhook-token");
+  if (hotmartToken && receivedToken !== hotmartToken) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json();
-  const event = body?.event ?? body?.hottok;
+  const event = body?.event;
 
   const buyerEmail: string | undefined =
     body?.data?.buyer?.email ?? body?.buyer?.email;
