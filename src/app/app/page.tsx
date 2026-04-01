@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 interface Profile {
@@ -28,9 +29,11 @@ function saudacao() {
 }
 
 export default function AppHome() {
+  const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [daily, setDaily] = useState<DailySummary>({ calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0, count: 0 });
   const [loading, setLoading] = useState(true);
+  const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -86,6 +89,61 @@ export default function AppHome() {
 
   return (
     <div className="bg-[#fafafa] min-h-screen">
+
+      {/* Paywall Modal */}
+      {showPaywall && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60" onClick={() => setShowPaywall(false)}>
+          <div
+            className="bg-white w-full max-w-md rounded-t-[28px] p-6 pb-10 space-y-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-10 h-1 bg-[#e0e0e0] rounded-full mx-auto mb-2" />
+            <div className="text-center space-y-1">
+              <p className="text-[22px] font-extrabold text-[#111] leading-tight">
+                Você chegou no limite do plano Grátis
+              </p>
+              <p className="text-sm text-[#999]">Faça upgrade para continuar registrando</p>
+            </div>
+
+            {/* Benefícios */}
+            <div className="space-y-2.5">
+              {[
+                "Registros ilimitados por dia",
+                "Análise nutricional com IA",
+                "Histórico completo",
+                "Plano alimentar personalizado",
+                "Suporte prioritário",
+              ].map((b) => (
+                <div key={b} className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full bg-[#f0fdf4] flex items-center justify-center flex-shrink-0">
+                    <span className="text-[#16a34a] text-xs font-bold">✓</span>
+                  </div>
+                  <span className="text-[13px] text-[#333]">{b}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Preço */}
+            <div className="bg-[#f9f9f9] rounded-[16px] p-4 border border-[#f0f0f0]">
+              <p className="text-[13px] font-bold text-[#111]">Plano Pro — Mensal</p>
+              <p className="text-[12px] text-[#aaa] mt-0.5">R$ 29,90/mês · cancele quando quiser</p>
+            </div>
+
+            <button
+              onClick={() => { setShowPaywall(false); router.push("/app/perfil"); }}
+              className="w-full py-4 rounded-[16px] bg-[#16a34a] text-white text-[14px] font-bold"
+            >
+              Assinar agora
+            </button>
+            <button
+              onClick={() => setShowPaywall(false)}
+              className="w-full text-center text-[12px] text-[#aaa]"
+            >
+              Agora não
+            </button>
+          </div>
+        </div>
+      )}
       {/* Header */}
       <div className="bg-white px-6 pt-5 pb-4 border-b border-[#f0f0f0]">
         <p className="text-xs text-[#999] font-medium">{saudacao()}</p>
@@ -145,16 +203,21 @@ export default function AppHome() {
             {daily.count} {daily.count === 1 ? "registro" : "registros"} hoje
             {restantes > 0 && ` · ${restantes.toLocaleString("pt-BR")} kcal restantes`}
           </p>
-          <Link
-            href={fotosRestantes === 0 ? "/app/perfil" : "/app/registrar"}
-            className={`block w-full py-3.5 rounded-[14px] text-center text-[13px] font-bold transition ${
-              fotosRestantes === 0
-                ? "bg-[#f5f5f5] text-[#aaa]"
-                : "bg-[#16a34a] text-white"
-            }`}
-          >
-            {fotosRestantes === 0 ? "Limite atingido — fazer upgrade" : "📷 Tirar foto da refeição"}
-          </Link>
+          {fotosRestantes === 0 ? (
+            <button
+              onClick={() => setShowPaywall(true)}
+              className="block w-full py-3.5 rounded-[14px] text-center text-[13px] font-bold bg-[#f5f5f5] text-[#aaa]"
+            >
+              Limite atingido — fazer upgrade
+            </button>
+          ) : (
+            <Link
+              href="/app/registrar"
+              className="block w-full py-3.5 rounded-[14px] text-center text-[13px] font-bold bg-[#16a34a] text-white"
+            >
+              📷 Tirar foto da refeição
+            </Link>
+          )}
         </div>
 
         {/* Card socorro */}

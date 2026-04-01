@@ -19,7 +19,7 @@ export default function Cadastro() {
     setErro("");
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password: senha,
       options: { data: { nome } },
@@ -29,6 +29,17 @@ export default function Cadastro() {
       setErro("Erro ao criar conta. Tente novamente.");
       setLoading(false);
       return;
+    }
+
+    if (data.user) {
+      await supabase.from("profiles").upsert({
+        id: data.user.id,
+        nome,
+        plano: "gratis",
+        streak: 0,
+        fotos_hoje: 0,
+        meta_calorica: 2000,
+      });
     }
 
     router.push("/app");
