@@ -80,14 +80,14 @@ export default function Historico() {
   useEffect(() => {
     async function init() {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { window.location.href = "/login"; return; }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { window.location.href = "/login"; return; }
 
       // Carrega meta do usuário
       const { data: profile } = await supabase
         .from("profiles")
         .select("meta_calorica")
-        .eq("id", session.user.id)
+        .eq("id", user.id)
         .single();
       if (profile?.meta_calorica) setMeta(profile.meta_calorica);
 
@@ -95,7 +95,7 @@ export default function Historico() {
       const { data: allDates } = await supabase
         .from("refeicoes")
         .select("data")
-        .eq("user_id", session.user.id)
+        .eq("user_id", user.id)
         .order("data", { ascending: false });
 
       const weeks = new Set<string>([isoWeek(new Date())]);

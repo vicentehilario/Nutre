@@ -49,9 +49,8 @@ export default function Registrar() {
     setLoading(true);
 
     const supabase = createClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { window.location.href = "/login"; return; }
-    const user = session.user;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { window.location.href = "/login"; return; }
 
     let fotoUrl = null;
 

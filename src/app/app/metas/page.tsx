@@ -49,13 +49,13 @@ export default function Metas() {
   useEffect(() => {
     async function load() {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { window.location.href = "/login"; return; }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { window.location.href = "/login"; return; }
 
       const { data } = await supabase
         .from("profiles")
         .select("meta_calorica, meta_proteina, objetivo, refeicoes_por_dia, plano_pdf_importado_em, plano_origem")
-        .eq("id", session.user.id)
+        .eq("id", user.id)
         .single();
 
       if (data) setMetas({ ...metas, ...data });
@@ -68,14 +68,14 @@ export default function Metas() {
   async function salvar() {
     setSaving(true);
     const supabase = createClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
       await supabase.from("profiles").update({
         meta_calorica: metas.meta_calorica,
         meta_proteina: metas.meta_proteina,
         objetivo: metas.objetivo,
         refeicoes_por_dia: metas.refeicoes_por_dia,
-      }).eq("id", session.user.id);
+      }).eq("id", user.id);
     }
     setSaving(false);
     setSaved(true);

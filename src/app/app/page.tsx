@@ -38,14 +38,14 @@ export default function AppHome() {
   useEffect(() => {
     async function load() {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { window.location.href = "/login"; return; }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { window.location.href = "/login"; return; }
 
       const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
 
       const [profileRes, refeicoesRes] = await Promise.all([
-        supabase.from("profiles").select("nome, streak, fotos_hoje, plano, meta_calorica").eq("id", session.user.id).single(),
-        supabase.from("refeicoes").select("calorias, proteinas, carboidratos, gorduras").eq("user_id", session.user.id).eq("data", today),
+        supabase.from("profiles").select("nome, streak, fotos_hoje, plano, meta_calorica").eq("id", user.id).single(),
+        supabase.from("refeicoes").select("calorias, proteinas, carboidratos, gorduras").eq("user_id", user.id).eq("data", today),
       ]);
 
       setProfile(profileRes.data);

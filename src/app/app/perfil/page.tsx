@@ -24,12 +24,12 @@ export default function Perfil() {
   useEffect(() => {
     async function load() {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { router.push("/login"); return; }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.push("/login"); return; }
       const { data } = await supabase
         .from("profiles")
         .select("nome, email, plano, streak")
-        .eq("id", session.user.id)
+        .eq("id", user.id)
         .single();
       setProfile(data);
     }
