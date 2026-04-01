@@ -3,10 +3,6 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 
 export async function GET() {
-  const fontData = await fetch(
-    "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hiJ-Ek-_EeA.woff"
-  ).then((r) => r.arrayBuffer());
-
   return new ImageResponse(
     (
       <div
@@ -26,9 +22,7 @@ export async function GET() {
             fontSize: 320,
             fontWeight: 900,
             color: "white",
-            fontFamily: "Inter",
             lineHeight: 1,
-            letterSpacing: -16,
             marginTop: 20,
           }}
         >
@@ -37,21 +31,17 @@ export async function GET() {
         <div
           style={{
             position: "absolute",
-            top: 88,
-            right: 108,
-            width: 90,
-            height: 46,
+            top: 85,
+            right: 100,
+            width: 88,
+            height: 44,
             background: "#22c55e",
-            borderRadius: "50% 50% 50% 0",
+            borderRadius: "50%",
             transform: "rotate(-35deg)",
           }}
         />
       </div>
     ),
-    {
-      width: 512,
-      height: 512,
-      fonts: [{ name: "Inter", data: fontData, weight: 900, style: "normal" }],
-    }
+    { width: 512, height: 512 }
   );
 }
