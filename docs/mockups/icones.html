@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutre — Opções de Ícone</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f0f0f0; font-family: -apple-system, sans-serif; padding: 40px 24px; }
+  h1 { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 6px; }
+  p { font-size: 13px; color: #888; margin-bottom: 36px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 32px; }
+  .card { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .label { font-size: 13px; font-weight: 600; color: #555; text-align: center; }
+  .desc { font-size: 11px; color: #aaa; text-align: center; max-width: 120px; line-height: 1.4; }
+  .icon { border-radius: 26.7%; box-shadow: 0 8px 32px rgba(0,0,0,0.18); overflow: hidden; flex-shrink: 0; }
+
+  /* A — Maçã minimalista: fundo verde, maçã branca geométrica */
+  .icon-a {
+    width: 120px; height: 120px;
+    background: #16a34a;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .apple-a {
+    position: relative;
+    width: 62px; height: 64px;
+  }
+  .apple-body-a {
+    position: absolute;
+    bottom: 0;
+    left: 50%; transform: translateX(-50%);
+    width: 58px; height: 54px;
+    background: white;
+    border-radius: 50% 50% 46% 46% / 40% 40% 52% 52%;
+  }
+  .apple-body-a::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 28px; height: 28px;
+    background: white;
+    border-radius: 50% 50% 0 0;
+    top: -8px;
+    left: 6px;
+  }
+  .apple-body-a::after {
+    content: '';
+    position: absolute;
+    width: 28px; height: 28px;
+    background: white;
+    border-radius: 50% 50% 0 0;
+    top: -8px;
+    left: 24px;
+  }
+  .apple-stem-a {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-2px);
+    width: 4px; height: 12px;
+    background: white;
+    border-radius: 2px;
+  }
+  .apple-leaf-a {
+    position: absolute;
+    top: 2px; left: calc(50% + 2px);
+    width: 14px; height: 9px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 50% 50% 0 50%;
+    transform: rotate(-20deg);
+  }
+  .apple-bite-a {
+    position: absolute;
+    width: 16px; height: 16px;
+    background: #16a34a;
+    border-radius: 50%;
+    bottom: 14px;
+    right: -2px;
+  }
+
+  /* B — Fundo dark, maçã verde brilhante */
+  .icon-b {
+    width: 120px; height: 120px;
+    background: #111;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .apple-body-b {
+    position: absolute;
+    bottom: 24px;
+    left: 50%; transform: translateX(-50%);
+    width: 60px; height: 56px;
+    background: #16a34a;
+    border-radius: 50% 50% 46% 46% / 40% 40% 52% 52%;
+  }
+  .apple-body-b::before {
+    content: '';
+    position: absolute;
+    width: 30px; height: 30px;
+    background: #16a34a;
+    border-radius: 50%;
+    top: -13px; left: 2px;
+  }
+  .apple-body-b::after {
+    content: '';
+    position: absolute;
+    width: 30px; height: 30px;
+    background: #16a34a;
+    border-radius: 50%;
+    top: -13px; left: 28px;
+  }
+  .apple-stem-b {
+    position: absolute;
+    bottom: 78px; left: calc(50% - 2px);
+    width: 4px; height: 12px;
+    background: #4ade80;
+    border-radius: 2px;
+  }
+  .apple-leaf-b {
+    position: absolute;
+    bottom: 84px; left: calc(50% + 2px);
+    width: 16px; height: 10px;
+    background: #4ade80;
+    border-radius: 50% 50% 0 50%;
+    transform: rotate(-20deg);
+  }
+  .apple-bite-b {
+    position: absolute;
+    width: 17px; height: 17px;
+    background: #111;
+    border-radius: 50%;
+    bottom: 36px;
+    left: calc(50% + 16px);
+  }
+  .apple-shine-b {
+    position: absolute;
+    width: 10px; height: 14px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    bottom: 56px;
+    left: calc(50% - 14px);
+    transform: rotate(-20deg);
+  }
+
+  /* C — Verde gradiente, maçã com mordida + N */
+  .icon-c {
+    width: 120px; height: 120px;
+    background: linear-gradient(145deg, #22c55e, #15803d);
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .apple-body-c {
+    position: absolute;
+    bottom: 20px;
+    left: 50%; transform: translateX(-50%);
+    width: 64px; height: 60px;
+    background: white;
+    border-radius: 50% 50% 46% 46% / 40% 40% 52% 52%;
+    opacity: 0.95;
+  }
+  .apple-body-c::before {
+    content: '';
+    position: absolute;
+    width: 32px; height: 32px;
+    background: white;
+    border-radius: 50%;
+    top: -14px; left: 1px;
+  }
+  .apple-body-c::after {
+    content: '';
+    position: absolute;
+    width: 32px; height: 32px;
+    background: white;
+    border-radius: 50%;
+    top: -14px; left: 31px;
+  }
+  .apple-stem-c {
+    position: absolute;
+    bottom: 78px; left: calc(50% - 2px);
+    width: 4px; height: 14px;
+    background: white;
+    border-radius: 2px;
+  }
+  .apple-leaf-c {
+    position: absolute;
+    bottom: 85px; left: calc(50% + 2px);
+    width: 18px; height: 11px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 50% 50% 0 50%;
+    transform: rotate(-20deg);
+  }
+  .apple-bite-c {
+    position: absolute;
+    width: 18px; height: 18px;
+    background: #16a34a;
+    border-radius: 50%;
+    bottom: 38px;
+    left: calc(50% + 18px);
+    background: linear-gradient(145deg, #22c55e, #15803d);
+  }
+  .apple-letter-c {
+    position: absolute;
+    bottom: 26px;
+    left: 50%; transform: translateX(-50%);
+    font-size: 26px; font-weight: 900;
+    color: #16a34a;
+    font-family: -apple-system, sans-serif;
+    line-height: 1;
+    letter-spacing: -1px;
+    z-index: 2;
+  }
+
+  /* D — Fundo branco clean, maçã verde sólida, sombra suave */
+  .icon-d {
+    width: 120px; height: 120px;
+    background: #fff;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid #e5e5e5;
+  }
+  .apple-body-d {
+    position: absolute;
+    bottom: 22px;
+    left: 50%; transform: translateX(-50%);
+    width: 62px; height: 58px;
+    background: #16a34a;
+    border-radius: 50% 50% 46% 46% / 40% 40% 52% 52%;
+    box-shadow: 0 4px 16px rgba(22,163,74,0.3);
+  }
+  .apple-body-d::before {
+    content: '';
+    position: absolute;
+    width: 31px; height: 31px;
+    background: #16a34a;
+    border-radius: 50%;
+    top: -13px; left: 1px;
+  }
+  .apple-body-d::after {
+    content: '';
+    position: absolute;
+    width: 31px; height: 31px;
+    background: #16a34a;
+    border-radius: 50%;
+    top: -13px; left: 30px;
+  }
+  .apple-stem-d {
+    position: absolute;
+    bottom: 79px; left: calc(50% - 2px);
+    width: 4px; height: 12px;
+    background: #111;
+    border-radius: 2px;
+  }
+  .apple-leaf-d {
+    position: absolute;
+    bottom: 84px; left: calc(50% + 2px);
+    width: 16px; height: 10px;
+    background: #15803d;
+    border-radius: 50% 50% 0 50%;
+    transform: rotate(-20deg);
+  }
+  .apple-bite-d {
+    position: absolute;
+    width: 16px; height: 16px;
+    background: white;
+    border-radius: 50%;
+    bottom: 40px;
+    left: calc(50% + 18px);
+  }
+  .apple-shine-d {
+    position: absolute;
+    width: 10px; height: 15px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 50%;
+    bottom: 58px;
+    left: calc(50% - 16px);
+    transform: rotate(-20deg);
+  }
+
+  /* E — Dark premium com gradiente + maçã outline */
+  .icon-e {
+    width: 120px; height: 120px;
+    background: linear-gradient(160deg, #1a1a1a, #0a0a0a);
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .apple-outer-e {
+    position: absolute;
+    bottom: 22px;
+    left: 50%; transform: translateX(-50%);
+    width: 64px; height: 60px;
+    border: 3px solid #16a34a;
+    border-radius: 50% 50% 46% 46% / 40% 40% 52% 52%;
+  }
+  .apple-outer-e::before {
+    content: '';
+    position: absolute;
+    width: 30px; height: 30px;
+    border: 3px solid #16a34a;
+    border-radius: 50%;
+    border-bottom: none;
+    top: -15px; left: 1px;
+  }
+  .apple-outer-e::after {
+    content: '';
+    position: absolute;
+    width: 30px; height: 30px;
+    border: 3px solid #16a34a;
+    border-radius: 50%;
+    border-bottom: none;
+    top: -15px; left: 31px;
+  }
+  .apple-stem-e {
+    position: absolute;
+    bottom: 81px; left: calc(50% - 2px);
+    width: 3px; height: 11px;
+    background: #4ade80;
+    border-radius: 2px;
+  }
+  .apple-leaf-e {
+    position: absolute;
+    bottom: 86px; left: calc(50% + 1px);
+    width: 15px; height: 9px;
+    background: #4ade80;
+    border-radius: 50% 50% 0 50%;
+    transform: rotate(-20deg);
+    opacity: 0.9;
+  }
+  .apple-dot-e {
+    position: absolute;
+    width: 8px; height: 8px;
+    background: #16a34a;
+    border-radius: 50%;
+    bottom: 42px;
+    left: calc(50% + 14px);
+  }
+
+  .sizes { display: flex; gap: 12px; align-items: flex-end; margin-top: 4px; }
+  .size-sm { width: 60px; height: 60px; border-radius: 26.7%; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .size-xs { width: 40px; height: 40px; border-radius: 26.7%; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+</style>
+</head>
+<body>
+<h1>Nutre — Opções de Ícone</h1>
+<p>Abra este arquivo no browser para visualizar. Clique com botão direito → Abrir com → Chrome/Safari.</p>
+
+<div class="grid">
+
+  <!-- A -->
+  <div class="card">
+    <div class="icon icon-a">
+      <div class="apple-a">
+        <div class="apple-stem-a"></div>
+        <div class="apple-leaf-a"></div>
+        <div class="apple-body-a">
+          <div class="apple-bite-a"></div>
+        </div>
+      </div>
+    </div>
+    <div class="sizes">
+      <div class="size-sm icon-a" style="transform:scale(0.5);transform-origin:top left;width:60px;height:60px;border-radius:26.7%;">
+        <div style="transform:scale(0.5);transform-origin:top left;width:120px;height:120px;" class="icon-a">
+          <div class="apple-a">
+            <div class="apple-stem-a"></div>
+            <div class="apple-leaf-a"></div>
+            <div class="apple-body-a"><div class="apple-bite-a"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="label">A — Verde + branca</div>
+    <div class="desc">Maçã branca sólida<br>fundo verde, com mordida</div>
+  </div>
+
+  <!-- B -->
+  <div class="card">
+    <div class="icon icon-b">
+      <div class="apple-stem-b"></div>
+      <div class="apple-leaf-b"></div>
+      <div class="apple-body-b">
+        <div class="apple-bite-b"></div>
+        <div class="apple-shine-b"></div>
+      </div>
+    </div>
+    <div class="label">B — Dark + verde neon</div>
+    <div class="desc">Fundo preto, maçã verde<br>brilho + mordida</div>
+  </div>
+
+  <!-- C -->
+  <div class="card">
+    <div class="icon icon-c">
+      <div class="apple-stem-c"></div>
+      <div class="apple-leaf-c"></div>
+      <div class="apple-body-c">
+        <div class="apple-bite-c"></div>
+      </div>
+      <div class="apple-letter-c">N</div>
+    </div>
+    <div class="label">C — Gradiente + letra N</div>
+    <div class="desc">Verde gradiente, maçã<br>branca com N dentro</div>
+  </div>
+
+  <!-- D -->
+  <div class="card">
+    <div class="icon icon-d">
+      <div class="apple-stem-d"></div>
+      <div class="apple-leaf-d"></div>
+      <div class="apple-body-d">
+        <div class="apple-bite-d"></div>
+        <div class="apple-shine-d"></div>
+      </div>
+    </div>
+    <div class="label">D — Clean white</div>
+    <div class="desc">Fundo branco, maçã verde<br>sombra suave, elegante</div>
+  </div>
+
+  <!-- E -->
+  <div class="card">
+    <div class="icon icon-e">
+      <div class="apple-stem-e"></div>
+      <div class="apple-leaf-e"></div>
+      <div class="apple-outer-e">
+        <div class="apple-dot-e"></div>
+      </div>
+    </div>
+    <div class="label">E — Dark outline</div>
+    <div class="desc">Fundo quase preto,<br>maçã em outline verde</div>
+  </div>
+
+</div>
+
+<div style="margin-top:40px; padding:16px; background:#fff; border-radius:16px; max-width:500px; border:1px solid #e5e5e5;">
+  <p style="color:#111; font-weight:600; font-size:13px; margin-bottom:6px;">Como vão aparecer na tela inicial do iPhone</p>
+  <p style="color:#aaa; font-size:11px; margin-bottom:16px;">iOS aplica bordas arredondadas automaticamente. A opção D (branca) vai ter borda visível na tela inicial.</p>
+  <div style="display:flex; gap:20px; align-items:flex-end;">
+    <div style="text-align:center;">
+      <div class="icon icon-a" style="width:60px;height:60px;border-radius:26.7%;transform:none;"></div>
+      <div style="font-size:10px;color:#555;margin-top:6px;">A</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="icon icon-b" style="width:60px;height:60px;border-radius:26.7%;transform:none;"></div>
+      <div style="font-size:10px;color:#555;margin-top:6px;">B</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="icon icon-c" style="width:60px;height:60px;border-radius:26.7%;transform:none;"></div>
+      <div style="font-size:10px;color:#555;margin-top:6px;">C</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="icon icon-d" style="width:60px;height:60px;border-radius:26.7%;border:1px solid #ddd;transform:none;"></div>
+      <div style="font-size:10px;color:#555;margin-top:6px;">D</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="icon icon-e" style="width:60px;height:60px;border-radius:26.7%;transform:none;"></div>
+      <div style="font-size:10px;color:#555;margin-top:6px;">E</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -94,7 +94,7 @@ export default function AppHome() {
       {showPaywall && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60" onClick={() => setShowPaywall(false)}>
           <div
-            className="bg-white w-full max-w-md rounded-t-[28px] p-6 pb-10 space-y-5"
+            className="bg-white w-full max-w-md rounded-t-[28px] p-6 pb-10 space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-10 h-1 bg-[#e0e0e0] rounded-full mx-auto mb-2" />
@@ -102,17 +102,16 @@ export default function AppHome() {
               <p className="text-[22px] font-extrabold text-[#111] leading-tight">
                 Você chegou no limite do plano Grátis
               </p>
-              <p className="text-sm text-[#999]">Faça upgrade para continuar registrando</p>
+              <p className="text-sm text-[#999]">Escolha um plano para continuar registrando</p>
             </div>
 
             {/* Benefícios */}
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               {[
                 "Registros ilimitados por dia",
                 "Análise nutricional com IA",
                 "Histórico completo",
-                "Plano alimentar personalizado",
-                "Suporte prioritário",
+                "Botão SOS — momento crítico",
               ].map((b) => (
                 <div key={b} className="flex items-center gap-3">
                   <div className="w-5 h-5 rounded-full bg-[#f0fdf4] flex items-center justify-center flex-shrink-0">
@@ -123,21 +122,54 @@ export default function AppHome() {
               ))}
             </div>
 
-            {/* Preço */}
-            <div className="bg-[#f9f9f9] rounded-[16px] p-4 border border-[#f0f0f0]">
-              <p className="text-[13px] font-bold text-[#111]">Plano Pro — Mensal</p>
-              <p className="text-[12px] text-[#aaa] mt-0.5">R$ 29,90/mês · cancele quando quiser</p>
+            {/* Planos */}
+            <div className="space-y-2.5 pt-1">
+              <a
+                href="https://go.hotmart.com/R105181472H?off=5sks6hjc"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between w-full px-4 py-3.5 rounded-[16px] bg-[#16a34a] text-white"
+              >
+                <div className="text-left">
+                  <p className="text-[14px] font-bold">Premium Mensal</p>
+                  <p className="text-[11px] opacity-75">Cancele quando quiser</p>
+                </div>
+                <p className="text-[17px] font-extrabold">R$ 47/mês</p>
+              </a>
+
+              <a
+                href="https://go.hotmart.com/R105181472H?off=w71953zf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between w-full px-4 py-3.5 rounded-[16px] bg-[#f0fdf4] border border-[#bbf7d0]"
+              >
+                <div className="text-left">
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-[14px] font-bold text-[#15803d]">Premium Anual</p>
+                    <span className="text-[10px] font-bold text-white bg-[#16a34a] px-1.5 py-0.5 rounded-full">-30%</span>
+                  </div>
+                  <p className="text-[11px] text-[#86efac]">Equivale a R$ 33/mês</p>
+                </div>
+                <p className="text-[17px] font-extrabold text-[#15803d]">R$ 397/ano</p>
+              </a>
+
+              <a
+                href="https://go.hotmart.com/R105181472H?off=arsue9iw"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between w-full px-4 py-3.5 rounded-[16px] bg-[#fff7ed] border border-[#fed7aa]"
+              >
+                <div className="text-left">
+                  <p className="text-[14px] font-bold text-[#c2410c]">Dieta & Treino</p>
+                  <p className="text-[11px] text-[#ea580c] opacity-80">App + dieta + treino personalizados</p>
+                </div>
+                <p className="text-[17px] font-extrabold text-[#c2410c]">R$ 97/mês</p>
+              </a>
             </div>
 
             <button
-              onClick={() => { setShowPaywall(false); router.push("/app/perfil"); }}
-              className="w-full py-4 rounded-[16px] bg-[#16a34a] text-white text-[14px] font-bold"
-            >
-              Assinar agora
-            </button>
-            <button
               onClick={() => setShowPaywall(false)}
-              className="w-full text-center text-[12px] text-[#aaa]"
+              className="w-full text-center text-[12px] text-[#aaa] pt-1"
             >
               Agora não
             </button>

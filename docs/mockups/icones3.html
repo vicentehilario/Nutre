@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutre — Ícones v3</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #e8e8e8; font-family: -apple-system, sans-serif; padding: 48px 32px; }
+  h1 { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 6px; }
+  .sub { font-size: 13px; color: #888; margin-bottom: 48px; }
+  .grid { display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start; }
+  .card { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .icon { border-radius: 26.7%; box-shadow: 0 12px 40px rgba(0,0,0,0.22); overflow: hidden; display: block; }
+  .label { font-size: 14px; font-weight: 700; color: #333; }
+  .desc { font-size: 11px; color: #999; text-align: center; line-height: 1.5; max-width: 130px; }
+  hr { border: none; border-top: 1px solid #d0d0d0; margin: 48px 0; }
+  h2 { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 4px; }
+  .sub2 { font-size: 11px; color: #aaa; margin-bottom: 24px; }
+  .homescreen { display: flex; gap: 28px; align-items: flex-end; }
+  .mini { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .mini .icon { border-radius: 22%; }
+  .mini span { font-size: 10px; color: #444; }
+</style>
+</head>
+<body>
+
+<h1>Nutre — Ícones v3</h1>
+<p class="sub">Maçã sem mordida, SVG limpo.</p>
+
+<div class="grid">
+
+  <!-- OPÇÃO 1: Verde + maçã branca pura -->
+  <div class="card">
+    <svg class="icon" width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="160" height="160" fill="#16a34a"/>
+      <!-- Apple body -->
+      <path d="
+        M80 130
+        C63 130 38 117 33 93
+        C28 69 40 51 54 46
+        C47 40 45 28 52 22
+        C59 16 70 20 75 28
+        C77 22 78 19 80 19
+        C82 19 83 22 85 28
+        C90 20 101 16 108 22
+        C115 28 113 40 106 46
+        C120 51 132 69 127 93
+        C122 117 97 130 80 130Z
+      " fill="white"/>
+      <!-- Stem -->
+      <path d="M82 22 C83 13 92 7 98 5" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <!-- Leaf -->
+      <path d="M83 18 C87 11 98 10 99 17 C95 23 85 22 83 18Z" fill="white" opacity="0.75"/>
+    </svg>
+    <div class="label">1 — Clássico</div>
+    <div class="desc">Maçã branca sólida, fundo verde. Simples e forte.</div>
+  </div>
+
+  <!-- OPÇÃO 2: Verde + maçã com N recortado (negativo) -->
+  <div class="card">
+    <svg class="icon" width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <mask id="mask-n">
+          <rect width="160" height="160" fill="white"/>
+          <text x="80" y="108" text-anchor="middle"
+            font-family="-apple-system, 'Helvetica Neue', sans-serif"
+            font-size="62" font-weight="900" fill="black" letter-spacing="-2">N</text>
+        </mask>
+      </defs>
+      <rect width="160" height="160" fill="#16a34a"/>
+      <!-- Apple com N recortado -->
+      <path d="
+        M80 130
+        C63 130 38 117 33 93
+        C28 69 40 51 54 46
+        C47 40 45 28 52 22
+        C59 16 70 20 75 28
+        C77 22 78 19 80 19
+        C82 19 83 22 85 28
+        C90 20 101 16 108 22
+        C115 28 113 40 106 46
+        C120 51 132 69 127 93
+        C122 117 97 130 80 130Z
+      " fill="white" mask="url(#mask-n)"/>
+      <!-- Stem -->
+      <path d="M82 22 C83 13 92 7 98 5" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <path d="M83 18 C87 11 98 10 99 17 C95 23 85 22 83 18Z" fill="white" opacity="0.75"/>
+    </svg>
+    <div class="label">2 — N recortado</div>
+    <div class="desc">Maçã branca com o N em negativo (verde transparece).</div>
+  </div>
+
+  <!-- OPÇÃO 3: Verde + N grande + maçã pequena acima -->
+  <div class="card">
+    <svg class="icon" width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="g3" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#22c55e"/>
+          <stop offset="100%" stop-color="#14532d"/>
+        </linearGradient>
+      </defs>
+      <rect width="160" height="160" fill="url(#g3)"/>
+      <!-- N grande -->
+      <text x="80" y="112" text-anchor="middle"
+        font-family="-apple-system, 'Helvetica Neue', sans-serif"
+        font-size="96" font-weight="900" fill="white" letter-spacing="-4">N</text>
+      <!-- Maçã pequena acima do N -->
+      <path d="
+        M80 44
+        C74 44 63 38 61 28
+        C59 18 64 11 69 9
+        C66 6 65 1 68 -1
+        C71 -3 75 -1 77 2
+        C78 -1 79 -2 80 -2
+        C81 -2 82 -1 83 2
+        C85 -1 89 -3 92 -1
+        C95 1 94 6 91 9
+        C96 11 101 18 99 28
+        C97 38 86 44 80 44Z
+      " fill="white" opacity="0.9"/>
+    </svg>
+    <div class="label">3 — N + maçã</div>
+    <div class="desc">N grande em destaque, maçã acima como símbolo.</div>
+  </div>
+
+  <!-- OPÇÃO 4: Fundo branco + maçã verde (elegante) -->
+  <div class="card">
+    <svg class="icon" width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="160" height="160" fill="#ffffff"/>
+      <!-- Shadow sutil -->
+      <path d="
+        M80 134
+        C63 134 37 120 32 95
+        C27 70 39 51 54 46
+        C47 40 45 28 52 22
+        C59 16 70 20 75 28
+        C77 22 78 19 80 19
+        C82 19 83 22 85 28
+        C90 20 101 16 108 22
+        C115 28 113 40 106 46
+        C121 51 133 70 128 95
+        C123 120 97 134 80 134Z
+      " fill="#16a34a" opacity="0.12" transform="translate(0,4)"/>
+      <!-- Apple verde -->
+      <path d="
+        M80 130
+        C63 130 38 117 33 93
+        C28 69 40 51 54 46
+        C47 40 45 28 52 22
+        C59 16 70 20 75 28
+        C77 22 78 19 80 19
+        C82 19 83 22 85 28
+        C90 20 101 16 108 22
+        C115 28 113 40 106 46
+        C120 51 132 69 127 93
+        C122 117 97 130 80 130Z
+      " fill="#16a34a"/>
+      <!-- Stem -->
+      <path d="M82 22 C83 13 92 7 98 5" stroke="#16a34a" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <path d="M83 18 C87 11 98 10 99 17 C95 23 85 22 83 18Z" fill="#16a34a" opacity="0.7"/>
+      <!-- Shine -->
+      <ellipse cx="58" cy="65" rx="10" ry="14" fill="white" opacity="0.25" transform="rotate(-20,58,65)"/>
+    </svg>
+    <div class="label">4 — Branco + maçã verde</div>
+    <div class="desc">Fundo branco, maçã verde com brilho. Elegante.</div>
+  </div>
+
+</div>
+
+<hr/>
+
+<h2>Como ficam na tela inicial do iPhone (72px)</h2>
+<p class="sub2">iOS arredonda automaticamente.</p>
+
+<div class="homescreen">
+  <!-- Mini 1 -->
+  <div class="mini">
+    <svg class="icon" width="72" height="72" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="160" height="160" fill="#16a34a"/>
+      <path d="M80 130 C63 130 38 117 33 93 C28 69 40 51 54 46 C47 40 45 28 52 22 C59 16 70 20 75 28 C77 22 78 19 80 19 C82 19 83 22 85 28 C90 20 101 16 108 22 C115 28 113 40 106 46 C120 51 132 69 127 93 C122 117 97 130 80 130Z" fill="white"/>
+      <path d="M82 22 C83 13 92 7 98 5" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    </svg>
+    <span>1</span>
+  </div>
+  <!-- Mini 2 -->
+  <div class="mini">
+    <svg class="icon" width="72" height="72" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <mask id="mask-n2">
+          <rect width="160" height="160" fill="white"/>
+          <text x="80" y="108" text-anchor="middle" font-family="sans-serif" font-size="62" font-weight="900" fill="black" letter-spacing="-2">N</text>
+        </mask>
+      </defs>
+      <rect width="160" height="160" fill="#16a34a"/>
+      <path d="M80 130 C63 130 38 117 33 93 C28 69 40 51 54 46 C47 40 45 28 52 22 C59 16 70 20 75 28 C77 22 78 19 80 19 C82 19 83 22 85 28 C90 20 101 16 108 22 C115 28 113 40 106 46 C120 51 132 69 127 93 C122 117 97 130 80 130Z" fill="white" mask="url(#mask-n2)"/>
+      <path d="M82 22 C83 13 92 7 98 5" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    </svg>
+    <span>2</span>
+  </div>
+  <!-- Mini 3 -->
+  <div class="mini">
+    <svg class="icon" width="72" height="72" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="g3b" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#22c55e"/>
+          <stop offset="100%" stop-color="#14532d"/>
+        </linearGradient>
+      </defs>
+      <rect width="160" height="160" fill="url(#g3b)"/>
+      <text x="80" y="112" text-anchor="middle" font-family="sans-serif" font-size="96" font-weight="900" fill="white" letter-spacing="-4">N</text>
+    </svg>
+    <span>3</span>
+  </div>
+  <!-- Mini 4 -->
+  <div class="mini">
+    <svg class="icon" width="72" height="72" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="160" height="160" fill="#ffffff"/>
+      <path d="M80 130 C63 130 38 117 33 93 C28 69 40 51 54 46 C47 40 45 28 52 22 C59 16 70 20 75 28 C77 22 78 19 80 19 C82 19 83 22 85 28 C90 20 101 16 108 22 C115 28 113 40 106 46 C120 51 132 69 127 93 C122 117 97 130 80 130Z" fill="#16a34a"/>
+      <ellipse cx="58" cy="65" rx="10" ry="14" fill="white" opacity="0.25" transform="rotate(-20,58,65)"/>
+    </svg>
+    <span>4</span>
+  </div>
+</div>
+
+</body>
+</html>

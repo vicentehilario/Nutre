@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 600px; height: 600px; overflow: hidden; }
+  .wrap {
+    width: 600px;
+    height: 600px;
+    background: linear-gradient(145deg, #1a2e1c 0%, #0d1a0f 60%, #0a130b 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+    font-family: -apple-system, 'Helvetica Neue', sans-serif;
+  }
+
+  /* Glow sutil atrás */
+  .glow {
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+  }
+
+  /* Ícone container */
+  .icon-wrap {
+    position: relative;
+    margin-bottom: 32px;
+  }
+
+  .icon-box {
+    width: 220px;
+    height: 220px;
+    background: linear-gradient(135deg, #1c2b1e, #0d1a0f);
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(34,197,94,0.15);
+    position: relative;
+  }
+
+  .icon-n {
+    font-size: 138px;
+    font-weight: 900;
+    color: white;
+    line-height: 1;
+    letter-spacing: -6px;
+    margin-top: 10px;
+  }
+
+  .icon-leaf {
+    position: absolute;
+    top: 28px;
+    right: 34px;
+    width: 40px;
+    height: 20px;
+    background: #22c55e;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-35deg);
+  }
+
+  /* Textos */
+  .brand {
+    font-size: 48px;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+  }
+
+  .tagline {
+    font-size: 17px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.3px;
+    text-align: center;
+    line-height: 1.5;
+    max-width: 360px;
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="glow"></div>
+  <div class="icon-wrap">
+    <div class="icon-box">
+      <span class="icon-n">N</span>
+      <div class="icon-leaf"></div>
+    </div>
+  </div>
+
+  <div class="brand">Nutre</div>
+  <div class="tagline">Seu nutricionista pessoal com inteligência artificial</div>
+</div>
+</body>
+</html>

@@ -35,6 +35,7 @@ export default function Cadastro() {
       await supabase.from("profiles").upsert({
         id: data.user.id,
         nome,
+        email,
         plano: "gratis",
         streak: 0,
         fotos_hoje: 0,

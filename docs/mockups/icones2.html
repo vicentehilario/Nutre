@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutre — Ícones A vs C</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f0f0f0; font-family: -apple-system, sans-serif; padding: 48px 32px; }
+  h1 { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 6px; }
+  p { font-size: 13px; color: #888; margin-bottom: 48px; }
+  .grid { display: flex; gap: 48px; flex-wrap: wrap; }
+  .card { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .icon { border-radius: 26.7%; box-shadow: 0 12px 40px rgba(0,0,0,0.2); overflow: hidden; }
+  .label { font-size: 15px; font-weight: 700; color: #333; }
+  .desc { font-size: 12px; color: #999; text-align: center; line-height: 1.5; max-width: 140px; }
+
+  .preview-section { margin-top: 56px; }
+  .preview-section h2 { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 4px; }
+  .preview-section p { font-size: 11px; color: #aaa; margin-bottom: 20px; }
+  .homescreen { display: flex; gap: 32px; align-items: flex-end; }
+  .app-icon-small { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .app-icon-small .icon { border-radius: 22%; }
+  .app-name { font-size: 11px; color: #333; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<h1>Nutre — Opções de Ícone</h1>
+<p>Versão refinada com SVG limpo. Opção A e C.</p>
+
+<div class="grid">
+
+  <!-- OPÇÃO A: Verde sólido + maçã branca -->
+  <div class="card">
+    <div class="icon" style="width:160px;height:160px;background:#16a34a;">
+      <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Stem -->
+        <path d="M82 42 C82 36 88 30 94 28" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <!-- Leaf -->
+        <path d="M82 42 C86 36 96 34 98 40 C96 46 86 46 82 42Z" fill="white" opacity="0.9"/>
+        <!-- Apple body with bite -->
+        <clipPath id="bite-a">
+          <path d="M0 0 H160 V160 H0Z"/>
+        </clipPath>
+        <!-- Apple shape -->
+        <path d="
+          M80 55
+          C62 55 46 64 42 78
+          C37 95 40 114 50 126
+          C56 133 63 138 72 138
+          C76 138 79 136 82 135
+          C85 136 88 138 92 138
+          C101 138 108 133 114 126
+          C124 114 127 95 122 78
+          C118 64 102 55 84 55
+          C82.7 55 81.3 55 80 55Z
+        " fill="white"/>
+        <!-- Bite out of right side -->
+        <circle cx="118" cy="72" r="18" fill="#16a34a"/>
+        <!-- Left bump of apple -->
+        <path d="M80 55 C74 48 64 44 58 50 C52 56 56 66 62 68 C68 62 75 58 80 55Z" fill="white"/>
+        <!-- Right bump -->
+        <path d="M84 55 C90 48 100 44 106 50 C112 56 108 66 102 68 C96 62 89 58 84 55Z" fill="white"/>
+      </svg>
+    </div>
+    <div class="label">A — Verde + branca</div>
+    <div class="desc">Fundo verde, maçã branca com mordida. On-brand, direto.</div>
+  </div>
+
+  <!-- OPÇÃO A2: Verde sólido + maçã branca simples (mais clean) -->
+  <div class="card">
+    <div class="icon" style="width:160px;height:160px;background:#16a34a;">
+      <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Apple usando path único limpo -->
+        <g transform="translate(80,86)">
+          <!-- Body -->
+          <ellipse cx="0" cy="8" rx="38" ry="44" fill="white"/>
+          <!-- Left lobe -->
+          <ellipse cx="-18" cy="-18" rx="22" ry="26" fill="white"/>
+          <!-- Right lobe -->
+          <ellipse cx="18" cy="-18" rx="22" ry="26" fill="white"/>
+          <!-- Center gap cover -->
+          <rect x="-6" y="-34" width="12" height="12" fill="#16a34a"/>
+          <!-- Stem -->
+          <path d="M4 -44 C4 -52 12 -58 18 -60" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <!-- Leaf -->
+          <path d="M4 -50 C8 -56 18 -56 20 -50 C16 -44 6 -44 4 -50Z" fill="white"/>
+          <!-- Bite -->
+          <circle cx="30" cy="-10" r="20" fill="#16a34a"/>
+        </g>
+      </svg>
+    </div>
+    <div class="label">A2 — Verde + branca clean</div>
+    <div class="desc">Forma mais geométrica, bordas suaves.</div>
+  </div>
+
+  <!-- OPÇÃO C: Gradiente verde + maçã + N -->
+  <div class="card">
+    <div class="icon" style="width:160px;height:160px;">
+      <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="grad-c" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#22c55e"/>
+            <stop offset="100%" stop-color="#15803d"/>
+          </linearGradient>
+          <clipPath id="clip-apple-c">
+            <g transform="translate(80,86)">
+              <ellipse cx="0" cy="8" rx="38" ry="44"/>
+              <ellipse cx="-18" cy="-18" rx="22" ry="26"/>
+              <ellipse cx="18" cy="-18" rx="22" ry="26"/>
+            </g>
+          </clipPath>
+        </defs>
+        <!-- Background -->
+        <rect width="160" height="160" fill="url(#grad-c)"/>
+        <!-- Apple silhouette white -->
+        <g transform="translate(80,86)">
+          <ellipse cx="0" cy="8" rx="38" ry="44" fill="white" opacity="0.2"/>
+          <ellipse cx="-18" cy="-18" rx="22" ry="26" fill="white" opacity="0.2"/>
+          <ellipse cx="18" cy="-18" rx="22" ry="26" fill="white" opacity="0.2"/>
+          <rect x="-6" y="-34" width="12" height="12" fill="url(#grad-c)"/>
+          <!-- Stem -->
+          <path d="M4 -44 C4 -52 12 -58 18 -60" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+          <!-- Leaf -->
+          <path d="M4 -50 C8 -56 18 -56 20 -50 C16 -44 6 -44 4 -50Z" fill="white" opacity="0.7"/>
+          <!-- Bite -->
+          <circle cx="30" cy="-10" r="20" fill="url(#grad-c)"/>
+        </g>
+        <!-- N letter centered -->
+        <text x="80" y="100" text-anchor="middle" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="52" font-weight="900" fill="white" letter-spacing="-2">N</text>
+      </svg>
+    </div>
+    <div class="label">C — Gradiente + N</div>
+    <div class="desc">Verde gradiente, maçã translúcida atrás do N.</div>
+  </div>
+
+  <!-- OPÇÃO C2: Verde sólido + só a maçã com N dentro -->
+  <div class="card">
+    <div class="icon" style="width:160px;height:160px;background:#16a34a;">
+      <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="apple-clip-c2">
+            <g transform="translate(80,88)">
+              <ellipse cx="0" cy="8" rx="38" ry="44"/>
+              <ellipse cx="-18" cy="-18" rx="22" ry="26"/>
+              <ellipse cx="18" cy="-18" rx="22" ry="26"/>
+            </g>
+          </clipPath>
+        </defs>
+        <!-- Apple shape white -->
+        <g transform="translate(80,88)">
+          <ellipse cx="0" cy="8" rx="38" ry="44" fill="white"/>
+          <ellipse cx="-18" cy="-18" rx="22" ry="26" fill="white"/>
+          <ellipse cx="18" cy="-18" rx="22" ry="26" fill="white"/>
+          <rect x="-6" y="-34" width="12" height="12" fill="#16a34a"/>
+          <path d="M4 -44 C4 -52 12 -58 18 -60" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M4 -50 C8 -56 18 -56 20 -50 C16 -44 6 -44 4 -50Z" fill="white" opacity="0.6"/>
+          <circle cx="30" cy="-10" r="20" fill="#16a34a"/>
+        </g>
+        <!-- N inside apple -->
+        <text x="76" y="103" text-anchor="middle" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="42" font-weight="900" fill="#16a34a" letter-spacing="-1">N</text>
+        <!-- Stem -->
+        <path d="M84 44 C84 36 92 30 98 28" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        <path d="M84 40 C88 34 98 34 100 40 C96 46 86 46 84 40Z" fill="white" opacity="0.7"/>
+      </svg>
+    </div>
+    <div class="label">C2 — Maçã com N</div>
+    <div class="desc">Maçã branca com N verde dentro. Mais legível.</div>
+  </div>
+
+</div>
+
+<!-- Preview na tela inicial -->
+<div class="preview-section">
+  <h2>Como ficam na tela inicial do iPhone</h2>
+  <p>iOS aplica bordas arredondadas automaticamente.</p>
+  <div class="homescreen">
+    <div class="app-icon-small">
+      <div class="icon" style="width:72px;height:72px;background:#16a34a;">
+        <svg width="72" height="72" viewBox="0 0 160 160" fill="none">
+          <g transform="translate(80,86)">
+            <ellipse cx="0" cy="8" rx="38" ry="44" fill="white"/>
+            <ellipse cx="-18" cy="-18" rx="22" ry="26" fill="white"/>
+            <ellipse cx="18" cy="-18" rx="22" ry="26" fill="white"/>
+            <rect x="-6" y="-34" width="12" height="12" fill="#16a34a"/>
+            <path d="M4 -44 C4 -52 12 -58 18 -60" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M4 -50 C8 -56 18 -56 20 -50 C16 -44 6 -44 4 -50Z" fill="white"/>
+            <circle cx="30" cy="-10" r="20" fill="#16a34a"/>
+          </g>
+        </svg>
+      </div>
+      <span class="app-name">A2</span>
+    </div>
+
+    <div class="app-icon-small">
+      <div class="icon" style="width:72px;height:72px;">
+        <svg width="72" height="72" viewBox="0 0 160 160" fill="none">
+          <defs>
+            <linearGradient id="g2" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#22c55e"/>
+              <stop offset="100%" stop-color="#15803d"/>
+            </linearGradient>
+          </defs>
+          <rect width="160" height="160" fill="url(#g2)"/>
+          <g transform="translate(80,86)" opacity="0.25">
+            <ellipse cx="0" cy="8" rx="38" ry="44" fill="white"/>
+            <ellipse cx="-18" cy="-18" rx="22" ry="26" fill="white"/>
+            <ellipse cx="18" cy="-18" rx="22" ry="26" fill="white"/>
+            <rect x="-6" y="-34" width="12" height="12" fill="#22c55e"/>
+            <circle cx="30" cy="-10" r="20" fill="#22c55e"/>
+          </g>
+          <text x="80" y="100" text-anchor="middle" font-family="sans-serif" font-size="52" font-weight="900" fill="white">N</text>
+        </svg>
+      </div>
+      <span class="app-name">C</span>
+    </div>
+
+    <div class="app-icon-small">
+      <div class="icon" style="width:72px;height:72px;background:#16a34a;">
+        <svg width="72" height="72" viewBox="0 0 160 160" fill="none">
+          <g transform="translate(80,88)">
+            <ellipse cx="0" cy="8" rx="38" ry="44" fill="white"/>
+            <ellipse cx="-18" cy="-18" rx="22" ry="26" fill="white"/>
+            <ellipse cx="18" cy="-18" rx="22" ry="26" fill="white"/>
+            <rect x="-6" y="-34" width="12" height="12" fill="#16a34a"/>
+            <circle cx="30" cy="-10" r="20" fill="#16a34a"/>
+          </g>
+          <text x="76" y="103" text-anchor="middle" font-family="sans-serif" font-size="42" font-weight="900" fill="#16a34a">N</text>
+          <path d="M84 44 C84 36 92 30 98 28" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <span class="app-name">C2</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

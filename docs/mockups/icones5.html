@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutre — Ícones v5</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #e5e5e5; font-family: -apple-system, sans-serif; padding: 48px 32px; }
+  h1 { font-size: 20px; font-weight: 700; color: #111; margin-bottom: 4px; }
+  .sub { font-size: 13px; color: #888; margin-bottom: 52px; }
+  .grid { display: flex; gap: 48px; flex-wrap: wrap; align-items: flex-start; }
+  .card { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .icon { border-radius: 26.7%; box-shadow: 0 16px 48px rgba(0,0,0,0.25); overflow: hidden; display: block; }
+  .label { font-size: 15px; font-weight: 700; color: #222; }
+  .desc { font-size: 12px; color: #999; text-align: center; line-height: 1.6; max-width: 140px; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-bottom: 2px; }
+  .tag-alt { background: #fef3c7; color: #b45309; }
+  .tag-main { background: #dcfce7; color: #15803d; }
+  hr { border: none; border-top: 1px solid #ccc; margin: 52px 0; }
+  h2 { font-size: 14px; font-weight: 600; color: #555; margin-bottom: 20px; }
+  .row { display: flex; gap: 28px; align-items: flex-end; }
+  .mini { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .mini span { font-size: 10px; color: #555; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<h1>Nutre — Ícones v5</h1>
+<p class="sub">Maçã refeita com path limpo + N com folha confirmado.</p>
+
+<div class="grid">
+
+  <!-- MAÇÃ — path SVG real, proporcional -->
+  <div class="card">
+    <span class="tag tag-main">Maçã — path limpo</span>
+    <svg class="icon" width="180" height="180" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="160" height="160" fill="#16a34a"/>
+      <!--
+        Apple shape: single bezier path.
+        Começa no centro-baixo, sobe pelos lados,
+        forma os dois lobos no topo com indent central.
+      -->
+      <path d="
+        M 80 128
+        C 58 128, 30 112, 28 86
+        C 26 62, 40 46, 56 42
+        C 50 34, 49 22, 55 17
+        C 61 12, 72 15, 77 23
+        C 78 18, 79 15, 80 15
+        C 81 15, 82 18, 83 23
+        C 88 15, 99 12, 105 17
+        C 111 22, 110 34, 104 42
+        C 120 46, 134 62, 132 86
+        C 130 112, 102 128, 80 128 Z
+      " fill="white"/>
+      <!-- Stem -->
+      <path d="M 80 16 C 80 8, 89 3, 95 1" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <!-- Leaf -->
+      <path d="M 81 12 C 85 5, 97 4, 97 11 C 93 18, 82 17, 81 12 Z" fill="white" opacity="0.85"/>
+    </svg>
+    <div class="label">Maçã</div>
+    <div class="desc">Path bezier real. Proporções corretas de uma maçã.</div>
+  </div>
+
+  <!-- MAÇÃ variação — fundo branco -->
+  <div class="card">
+    <span class="tag tag-main">Maçã — fundo branco</span>
+    <svg class="icon" width="180" height="180" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="160" height="160" fill="#ffffff"/>
+      <!-- Sombra suave -->
+      <path d="
+        M 80 128
+        C 58 128, 30 112, 28 86
+        C 26 62, 40 46, 56 42
+        C 50 34, 49 22, 55 17
+        C 61 12, 72 15, 77 23
+        C 78 18, 79 15, 80 15
+        C 81 15, 82 18, 83 23
+        C 88 15, 99 12, 105 17
+        C 111 22, 110 34, 104 42
+        C 120 46, 134 62, 132 86
+        C 130 112, 102 128, 80 128 Z
+      " fill="#16a34a" opacity="0.1" transform="translate(2,6)"/>
+      <!-- Maçã verde -->
+      <path d="
+        M 80 128
+        C 58 128, 30 112, 28 86
+        C 26 62, 40 46, 56 42
+        C 50 34, 49 22, 55 17
+        C 61 12, 72 15, 77 23
+        C 78 18, 79 15, 80 15
+        C 81 15, 82 18, 83 23
+        C 88 15, 99 12, 105 17
+        C 111 22, 110 34, 104 42
+        C 120 46, 134 62, 132 86
+        C 130 112, 102 128, 80 128 Z
+      " fill="#16a34a"/>
+      <!-- Brilho -->
+      <ellipse cx="60" cy="66" rx="12" ry="16" fill="white" opacity="0.18" transform="rotate(-20,60,66)"/>
+      <!-- Stem -->
+      <path d="M 80 16 C 80 8, 89 3, 95 1" stroke="#16a34a" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M 81 12 C 85 5, 97 4, 97 11 C 93 18, 82 17, 81 12 Z" fill="#16a34a" opacity="0.7"/>
+    </svg>
+    <div class="label">Maçã — branco</div>
+    <div class="desc">Fundo branco, maçã verde com brilho sutil.</div>
+  </div>
+
+  <!-- N + FOLHA — igual ao que você aprovou, só refinado -->
+  <div class="card">
+    <span class="tag tag-alt">Favorito — N + folha</span>
+    <svg class="icon" width="180" height="180" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bg-dark" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#1c2b1e"/>
+          <stop offset="100%" stop-color="#0d1a0f"/>
+        </linearGradient>
+      </defs>
+      <rect width="160" height="160" fill="url(#bg-dark)"/>
+      <!-- N -->
+      <text x="80" y="116"
+        text-anchor="middle"
+        font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif"
+        font-size="100"
+        font-weight="900"
+        fill="white"
+        letter-spacing="-5">N</text>
+      <!-- Galho -->
+      <path d="M 103 32 C 110 22, 119 16, 125 12" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <!-- Folha -->
+      <path d="M 103 32 C 112 17, 129 13, 131 23 C 129 33, 112 36, 103 32 Z" fill="#22c55e"/>
+      <!-- Nervura -->
+      <path d="M 103 32 C 114 23, 127 16, 131 23" stroke="white" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.35"/>
+    </svg>
+    <div class="label">N + folha</div>
+    <div class="desc">O que você aprovou. Fundo escuro, N branco, folha verde.</div>
+  </div>
+
+  <!-- N + FOLHA variação — fundo verde -->
+  <div class="card">
+    <span class="tag tag-alt">N + folha — verde</span>
+    <svg class="icon" width="180" height="180" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="160" height="160" fill="#16a34a"/>
+      <!-- N -->
+      <text x="80" y="116"
+        text-anchor="middle"
+        font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif"
+        font-size="100"
+        font-weight="900"
+        fill="white"
+        letter-spacing="-5">N</text>
+      <!-- Galho -->
+      <path d="M 103 32 C 110 22, 119 16, 125 12" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+      <!-- Folha branca -->
+      <path d="M 103 32 C 112 17, 129 13, 131 23 C 129 33, 112 36, 103 32 Z" fill="white" opacity="0.9"/>
+      <!-- Nervura -->
+      <path d="M 103 32 C 114 23, 127 16, 131 23" stroke="#16a34a" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.5"/>
+    </svg>
+    <div class="label">N + folha — verde</div>
+    <div class="desc">Mesma ideia em fundo verde — mais vibrante.</div>
+  </div>
+
+</div>
+
+<hr/>
+
+<h2>Preview 72px — tela inicial iPhone</h2>
+<div class="row">
+
+  <div class="mini">
+    <svg class="icon" width="72" height="72" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="160" height="160" fill="#16a34a"/>
+      <path d="M80 128 C58 128,30 112,28 86 C26 62,40 46,56 42 C50 34,49 22,55 17 C61 12,72 15,77 23 C78 18,79 15,80 15 C81 15,82 18,83 23 C88 15,99 12,105 17 C111 22,110 34,104 42 C120 46,134 62,132 86 C130 112,102 128,80 128Z" fill="white"/>
+      <path d="M80 16 C80 8,89 3,95 1" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M81 12 C85 5,97 4,97 11 C93 18,82 17,81 12Z" fill="white" opacity="0.85"/>
+    </svg>
+    <span>Maçã</span>
+  </div>
+
+  <div class="mini">
+    <svg class="icon" width="72" height="72" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="160" height="160" fill="#ffffff"/>
+      <path d="M80 128 C58 128,30 112,28 86 C26 62,40 46,56 42 C50 34,49 22,55 17 C61 12,72 15,77 23 C78 18,79 15,80 15 C81 15,82 18,83 23 C88 15,99 12,105 17 C111 22,110 34,104 42 C120 46,134 62,132 86 C130 112,102 128,80 128Z" fill="#16a34a"/>
+    </svg>
+    <span>Maçã branco</span>
+  </div>
+
+  <div class="mini">
+    <svg class="icon" width="72" height="72" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="pbg" x1="0" y1="0" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#1c2b1e"/>
+          <stop offset="100%" stop-color="#0d1a0f"/>
+        </linearGradient>
+      </defs>
+      <rect width="160" height="160" fill="url(#pbg)"/>
+      <text x="80" y="116" text-anchor="middle" font-family="sans-serif" font-size="100" font-weight="900" fill="white" letter-spacing="-5">N</text>
+      <path d="M103 32 C112 17,129 13,131 23 C129 33,112 36,103 32Z" fill="#22c55e"/>
+      <path d="M103 32 C110 22,119 16,125 12" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    </svg>
+    <span>N dark</span>
+  </div>
+
+  <div class="mini">
+    <svg class="icon" width="72" height="72" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="160" height="160" fill="#16a34a"/>
+      <text x="80" y="116" text-anchor="middle" font-family="sans-serif" font-size="100" font-weight="900" fill="white" letter-spacing="-5">N</text>
+      <path d="M103 32 C112 17,129 13,131 23 C129 33,112 36,103 32Z" fill="white" opacity="0.9"/>
+      <path d="M103 32 C110 22,119 16,125 12" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+    </svg>
+    <span>N verde</span>
+  </div>
+
+</div>
+
+</body>
+</html>
