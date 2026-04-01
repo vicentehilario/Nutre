@@ -25,9 +25,11 @@ function extractOfferCode(checkoutUrl: string): string | null {
 export async function POST(req: NextRequest) {
   const hotmartToken = process.env.HOTMART_WEBHOOK_TOKEN;
 
-  // Validate Hotmart webhook token
-  const authHeader = req.headers.get("x-hotmart-webhook-token") ?? req.headers.get("authorization");
-  if (hotmartToken && authHeader !== hotmartToken && authHeader !== `Bearer ${hotmartToken}`) {
+  // Validate Hotmart webhook token (v2.0.0 sends it as query param or header)
+  const urlToken = new URL(req.url).searchParams.get("hottok");
+  const headerToken = req.headers.get("x-hotmart-webhook-token") ?? req.headers.get("authorization");
+  const receivedToken = urlToken ?? headerToken;
+  if (hotmartToken && receivedToken !== hotmartToken && receivedToken !== `Bearer ${hotmartToken}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
