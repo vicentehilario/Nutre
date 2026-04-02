@@ -92,7 +92,7 @@ export default function Historico() {
         .from("profiles")
         .select("meta_calorica")
         .eq("id", userId)
-        .single() as { data: { meta_calorica: number } | null };
+        .single();
       if (profile?.meta_calorica) setMeta(profile.meta_calorica);
 
       // Busca semanas disponíveis
@@ -100,7 +100,7 @@ export default function Historico() {
         .from("refeicoes")
         .select("data")
         .eq("user_id", userId)
-        .order("data", { ascending: false }) as { data: { data: string }[] | null };
+        .order("data", { ascending: false });
 
       const weeks = new Set<string>([isoWeek(new Date())]);
       for (const r of allDates ?? []) {

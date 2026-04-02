@@ -59,7 +59,7 @@ export default function Metas() {
         .from("profiles")
         .select("meta_calorica, meta_proteina, objetivo, refeicoes_por_dia, plano_pdf_importado_em, plano_origem")
         .eq("id", userId)
-        .single() as { data: Partial<MetasData> | null };
+        .single();
 
       if (data) setMetas((prev) => ({ ...prev, ...data }));
       setLoading(false);
