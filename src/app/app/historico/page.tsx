@@ -82,6 +82,7 @@ export default function Historico() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) { window.location.href = "/login"; return; }
+    const userId = user.id;
 
     async function init() {
       const supabase = createClient();
@@ -90,7 +91,7 @@ export default function Historico() {
       const { data: profile } = await supabase
         .from("profiles")
         .select("meta_calorica")
-        .eq("id", user.id)
+        .eq("id", userId)
         .single();
       if (profile?.meta_calorica) setMeta(profile.meta_calorica);
 
@@ -98,7 +99,7 @@ export default function Historico() {
       const { data: allDates } = await supabase
         .from("refeicoes")
         .select("data")
-        .eq("user_id", user.id)
+        .eq("user_id", userId)
         .order("data", { ascending: false });
 
       const weeks = new Set<string>([isoWeek(new Date())]);
