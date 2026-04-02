@@ -1,6 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const ONE_YEAR = 60 * 60 * 24 * 365;
+
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -16,14 +18,18 @@ export async function proxy(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, {
+              ...options,
+              maxAge: options?.maxAge ?? ONE_YEAR,
+              sameSite: "lax",
+              secure: true,
+            })
           );
         },
       },
     }
   );
 
-  // Atualiza a sessão (refresh token automático)
   await supabase.auth.getUser();
 
   return supabaseResponse;
