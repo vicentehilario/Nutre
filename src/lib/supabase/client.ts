@@ -1,22 +1,14 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-import { createClient as createSupabaseClient, SupabaseClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let client: SupabaseClient<any> | null = null;
+let client: ReturnType<typeof createBrowserClient<any>> | null = null;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function createClient(): SupabaseClient<any> {
+export function createClient(): ReturnType<typeof createBrowserClient<any>> {
   if (!client) {
-    client = createSupabaseClient(
+    client = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-        },
-      }
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
   }
   return client;
