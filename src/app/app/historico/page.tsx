@@ -92,7 +92,7 @@ export default function Historico() {
         .from("profiles")
         .select("meta_calorica")
         .eq("id", userId)
-        .single();
+        .single() as { data: { meta_calorica: number } | null };
       if (profile?.meta_calorica) setMeta(profile.meta_calorica);
 
       // Busca semanas disponíveis
