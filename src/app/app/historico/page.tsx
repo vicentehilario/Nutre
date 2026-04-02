@@ -100,7 +100,7 @@ export default function Historico() {
         .from("refeicoes")
         .select("data")
         .eq("user_id", userId)
-        .order("data", { ascending: false });
+        .order("data", { ascending: false }) as { data: { data: string }[] | null };
 
       const weeks = new Set<string>([isoWeek(new Date())]);
       for (const r of allDates ?? []) {
