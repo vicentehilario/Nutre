@@ -1,14 +1,23 @@
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient as createSupabaseClient, SupabaseClient } from "@supabase/supabase-js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let client: ReturnType<typeof createBrowserClient<any>> | null = null;
+let client: SupabaseClient<any> | null = null;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function createClient(): ReturnType<typeof createBrowserClient<any>> {
+export function createClient(): SupabaseClient<any> {
   if (!client) {
-    client = createBrowserClient(
+    client = createSupabaseClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: false,
+          storage: typeof window !== "undefined" ? window.localStorage : undefined,
+          storageKey: "nutre-auth",
+        },
+      }
     );
   }
   return client;
