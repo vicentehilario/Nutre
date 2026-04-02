@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 interface Profile {
   nome: string;
@@ -19,13 +20,15 @@ const planoLabel: Record<string, string> = {
 
 export default function Perfil() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) { router.push("/login"); return; }
+
     async function load() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push("/login"); return; }
       const { data } = await supabase
         .from("profiles")
         .select("nome, email, plano, streak")
@@ -34,7 +37,7 @@ export default function Perfil() {
       setProfile(data);
     }
     load();
-  }, [router]);
+  }, [user, authLoading, router]);
 
   async function handleSair() {
     const supabase = createClient();

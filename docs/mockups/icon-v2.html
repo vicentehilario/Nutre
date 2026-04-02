@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #e5e7eb; display: flex; align-items: center; justify-content: center; min-height: 100vh; gap: 40px; font-family: sans-serif; flex-wrap: wrap; padding: 40px; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .label { font-size: 13px; color: #666; font-weight: 600; }
+</style>
+</head>
+<body>
+
+  <!-- 200px preview -->
+  <div class="col">
+    <div class="label">Preview grande</div>
+    <div style="width:200px;height:200px;background:linear-gradient(135deg,#1c2b1e,#0d1a0f);border-radius:44px;position:relative;overflow:hidden;">
+      <svg width="200" height="200" viewBox="0 0 100 100" style="position:absolute;top:0;left:0;">
+        <!-- N -->
+        <path d="M 13,14 L 30,14 L 73,86 L 88,86 L 88,14 L 71,14 L 28,86 L 12,86 Z" fill="white"/>
+        <!-- Leaf body (navette rotated 45deg, centered ~82,20) -->
+        <path d="M 87,14 C 90,20 82,30 76,27 C 74,21 82,12 87,14 Z" fill="#22c55e"/>
+        <!-- Leaf midrib -->
+        <line x1="87" y1="14" x2="76" y2="27" stroke="#15803d" stroke-width="0.9" opacity="0.55"/>
+        <!-- Stem -->
+        <path d="M 76,27 Q 73,32 71,35" stroke="#16a34a" stroke-width="1.1" fill="none" opacity="0.7" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="label">200px</div>
+  </div>
+
+  <!-- 80px preview (realistic phone icon size) -->
+  <div class="col">
+    <div class="label">Tamanho real iPhone</div>
+    <div style="width:80px;height:80px;background:linear-gradient(135deg,#1c2b1e,#0d1a0f);border-radius:18px;position:relative;overflow:hidden;">
+      <svg width="80" height="80" viewBox="0 0 100 100" style="position:absolute;top:0;left:0;">
+        <path d="M 13,14 L 30,14 L 73,86 L 88,86 L 88,14 L 71,14 L 28,86 L 12,86 Z" fill="white"/>
+        <path d="M 87,14 C 90,20 82,30 76,27 C 74,21 82,12 87,14 Z" fill="#22c55e"/>
+        <line x1="87" y1="14" x2="76" y2="27" stroke="#15803d" stroke-width="0.9" opacity="0.55"/>
+        <path d="M 76,27 Q 73,32 71,35" stroke="#16a34a" stroke-width="1.1" fill="none" opacity="0.7" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="label">80px</div>
+  </div>
+
+  <!-- Variante B: folha maior sem caule -->
+  <div class="col">
+    <div class="label">Variante B — folha maior</div>
+    <div style="width:200px;height:200px;background:linear-gradient(135deg,#1c2b1e,#0d1a0f);border-radius:44px;position:relative;overflow:hidden;">
+      <svg width="200" height="200" viewBox="0 0 100 100" style="position:absolute;top:0;left:0;">
+        <path d="M 13,14 L 30,14 L 73,86 L 88,86 L 88,14 L 71,14 L 28,86 L 12,86 Z" fill="white"/>
+        <!-- Folha maior -->
+        <path d="M 88,10 C 93,18 84,32 76,29 C 73,21 83,8 88,10 Z" fill="#22c55e"/>
+        <line x1="88" y1="10" x2="76" y2="29" stroke="#15803d" stroke-width="1" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="label">200px · variante B</div>
+  </div>
+
+  <!-- Variante B 80px -->
+  <div class="col">
+    <div class="label">Variante B — real</div>
+    <div style="width:80px;height:80px;background:linear-gradient(135deg,#1c2b1e,#0d1a0f);border-radius:18px;position:relative;overflow:hidden;">
+      <svg width="80" height="80" viewBox="0 0 100 100" style="position:absolute;top:0;left:0;">
+        <path d="M 13,14 L 30,14 L 73,86 L 88,86 L 88,14 L 71,14 L 28,86 L 12,86 Z" fill="white"/>
+        <path d="M 88,10 C 93,18 84,32 76,29 C 73,21 83,8 88,10 Z" fill="#22c55e"/>
+        <line x1="88" y1="10" x2="76" y2="29" stroke="#15803d" stroke-width="1" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="label">80px · variante B</div>
+  </div>
+
+</body>
+</html>

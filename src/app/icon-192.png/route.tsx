@@ -14,27 +14,35 @@ export async function GET() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          position: "relative",
         }}
       >
-        <svg width="100" height="118" viewBox="0 0 95 110" fill="none">
+        <svg width="142" height="142" viewBox="0 0 100 100" fill="none">
+          {/* N */}
           <path
-            d="M8 8 L8 102 L26 102 L26 38 L69 102 L87 102 L87 8 L69 8 L69 72 L26 8 Z"
+            d="M 13,14 L 30,14 L 73,86 L 88,86 L 88,14 L 71,14 L 28,86 L 12,86 Z"
             fill="white"
           />
+          {/* Leaf */}
+          <path
+            d="M 87,14 C 90,20 82,30 76,27 C 74,21 82,12 87,14 Z"
+            fill="#22c55e"
+          />
+          {/* Midrib */}
+          <line
+            x1="87" y1="14" x2="76" y2="27"
+            stroke="#15803d"
+            stroke-width="0.9"
+            opacity="0.6"
+          />
+          {/* Stem */}
+          <path
+            d="M 76,27 Q 73,32 71,35"
+            stroke="#16a34a"
+            stroke-width="1.1"
+            fill="none"
+            opacity="0.7"
+          />
         </svg>
-        <div
-          style={{
-            position: "absolute",
-            top: 28,
-            right: 34,
-            width: 30,
-            height: 15,
-            background: "#22c55e",
-            borderRadius: "50%",
-            transform: "rotate(-35deg)",
-          }}
-        />
       </div>
     ),
     { width: 192, height: 192 }

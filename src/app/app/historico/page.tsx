@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 interface Refeicao {
   id: string;
@@ -61,6 +62,7 @@ function dayLabel(dateStr: string) {
 }
 
 export default function Historico() {
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [days, setDays] = useState<DayEntry[]>([]);
   const [medias, setMedias] = useState<Medias>({ calorias: 0, proteinas: 0 });
@@ -78,10 +80,11 @@ export default function Historico() {
   }, []);
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) { window.location.href = "/login"; return; }
+
     async function init() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { window.location.href = "/login"; return; }
 
       // Carrega meta do usuário
       const { data: profile } = await supabase
@@ -107,7 +110,7 @@ export default function Historico() {
       await loadData(isoWeek(new Date()));
     }
     init();
-  }, [loadData]);
+  }, [user, authLoading, loadData]);
 
   const handleTab = (tab: string) => {
     setActiveTab(tab);

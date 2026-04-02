@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 interface Profile {
   nome: string;
@@ -30,17 +31,18 @@ function saudacao() {
 
 export default function AppHome() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [daily, setDaily] = useState<DailySummary>({ calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0, count: 0 });
   const [loading, setLoading] = useState(true);
   const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) { window.location.href = "/login"; return; }
+
     async function load() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { window.location.href = "/login"; return; }
-
       const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
 
       const [profileRes, refeicoesRes] = await Promise.all([
@@ -67,7 +69,7 @@ export default function AppHome() {
       setLoading(false);
     }
     load();
-  }, []);
+  }, [user, authLoading]);
 
   const meta = profile?.meta_calorica ?? 2000;
   const pct = Math.min(100, Math.round((daily.calorias / meta) * 100));
@@ -79,7 +81,7 @@ export default function AppHome() {
 
   const barColor = pct < 80 ? "#16a34a" : pct < 100 ? "#f59e0b" : "#ef4444";
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-[#999] text-sm">Carregando...</div>

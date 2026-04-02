@@ -3,9 +3,11 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 export default function Registrar() {
   const router = useRouter();
+  const { user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
   const [foto, setFoto] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -48,9 +50,8 @@ export default function Registrar() {
     if (!foto && !descricao) return;
     setLoading(true);
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
     if (!user) { window.location.href = "/login"; return; }
+    const supabase = createClient();
 
     let fotoUrl = null;
 

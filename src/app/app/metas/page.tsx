@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 interface MetasData {
   meta_calorica: number;
@@ -31,6 +32,7 @@ const dicasPdf: Record<string, string> = {
 };
 
 export default function Metas() {
+  const { user, loading: authLoading } = useAuth();
   const [metas, setMetas] = useState<MetasData>({
     meta_calorica: 2000,
     meta_proteina: 120,
@@ -47,36 +49,33 @@ export default function Metas() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) { window.location.href = "/login"; return; }
+
     async function load() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { window.location.href = "/login"; return; }
-
       const { data } = await supabase
         .from("profiles")
         .select("meta_calorica, meta_proteina, objetivo, refeicoes_por_dia, plano_pdf_importado_em, plano_origem")
         .eq("id", user.id)
         .single();
 
-      if (data) setMetas({ ...metas, ...data });
+      if (data) setMetas((prev) => ({ ...prev, ...data }));
       setLoading(false);
     }
     load();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user, authLoading]);
 
   async function salvar() {
+    if (!user) return;
     setSaving(true);
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      await supabase.from("profiles").update({
-        meta_calorica: metas.meta_calorica,
-        meta_proteina: metas.meta_proteina,
-        objetivo: metas.objetivo,
-        refeicoes_por_dia: metas.refeicoes_por_dia,
-      }).eq("id", user.id);
-    }
+    await supabase.from("profiles").update({
+      meta_calorica: metas.meta_calorica,
+      meta_proteina: metas.meta_proteina,
+      objetivo: metas.objetivo,
+      refeicoes_por_dia: metas.refeicoes_por_dia,
+    }).eq("id", user.id);
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
