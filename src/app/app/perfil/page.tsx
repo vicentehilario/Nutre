@@ -26,13 +26,14 @@ export default function Perfil() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) { router.push("/login"); return; }
+    const userId = user.id;
 
     async function load() {
       const supabase = createClient();
       const { data } = await supabase
         .from("profiles")
         .select("nome, email, plano, streak")
-        .eq("id", user.id)
+        .eq("id", userId)
         .single();
       setProfile(data);
     }

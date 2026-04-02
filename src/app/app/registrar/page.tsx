@@ -51,13 +51,14 @@ export default function Registrar() {
     setLoading(true);
 
     if (!user) { window.location.href = "/login"; return; }
+    const userId = user.id;
     const supabase = createClient();
 
     let fotoUrl = null;
 
     if (foto) {
       const ext = foto.name.split(".").pop();
-      const path = `${user.id}/${Date.now()}.${ext}`;
+      const path = `${userId}/${Date.now()}.${ext}`;
       const { error } = await supabase.storage
         .from("refeicoes")
         .upload(path, foto);
@@ -87,7 +88,7 @@ export default function Registrar() {
     // Salva no banco
     const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
     await supabase.from("refeicoes").insert({
-      user_id: user.id,
+      user_id: userId,
       foto_url: fotoUrl,
       descricao,
       data: hoje,

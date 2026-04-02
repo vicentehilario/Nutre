@@ -40,14 +40,15 @@ export default function AppHome() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) { window.location.href = "/login"; return; }
+    const userId = user.id;
 
     async function load() {
       const supabase = createClient();
       const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
 
       const [profileRes, refeicoesRes] = await Promise.all([
-        supabase.from("profiles").select("nome, streak, fotos_hoje, plano, meta_calorica").eq("id", user.id).single(),
-        supabase.from("refeicoes").select("calorias, proteinas, carboidratos, gorduras").eq("user_id", user.id).eq("data", today),
+        supabase.from("profiles").select("nome, streak, fotos_hoje, plano, meta_calorica").eq("id", userId).single(),
+        supabase.from("refeicoes").select("calorias, proteinas, carboidratos, gorduras").eq("user_id", userId).eq("data", today),
       ]);
 
       setProfile(profileRes.data);

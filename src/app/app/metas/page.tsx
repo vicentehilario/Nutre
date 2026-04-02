@@ -51,13 +51,14 @@ export default function Metas() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) { window.location.href = "/login"; return; }
+    const userId = user.id;
 
     async function load() {
       const supabase = createClient();
       const { data } = await supabase
         .from("profiles")
         .select("meta_calorica, meta_proteina, objetivo, refeicoes_por_dia, plano_pdf_importado_em, plano_origem")
-        .eq("id", user.id)
+        .eq("id", userId)
         .single();
 
       if (data) setMetas((prev) => ({ ...prev, ...data }));
@@ -68,6 +69,7 @@ export default function Metas() {
 
   async function salvar() {
     if (!user) return;
+    const userId = user.id;
     setSaving(true);
     const supabase = createClient();
     await supabase.from("profiles").update({
@@ -75,7 +77,7 @@ export default function Metas() {
       meta_proteina: metas.meta_proteina,
       objetivo: metas.objetivo,
       refeicoes_por_dia: metas.refeicoes_por_dia,
-    }).eq("id", user.id);
+    }).eq("id", userId);
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
