@@ -32,10 +32,6 @@ export default function Login() {
       return;
     }
 
-    try {
-      sessionStorage.setItem("nutre_refresh", data.session.refresh_token);
-    } catch (_) {}
-
     router.push("/app");
   }
 
