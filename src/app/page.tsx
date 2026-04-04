@@ -1,6 +1,22 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 export default function Home() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace("/app");
+    }
+  }, [user, loading, router]);
+
+  if (loading) return null;
+
   return (
     <main className="min-h-full flex flex-col items-center justify-center px-6 py-12">
       <div className="w-full max-w-sm text-center space-y-8">
