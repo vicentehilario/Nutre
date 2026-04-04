@@ -24,18 +24,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const supabase = createClient();
 
-    // Carrega sessão inicial do localStorage (sem chamada de rede)
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // onAuthStateChange dispara INITIAL_SESSION na inicialização com a sessão do localStorage
+    // É a única fonte de verdade — não usar getSession() em paralelo pois pode setar loading=false com user=null
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setLoading(false);
-    });
 
-    // Ouve renovação de token, login e logout em tempo real
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+      // Só marca como carregado após o evento inicial
+      if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "TOKEN_REFRESHED") {
+        setLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();
