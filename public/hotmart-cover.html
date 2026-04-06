@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Nutre — Capa Hotmart</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0f2414;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Background ── */
+  .bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 80% at 110% 50%, rgba(74,145,87,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at -10% 30%, rgba(74,145,87,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 100%, rgba(26,58,32,0.8) 0%, transparent 70%),
+      #0f2414;
+  }
+
+  /* dot grid */
+  .bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* ── Left accent line ── */
+  .accent-line {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: linear-gradient(180deg, transparent 0%, #4a9157 30%, #4a9157 70%, transparent 100%);
+  }
+
+  /* ── Content ── */
+  .content {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 100px 120px;
+    gap: 80px;
+  }
+
+  /* ── Left ── */
+  .left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(74,145,87,0.15);
+    border: 1px solid rgba(74,145,87,0.3);
+    border-radius: 100px;
+    padding: 8px 18px;
+    margin-bottom: 40px;
+    width: fit-content;
+  }
+
+  .badge-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #6db87a;
+    flex-shrink: 0;
+  }
+
+  .badge span {
+    font-size: 14px;
+    font-weight: 700;
+    color: #6db87a;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  .headline {
+    font-size: 96px;
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -4px;
+    color: #fff;
+    margin-bottom: 36px;
+  }
+
+  .headline em {
+    font-style: normal;
+    color: #6db87a;
+  }
+
+  .sub {
+    font-size: 22px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+    max-width: 540px;
+    font-weight: 400;
+    margin-bottom: 56px;
+  }
+
+  /* Stats row */
+  .stats {
+    display: flex;
+    gap: 48px;
+    padding-top: 48px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .stat-num {
+    font-size: 40px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Right — phone stack ── */
+  .right {
+    width: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .glow-circle {
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(74,145,87,0.18) 0%, transparent 70%);
+  }
+
+  .phone-card {
+    position: relative;
+    z-index: 2;
+    width: 260px;
+    background: #111;
+    border-radius: 36px;
+    border: 2px solid #2a2a2a;
+    padding: 24px 16px 20px;
+    box-shadow:
+      0 40px 100px rgba(0,0,0,0.5),
+      0 8px 32px rgba(0,0,0,0.3),
+      0 0 0 1px rgba(255,255,255,0.04) inset;
+    overflow: hidden;
+  }
+
+  /* notch */
+  .phone-card::before {
+    content: '';
+    position: absolute;
+    top: 12px; left: 50%; transform: translateX(-50%);
+    width: 60px; height: 5px;
+    background: #2a2a2a;
+    border-radius: 4px;
+  }
+
+  /* phone screen content */
+  .phone-screen {
+    background: #f8faf8;
+    border-radius: 20px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 400px;
+  }
+
+  .ps-header {
+    font-size: 11px; font-weight: 800; color: #111; margin-bottom: 2px;
+  }
+
+  .ps-sub {
+    font-size: 9px; color: #aaa; margin-bottom: 8px;
+  }
+
+  /* Calorie card */
+  .cal-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .cal-num {
+    font-size: 32px; font-weight: 900; color: #111;
+    letter-spacing: -1px; line-height: 1;
+  }
+
+  .cal-meta { font-size: 9px; color: #aaa; margin-top: 2px; }
+
+  .cal-bar-bg {
+    background: #f0f0f0; border-radius: 4px; height: 5px; margin: 10px 0;
+  }
+
+  .cal-bar {
+    height: 5px; border-radius: 4px; width: 62%;
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+  }
+
+  .macros {
+    display: flex; gap: 6px; margin-top: 8px;
+  }
+
+  .macro-chip {
+    flex: 1; background: #f5f5f5; border-radius: 8px; padding: 6px 4px; text-align: center;
+  }
+
+  .macro-val { font-size: 12px; font-weight: 800; color: #1e5128; }
+  .macro-key { font-size: 7px; color: #aaa; }
+
+  /* Streak card */
+  .streak-card {
+    background: #1a3a20;
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .streak-label { font-size: 9px; color: rgba(255,255,255,0.6); }
+  .streak-val { font-size: 16px; font-weight: 900; color: #fff; margin-top: 2px; }
+  .streak-fire { font-size: 22px; }
+
+  /* Register btn */
+  .reg-btn {
+    background: #16a34a;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    font-size: 10px; font-weight: 800; color: #fff;
+  }
+
+  /* ── Logo bottom-right ── */
+  .logo-mark {
+    position: absolute;
+    bottom: 60px; right: 80px;
+    display: flex; align-items: center; gap: 14px;
+  }
+
+  .logo-icon {
+    width: 48px; height: 48px;
+    background: #1a3a20;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(74,145,87,0.3);
+  }
+
+  .logo-text {
+    font-size: 22px; font-weight: 900; color: rgba(255,255,255,0.25);
+    letter-spacing: -0.5px;
+  }
+
+  .crn-text {
+    font-size: 13px; color: rgba(255,255,255,0.2);
+    font-weight: 500; margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="accent-line"></div>
+
+<div class="content">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="badge">
+      <div class="badge-dot"></div>
+      <span>App de Nutrição com IA</span>
+    </div>
+
+    <h1 class="headline">
+      Pare de<br>
+      adivinhar<br>
+      o que <em>comer.</em>
+    </h1>
+
+    <p class="sub">
+      Tire uma foto da sua refeição e descubra na hora as calorias e macros — com orientação de nutricionista formado.
+    </p>
+
+    <div class="stats">
+      <div>
+        <div class="stat-num">+600</div>
+        <div class="stat-label">Pacientes atendidos</div>
+      </div>
+      <div>
+        <div class="stat-num">3s</div>
+        <div class="stat-label">Análise por foto</div>
+      </div>
+      <div>
+        <div class="stat-num">CRN4</div>
+        <div class="stat-label">23101536</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT — phone -->
+  <div class="right">
+    <div class="glow-circle"></div>
+    <div class="phone-card">
+      <div class="phone-screen">
+
+        <div class="ps-header">Boa tarde, Ana</div>
+        <div class="ps-sub">🔥 14 dias de consistência</div>
+
+        <div class="cal-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-size:10px;font-weight:700;color:#111">Saldo de hoje</span>
+            <span style="font-size:9px;font-weight:700;color:#16a34a;background:#f0fdf4;padding:2px 8px;border-radius:20px">✓ No plano</span>
+          </div>
+          <div class="cal-num">1.340</div>
+          <div class="cal-meta">/ 2.000 kcal</div>
+          <div class="cal-bar-bg"><div class="cal-bar"></div></div>
+          <div class="macros">
+            <div class="macro-chip">
+              <div class="macro-val">92g</div>
+              <div class="macro-key">PROT</div>
+            </div>
+            <div class="macro-chip">
+              <div class="macro-val">148g</div>
+              <div class="macro-key">CARBO</div>
+            </div>
+            <div class="macro-chip">
+              <div class="macro-val">31g</div>
+              <div class="macro-key">GORD</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="streak-card">
+          <div>
+            <div class="streak-label">Consistência</div>
+            <div class="streak-val">14 dias seguidos</div>
+          </div>
+          <div class="streak-fire">🔥</div>
+        </div>
+
+        <div class="reg-btn">📷 Registrar refeição</div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Logo watermark -->
+<div class="logo-mark">
+  <div class="logo-icon">
+    <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
+      <path d="M 18,18 L 31,18 L 68,82 L 82,82 L 82,18 L 69,18 L 32,82 L 18,82 Z" fill="white"/>
+    </svg>
+  </div>
+  <div>
+    <div class="logo-text">Nutre</div>
+    <div class="crn-text">Vicente Hilário · CRN4 23101536</div>
+  </div>
+</div>
+
+</body>
+</html>

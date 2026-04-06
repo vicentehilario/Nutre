@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=600">
+<title>Nutre — Thumb Hotmart</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 600px;
+    height: 600px;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background: #0a1f0e;
+  }
+
+  .bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(74,145,87,0.22) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 50% 100%, rgba(15,36,20,0.9) 0%, transparent 70%),
+      #0a1f0e;
+  }
+
+  .content {
+    position: relative; z-index: 2;
+    width: 600px; height: 600px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0;
+    padding: 48px 40px;
+  }
+
+  /* App icon */
+  .tagline {
+    font-size: 12px; font-weight: 600;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.5px; text-align: center;
+  }
+
+  .app-icon {
+    width: 140px; height: 140px;
+    background: linear-gradient(145deg, #1a3a20 0%, #0f2414 100%);
+    border-radius: 34px;
+    border: 1.5px solid rgba(74,145,87,0.3);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(255,255,255,0.04) inset;
+    margin-bottom: 24px;
+    flex-shrink: 0;
+  }
+
+  /* App name */
+  .app-name {
+    font-size: 56px; font-weight: 900;
+    color: #fff; letter-spacing: -1.5px;
+    line-height: 1; margin-bottom: 8px;
+  }
+
+  .app-sub {
+    font-size: 14px; color: rgba(255,255,255,0.45);
+    font-weight: 400; text-align: center;
+    line-height: 1.5; max-width: 300px;
+    margin-bottom: 28px;
+  }
+
+  /* Divider */
+  .divider {
+    width: 40px; height: 2px;
+    background: rgba(74,145,87,0.4);
+    border-radius: 2px;
+    margin-bottom: 32px;
+  }
+
+  /* Features */
+  .features {
+    display: flex; flex-direction: column;
+    gap: 12px; width: 100%; max-width: 340px;
+  }
+
+  .feature {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .feature-icon {
+    width: 32px; height: 32px; flex-shrink: 0;
+    background: rgba(74,145,87,0.12);
+    border: 1px solid rgba(74,145,87,0.2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+
+  .feature-text {
+    font-size: 13px; font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.3;
+  }
+
+  /* CRN badge */
+  .crn {
+    position: absolute;
+    bottom: 24px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .crn-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(74,145,87,0.5);
+  }
+
+  .crn-text {
+    font-size: 10px; color: rgba(255,255,255,0.2);
+    font-weight: 500; letter-spacing: 0.3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="content">
+  <!-- Icon -->
+  <div class="app-icon">
+    <svg width="72" height="72" viewBox="0 0 100 100" fill="none">
+      <path d="M 18,18 L 31,18 L 68,82 L 82,82 L 82,18 L 69,18 L 32,82 L 18,82 Z" fill="white"/>
+    </svg>
+  </div>
+
+  <!-- Name -->
+  <div class="app-name">Nutre</div>
+  <div class="app-sub">Seu nutricionista pessoal com inteligência artificial</div>
+
+  <div class="divider"></div>
+
+  <div class="tagline">Análise nutricional por foto · IA · CRN4</div>
+
+  <!-- CRN -->
+  <div class="crn">
+    <div class="crn-dot"></div>
+    <div class="crn-text">Vicente Hilário · Nutricionista · CRN4 23101536</div>
+  </div>
+</div>
+
+</body>
+</html>

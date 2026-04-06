@@ -12,6 +12,16 @@ interface Profile {
   fotos_hoje: number;
   plano: string;
   meta_calorica: number;
+  ultimo_registro: string | null;
+}
+
+function NutreLogo() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 100 100" fill="none" style={{ display: "inline-block", verticalAlign: "middle", marginLeft: 6, flexShrink: 0 }}>
+      <rect width="100" height="100" rx="22" fill="#1a3a20"/>
+      <path d="M 18,18 L 31,18 L 68,82 L 82,82 L 82,18 L 69,18 L 32,82 L 18,82 Z" fill="white"/>
+    </svg>
+  );
 }
 
 interface DailySummary {
@@ -47,7 +57,7 @@ export default function AppHome() {
       const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
 
       const [profileRes, refeicoesRes] = await Promise.all([
-        supabase.from("profiles").select("nome, streak, fotos_hoje, plano, meta_calorica").eq("id", userId).single(),
+        supabase.from("profiles").select("nome, streak, fotos_hoje, plano, meta_calorica, ultimo_registro").eq("id", userId).single(),
         supabase.from("refeicoes").select("calorias, proteinas, carboidratos, gorduras").eq("user_id", userId).eq("data", today),
       ]);
 
@@ -71,6 +81,15 @@ export default function AppHome() {
     }
     load();
   }, [user, authLoading]);
+
+  // Streak efetivo: zera se o último registro foi há mais de 1 dia
+  const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
+  const ontemDate = new Date();
+  ontemDate.setDate(ontemDate.getDate() - 1);
+  const ontem = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(ontemDate);
+  const ultimoReg = profile?.ultimo_registro ?? null;
+  const streakAtivo = ultimoReg === hoje || ultimoReg === ontem;
+  const streakEfetivo = streakAtivo ? (profile?.streak ?? 0) : 0;
 
   const meta = profile?.meta_calorica ?? 2000;
   const pct = Math.min(100, Math.round((daily.calorias / meta) * 100));
@@ -182,11 +201,11 @@ export default function AppHome() {
       {/* Header */}
       <div className="bg-white px-6 pt-5 pb-4 border-b border-[#f0f0f0]">
         <p className="text-xs text-[#999] font-medium">{saudacao()}</p>
-        <h1 className="text-2xl font-bold text-[#111] tracking-tight mt-0.5">
-          {profile?.nome?.split(" ")[0] ?? "bem-vindo"} 👋
+        <h1 className="text-2xl font-bold text-[#111] tracking-tight mt-0.5 flex items-center">
+          {profile?.nome?.split(" ")[0] ?? "bem-vindo"} <NutreLogo />
         </h1>
         <p className="text-xs text-[#22c55e] font-semibold mt-1">
-          🔥 {profile?.streak ?? 0} {profile?.streak === 1 ? "dia" : "dias"} de consistência
+          🔥 {streakEfetivo} {streakEfetivo === 1 ? "dia" : "dias"} de consistência
         </p>
       </div>
 
