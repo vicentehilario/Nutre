@@ -91,7 +91,7 @@ export default function Onboarding() {
 
             <div className="space-y-4 mb-6">
               {[
-                { emoji: "📷", title: "Foto → Nutrição", desc: "Tire foto e receba análise completa de calorias, proteínas, carboidratos e gorduras." },
+                { emoji: "🔥", title: "Calorias & Análise", desc: "Tire foto e receba análise completa de calorias, proteínas, carboidratos e gorduras." },
                 { emoji: "🎯", title: "Metas personalizadas", desc: "Defina sua meta calórica e acompanhe o saldo do dia em tempo real." },
                 { emoji: "📈", title: "Evolução semana a semana", desc: "Veja gráficos, histórico e compare com semanas anteriores." },
               ].map((item) => (
@@ -216,6 +216,7 @@ export default function Onboarding() {
                   <div>
                     <p className="text-[11px] text-[#aaa] font-semibold uppercase tracking-widest mb-1">Meta de proteína</p>
                     <p className="text-[22px] font-extrabold text-[#111]">{proteina}g<span className="text-[13px] text-[#aaa] font-medium ml-1">/ dia</span></p>
+                    <p className="text-[11px] text-[#aaa] mt-1">Recomendação: 1,6 a 2× seu peso (kg)</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button onClick={() => setProteina((p) => Math.max(50, p - 10))} className="w-9 h-9 rounded-full bg-[#f0f0f0] text-[#555] font-bold text-lg flex items-center justify-center">−</button>
