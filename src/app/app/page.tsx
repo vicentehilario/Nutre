@@ -50,6 +50,11 @@ export default function AppHome() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) { window.location.href = "/login"; return; }
+    // Redireciona para onboarding se nunca completou
+    if (typeof window !== "undefined" && localStorage.getItem("nutre_onboarding_v1") !== "done") {
+      window.location.href = "/app/onboarding";
+      return;
+    }
     const userId = user.id;
 
     async function load() {
@@ -249,6 +254,17 @@ export default function AppHome() {
             ))}
           </div>
         </div>
+
+        {/* Empty state — sem registros hoje */}
+        {daily.count === 0 && (
+          <div className="bg-white rounded-[20px] p-5 border border-[#f0f0f0] text-center">
+            <span className="text-4xl block mb-3">🍽️</span>
+            <p className="text-[14px] font-bold text-[#111] mb-1">Nenhum registro hoje</p>
+            <p className="text-xs text-[#aaa] leading-relaxed">
+              Registre sua primeira refeição do dia para começar a acompanhar seu saldo calórico.
+            </p>
+          </div>
+        )}
 
         {/* Card registrar */}
         <div className="bg-white rounded-[20px] p-5 border border-[#f0f0f0]">

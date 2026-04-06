@@ -27,6 +27,15 @@ interface Medias {
   proteinas: number;
 }
 
+interface EditState {
+  id: string;
+  descricao: string;
+  calorias: number;
+  proteinas: number;
+  carboidratos: number;
+  gorduras: number;
+}
+
 function isoWeek(date: Date) {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
   const dayNum = d.getUTCDay() || 7;
@@ -61,22 +70,101 @@ function dayLabel(dateStr: string) {
   return date.toLocaleDateString("pt-BR", { weekday: "short", day: "numeric", month: "short" }).replace(/\./g, "");
 }
 
+/* ── Mini gráfico de barras SVG ── */
+function BarChart({ days, meta }: { days: DayEntry[]; meta: number }) {
+  // Pega os últimos 7 dias disponíveis (ou preenche com zeros)
+  const today = new Date();
+  const labels: string[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    labels.push(new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(d));
+  }
+
+  const dataByDate: Record<string, number> = {};
+  for (const day of days) dataByDate[day.data] = day.totais.calorias;
+  const values = labels.map((l) => dataByDate[l] ?? 0);
+  const maxVal = Math.max(meta * 1.3, ...values);
+
+  const W = 320;
+  const H = 90;
+  const barW = 32;
+  const gap = (W - barW * 7) / 6;
+  const shortDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+  return (
+    <div className="bg-white rounded-[20px] border border-[#f0f0f0] p-5">
+      <p className="text-[11px] text-[#aaa] font-semibold uppercase tracking-widest mb-4">Últimos 7 dias</p>
+      <svg viewBox={`0 0 ${W} ${H + 24}`} width="100%" style={{ overflow: "visible" }}>
+        {/* Linha de meta */}
+        <line
+          x1={0} y1={H - (meta / maxVal) * H}
+          x2={W} y2={H - (meta / maxVal) * H}
+          stroke="#16a34a" strokeWidth="1" strokeDasharray="4 3" opacity="0.4"
+        />
+        {values.map((v, i) => {
+          const x = i * (barW + gap);
+          const barH = maxVal > 0 ? Math.max(3, (v / maxVal) * H) : 3;
+          const y = H - barH;
+          const color = v === 0 ? "#f0f0f0" : v <= meta ? "#16a34a" : "#ef4444";
+          const dayIdx = new Date(labels[i] + "T12:00:00").getDay();
+          return (
+            <g key={i}>
+              <rect x={x} y={y} width={barW} height={barH} rx={6} fill={color} opacity={v === 0 ? 1 : 0.85} />
+              {v > 0 && (
+                <text x={x + barW / 2} y={y - 4} textAnchor="middle" fontSize="8" fill={color} fontWeight="700">
+                  {v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v}
+                </text>
+              )}
+              <text x={x + barW / 2} y={H + 16} textAnchor="middle" fontSize="9" fill="#bbb" fontWeight="600">
+                {shortDays[dayIdx]}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+      <div className="flex items-center gap-1.5 mt-1">
+        <div className="w-3 h-px bg-[#16a34a] opacity-40" style={{ borderTop: "1px dashed #16a34a" }} />
+        <p className="text-[10px] text-[#aaa]">Meta: {meta.toLocaleString("pt-BR")} kcal</p>
+      </div>
+    </div>
+  );
+}
+
 export default function Historico() {
   const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [days, setDays] = useState<DayEntry[]>([]);
   const [medias, setMedias] = useState<Medias>({ calorias: 0, proteinas: 0 });
+  const [mediasAnterior, setMediasAnterior] = useState<Medias | null>(null);
   const [meta, setMeta] = useState(2000);
   const [activeTab, setActiveTab] = useState(() => isoWeek(new Date()));
   const [tabs, setTabs] = useState<string[]>([isoWeek(new Date())]);
+  const [expandedDay, setExpandedDay] = useState<string | null>(null);
+  const [editState, setEditState] = useState<EditState | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const loadData = useCallback(async (semana: string) => {
     setLoading(true);
-    const res = await fetch(`/api/refeicoes?semana=${semana}`);
-    const json = await res.json();
-    setDays(json.days ?? []);
-    setMedias(json.medias ?? { calorias: 0, proteinas: 0 });
+    try {
+      const res = await fetch(`/api/refeicoes?semana=${semana}`);
+      const json = await res.json();
+      setDays(json.days ?? []);
+      setMedias(json.medias ?? { calorias: 0, proteinas: 0 });
+    } catch {
+      setDays([]);
+    }
     setLoading(false);
+  }, []);
+
+  const loadMediasAnterior = useCallback(async () => {
+    const lastWeek = (() => { const d = new Date(); d.setDate(d.getDate() - 7); return isoWeek(d); })();
+    try {
+      const res = await fetch(`/api/refeicoes?semana=${lastWeek}`);
+      const json = await res.json();
+      setMediasAnterior(json.medias ?? null);
+    } catch { /* silent */ }
   }, []);
 
   useEffect(() => {
@@ -86,101 +174,212 @@ export default function Historico() {
 
     async function init() {
       const supabase = createClient();
-
-      // Carrega meta do usuário
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("meta_calorica")
-        .eq("id", userId)
-        .single();
+      const { data: profile } = await supabase.from("profiles").select("meta_calorica").eq("id", userId).single();
       if (profile?.meta_calorica) setMeta(profile.meta_calorica);
 
-      // Busca semanas disponíveis
-      const { data: allDates } = await supabase
-        .from("refeicoes")
-        .select("data")
-        .eq("user_id", userId)
-        .order("data", { ascending: false });
-
+      const { data: allDates } = await supabase.from("refeicoes").select("data").eq("user_id", userId).order("data", { ascending: false });
       const weeks = new Set<string>([isoWeek(new Date())]);
       for (const r of allDates ?? []) {
         if (r.data) weeks.add(isoWeek(new Date(r.data + "T12:00:00")));
       }
       setTabs(Array.from(weeks));
 
-      await loadData(isoWeek(new Date()));
+      await Promise.all([
+        loadData(isoWeek(new Date())),
+        loadMediasAnterior(),
+      ]);
     }
     init();
-  }, [user, authLoading, loadData]);
+  }, [user, authLoading, loadData, loadMediasAnterior]);
 
   const handleTab = (tab: string) => {
     setActiveTab(tab);
+    setExpandedDay(null);
     loadData(tab);
   };
 
+  async function handleDelete(refeicaoId: string) {
+    if (!confirm("Remover este registro?")) return;
+    setDeletingId(refeicaoId);
+    const supabase = createClient();
+    await supabase.from("refeicoes").delete().eq("id", refeicaoId);
+    setDays((prev) =>
+      prev.map((day) => ({
+        ...day,
+        refeicoes: day.refeicoes.filter((r) => r.id !== refeicaoId),
+        totais: day.refeicoes
+          .filter((r) => r.id !== refeicaoId)
+          .reduce((acc, r) => ({
+            calorias: acc.calorias + r.calorias,
+            proteinas: acc.proteinas + r.proteinas,
+            carboidratos: acc.carboidratos + r.carboidratos,
+            gorduras: acc.gorduras + r.gorduras,
+          }), { calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0 }),
+      })).filter((day) => day.refeicoes.length > 0)
+    );
+    setDeletingId(null);
+  }
+
+  async function handleSaveEdit() {
+    if (!editState) return;
+    setSaving(true);
+    const supabase = createClient();
+    await supabase.from("refeicoes").update({
+      descricao: editState.descricao,
+      calorias: editState.calorias,
+      proteinas: editState.proteinas,
+      carboidratos: editState.carboidratos,
+      gorduras: editState.gorduras,
+    }).eq("id", editState.id);
+
+    setDays((prev) =>
+      prev.map((day) => ({
+        ...day,
+        refeicoes: day.refeicoes.map((r) => r.id === editState.id ? { ...r, ...editState } : r),
+        totais: day.refeicoes.map((r) => r.id === editState.id ? { ...r, ...editState } : r).reduce(
+          (acc, r) => ({ calorias: acc.calorias + r.calorias, proteinas: acc.proteinas + r.proteinas, carboidratos: acc.carboidratos + r.carboidratos, gorduras: acc.gorduras + r.gorduras }),
+          { calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0 }
+        ),
+      }))
+    );
+    setSaving(false);
+    setEditState(null);
+  }
+
+  const isCurrentWeek = activeTab === isoWeek(new Date());
   const diasNoPlano = days.filter((d) => d.totais.calorias <= meta).length;
+
+  const diffCal = mediasAnterior ? medias.calorias - mediasAnterior.calorias : null;
+  const diffProt = mediasAnterior ? medias.proteinas - mediasAnterior.proteinas : null;
 
   return (
     <div className="bg-[#fafafa] min-h-screen">
+      {/* Modal edição */}
+      {editState && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-end justify-center" onClick={() => setEditState(null)}>
+          <div className="bg-white w-full max-w-md rounded-t-[28px] p-6 pb-10 space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div className="w-10 h-1 bg-[#e0e0e0] rounded-full mx-auto" />
+            <p className="text-[17px] font-bold text-[#111]">Editar registro</p>
+
+            <div className="space-y-3">
+              <div>
+                <p className="text-[11px] font-semibold text-[#aaa] uppercase tracking-wide mb-1">Descrição</p>
+                <input
+                  value={editState.descricao}
+                  onChange={(e) => setEditState((s) => s ? { ...s, descricao: e.target.value } : s)}
+                  className="w-full border border-[#e5e5e5] rounded-[12px] px-4 py-2.5 text-[14px] text-[#111] focus:outline-none focus:border-[#16a34a]"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {(["calorias", "proteinas", "carboidratos", "gorduras"] as const).map((field) => (
+                  <div key={field}>
+                    <p className="text-[11px] font-semibold text-[#aaa] uppercase tracking-wide mb-1">
+                      {field === "calorias" ? "Calorias (kcal)" : field === "proteinas" ? "Proteínas (g)" : field === "carboidratos" ? "Carboidratos (g)" : "Gorduras (g)"}
+                    </p>
+                    <input
+                      type="number"
+                      value={editState[field]}
+                      onChange={(e) => setEditState((s) => s ? { ...s, [field]: Number(e.target.value) } : s)}
+                      className="w-full border border-[#e5e5e5] rounded-[12px] px-3 py-2.5 text-[14px] font-bold text-[#111] focus:outline-none focus:border-[#16a34a]"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <button onClick={() => setEditState(null)} className="flex-1 border border-[#e5e5e5] text-[#555] rounded-[12px] py-3 text-[13px] font-semibold">Cancelar</button>
+              <button onClick={handleSaveEdit} disabled={saving} className="flex-1 bg-[#16a34a] text-white rounded-[12px] py-3 text-[13px] font-bold disabled:opacity-60">
+                {saving ? "Salvando..." : "Salvar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-white px-6 pt-5 pb-4 border-b border-[#f0f0f0]">
         <h1 className="text-2xl font-bold text-[#111] tracking-tight">Histórico</h1>
         <p className="text-xs text-[#999] mt-1 font-medium">Refeições e médias por semana</p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2 px-4 py-3.5 overflow-x-auto bg-[#fafafa] no-scrollbar">
+      {/* Tabs semanas */}
+      <div className="flex gap-2 px-4 py-3.5 overflow-x-auto no-scrollbar">
         {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => handleTab(tab)}
+          <button key={tab} onClick={() => handleTab(tab)}
             className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition ${
-              activeTab === tab
-                ? "bg-[#111] text-white border-[#111]"
-                : "bg-white text-[#aaa] border-[#ebebeb]"
-            }`}
-          >
+              activeTab === tab ? "bg-[#111] text-white border-[#111]" : "bg-white text-[#aaa] border-[#ebebeb]"
+            }`}>
             {weekLabel(tab)}
           </button>
         ))}
       </div>
 
-      {/* Banner médias */}
-      <div className="mx-4 bg-[#111] rounded-[20px] p-5">
-        <p className="text-[11px] text-[#888] font-semibold uppercase tracking-widest mb-2.5">Média da semana</p>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <p className="text-[22px] font-extrabold text-white tracking-tight">{medias.calorias.toLocaleString("pt-BR")}</p>
-            <p className="text-[11px] text-[#666] font-medium mt-0.5">kcal / dia</p>
-          </div>
-          <div>
-            <p className="text-[22px] font-extrabold text-white tracking-tight">{medias.proteinas}g</p>
-            <p className="text-[11px] text-[#666] font-medium mt-0.5">proteína / dia</p>
-          </div>
-          <div>
-            <p className="text-[22px] font-extrabold text-white tracking-tight">{diasNoPlano}/{days.length || 7}</p>
-            <p className="text-[11px] text-[#666] font-medium mt-0.5">dias no plano</p>
-          </div>
-          <div>
-            <p className={`text-[22px] font-extrabold tracking-tight ${medias.calorias <= meta ? "text-[#22c55e]" : "text-[#f87171]"}`}>
-              {medias.calorias <= meta ? "−" : "+"}{Math.abs(meta - medias.calorias).toLocaleString("pt-BR")}
-            </p>
-            <p className="text-[11px] text-[#666] font-medium mt-0.5">kcal saldo médio</p>
-          </div>
-        </div>
-      </div>
+      <div className="px-4 space-y-3 pb-8">
+        {/* Gráfico 7 dias — só na semana atual */}
+        {isCurrentWeek && !loading && <BarChart days={days} meta={meta} />}
 
-      {/* Lista de dias */}
-      <div className="px-4 pt-3 pb-4 space-y-3">
-        {loading && (
-          <div className="text-center py-8 text-[#aaa] text-sm">Carregando...</div>
-        )}
+        {/* Banner médias + comparativo */}
+        <div className="bg-[#111] rounded-[20px] p-5">
+          <p className="text-[11px] text-[#888] font-semibold uppercase tracking-widest mb-3">Média da semana</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <p className="text-[22px] font-extrabold text-white tracking-tight">{medias.calorias.toLocaleString("pt-BR")}</p>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <p className="text-[11px] text-[#666]">kcal / dia</p>
+                {diffCal !== null && isCurrentWeek && (
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${diffCal <= 0 ? "bg-[rgba(34,197,94,0.2)] text-[#22c55e]" : "bg-[rgba(248,113,113,0.2)] text-[#f87171]"}`}>
+                    {diffCal > 0 ? "+" : ""}{diffCal.toFixed(0)}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div>
+              <p className="text-[22px] font-extrabold text-white tracking-tight">{medias.proteinas}g</p>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <p className="text-[11px] text-[#666]">proteína / dia</p>
+                {diffProt !== null && isCurrentWeek && (
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${diffProt >= 0 ? "bg-[rgba(34,197,94,0.2)] text-[#22c55e]" : "bg-[rgba(248,113,113,0.2)] text-[#f87171]"}`}>
+                    {diffProt > 0 ? "+" : ""}{diffProt.toFixed(0)}g
+                  </span>
+                )}
+              </div>
+            </div>
+            <div>
+              <p className="text-[22px] font-extrabold text-white tracking-tight">{diasNoPlano}/{days.length || 7}</p>
+              <p className="text-[11px] text-[#666] mt-0.5">dias no plano</p>
+            </div>
+            <div>
+              <p className={`text-[22px] font-extrabold tracking-tight ${medias.calorias <= meta ? "text-[#22c55e]" : "text-[#f87171]"}`}>
+                {medias.calorias <= meta ? "−" : "+"}{Math.abs(meta - medias.calorias).toLocaleString("pt-BR")}
+              </p>
+              <p className="text-[11px] text-[#666] mt-0.5">kcal saldo médio</p>
+            </div>
+          </div>
+          {isCurrentWeek && mediasAnterior && mediasAnterior.calorias > 0 && (
+            <div className="mt-3 pt-3 border-t border-[#222]">
+              <p className="text-[10px] text-[#555] font-semibold uppercase tracking-widest">vs semana passada</p>
+              <p className="text-[11px] text-[#666] mt-1">
+                {diffCal! <= 0
+                  ? `Você consumiu ${Math.abs(diffCal!).toFixed(0)} kcal a menos por dia`
+                  : `Você consumiu ${diffCal!.toFixed(0)} kcal a mais por dia`}
+                {" · "}
+                {diffProt! >= 0
+                  ? `+${diffProt!.toFixed(0)}g proteína`
+                  : `${diffProt!.toFixed(0)}g proteína`}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Lista de dias */}
+        {loading && <div className="text-center py-8 text-[#aaa] text-sm">Carregando...</div>}
 
         {!loading && days.length === 0 && (
-          <div className="bg-white rounded-[20px] p-6 border border-[#f0f0f0] text-center">
-            <p className="text-2xl mb-2">🥗</p>
-            <p className="text-[14px] font-semibold text-[#111] mb-1">Nenhum registro nessa semana</p>
-            <p className="text-xs text-[#aaa]">Registre suas refeições na aba Início.</p>
+          <div className="bg-white rounded-[20px] p-8 border border-[#f0f0f0] text-center">
+            <span className="text-4xl block mb-3">🥗</span>
+            <p className="text-[15px] font-bold text-[#111] mb-1">Nenhum registro nessa semana</p>
+            <p className="text-xs text-[#aaa] leading-relaxed">Registre suas refeições na aba Início para ver o histórico aqui.</p>
           </div>
         )}
 
@@ -189,36 +388,81 @@ export default function Historico() {
           const noPlano = day.totais.calorias <= meta;
           const pct = Math.min(100, Math.round((day.totais.calorias / meta) * 100));
           const barColor = pct < 80 ? "#16a34a" : pct < 100 ? "#f59e0b" : "#ef4444";
+          const expanded = expandedDay === day.data;
 
           return (
-            <div key={day.data} className="bg-white rounded-[18px] p-4 border border-[#f0f0f0]">
-              <div className="flex justify-between items-center mb-2.5">
-                <span className="text-[13px] font-bold text-[#111]">{dayLabel(day.data)}</span>
-                <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${noPlano ? "bg-[#f0fdf4] text-[#16a34a]" : "bg-[#fff1f2] text-[#e11d48]"}`}>
-                  {noPlano ? `−${Math.abs(saldo).toLocaleString("pt-BR")} kcal` : `+${Math.abs(saldo).toLocaleString("pt-BR")} kcal`}
-                </span>
-              </div>
-
-              <div className="divide-y divide-[#f5f5f5]">
-                {day.refeicoes.map((r) => (
-                  <div key={r.id} className="flex justify-between items-center py-2">
-                    <span className="text-xs text-[#555] font-medium truncate max-w-[200px]">{r.descricao || "Refeição"}</span>
-                    <span className="text-xs text-[#aaa] font-semibold ml-2 flex-shrink-0">{r.calorias} kcal</span>
+            <div key={day.data} className="bg-white rounded-[18px] border border-[#f0f0f0] overflow-hidden">
+              {/* Cabeçalho do dia — clicável para expandir */}
+              <button
+                className="w-full text-left px-4 pt-4 pb-3"
+                onClick={() => setExpandedDay(expanded ? null : day.data)}
+              >
+                <div className="flex justify-between items-center mb-2.5">
+                  <span className="text-[13px] font-bold text-[#111]">{dayLabel(day.data)}</span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${noPlano ? "bg-[#f0fdf4] text-[#16a34a]" : "bg-[#fff1f2] text-[#e11d48]"}`}>
+                      {noPlano ? `−${Math.abs(saldo).toLocaleString("pt-BR")}` : `+${Math.abs(saldo).toLocaleString("pt-BR")}`} kcal
+                    </span>
+                    <span className="text-[#ccc] text-sm">{expanded ? "▲" : "▼"}</span>
                   </div>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-2 mt-2.5">
-                <div className="flex-1 bg-[#f0f0f0] rounded-full h-1.5">
-                  <div
-                    className="h-1.5 rounded-full"
-                    style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${barColor}, ${barColor}cc)` }}
-                  />
                 </div>
-                <span className="text-[10px] text-[#bbb] font-semibold whitespace-nowrap">
-                  {day.totais.calorias.toLocaleString("pt-BR")} / {meta.toLocaleString("pt-BR")}
-                </span>
-              </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 bg-[#f0f0f0] rounded-full h-1.5">
+                    <div className="h-1.5 rounded-full" style={{ width: `${pct}%`, background: barColor }} />
+                  </div>
+                  <span className="text-[10px] text-[#bbb] font-semibold whitespace-nowrap">
+                    {day.totais.calorias.toLocaleString("pt-BR")} / {meta.toLocaleString("pt-BR")} kcal
+                  </span>
+                </div>
+              </button>
+
+              {/* Refeições expandidas */}
+              {expanded && (
+                <div className="border-t border-[#f5f5f5]">
+                  {/* Totais de macro do dia */}
+                  <div className="grid grid-cols-3 gap-2 px-4 py-3 bg-[#fafafa]">
+                    {[
+                      { label: "Proteínas", value: `${day.totais.proteinas}g` },
+                      { label: "Carbos", value: `${day.totais.carboidratos}g` },
+                      { label: "Gorduras", value: `${day.totais.gorduras}g` },
+                    ].map((m) => (
+                      <div key={m.label} className="text-center">
+                        <p className="text-[13px] font-bold text-[#111]">{m.value}</p>
+                        <p className="text-[10px] text-[#aaa] font-semibold">{m.label}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Lista de refeições */}
+                  <div className="divide-y divide-[#f5f5f5]">
+                    {day.refeicoes.map((r) => (
+                      <div key={r.id} className="flex items-center px-4 py-3 gap-3">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[13px] font-semibold text-[#111] truncate">{r.descricao || "Refeição"}</p>
+                          <p className="text-[11px] text-[#aaa] mt-0.5">
+                            {r.calorias} kcal · {r.proteinas}g prot · {r.carboidratos}g carbo · {r.gorduras}g gord
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <button
+                            onClick={() => setEditState({ id: r.id, descricao: r.descricao, calorias: r.calorias, proteinas: r.proteinas, carboidratos: r.carboidratos, gorduras: r.gorduras })}
+                            className="w-7 h-7 rounded-full bg-[#f0f0f0] flex items-center justify-center text-[12px]"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            onClick={() => handleDelete(r.id)}
+                            disabled={deletingId === r.id}
+                            className="w-7 h-7 rounded-full bg-[#fff5f5] flex items-center justify-center text-[12px] disabled:opacity-50"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
