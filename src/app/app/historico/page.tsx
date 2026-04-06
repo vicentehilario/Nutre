@@ -71,6 +71,48 @@ function dayLabel(dateStr: string) {
 }
 
 /* ── Mini gráfico de barras SVG ── */
+/* ── Gráfico de linha de peso ── */
+interface PesoEntry { id: string; peso: number; data: string }
+
+function WeightChart({ entries }: { entries: PesoEntry[] }) {
+  if (entries.length < 2) return null;
+
+  const W = 320;
+  const H = 80;
+  const pesos = entries.map((e) => e.peso);
+  const minP = Math.min(...pesos);
+  const maxP = Math.max(...pesos);
+  const range = maxP - minP || 1;
+  const pad = 6;
+
+  const points = entries.map((e, i) => {
+    const x = pad + (i / (entries.length - 1)) * (W - pad * 2);
+    const y = H - pad - ((e.peso - minP) / range) * (H - pad * 2);
+    return { x, y, peso: e.peso, data: e.data };
+  });
+
+  const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H + 20}`} width="100%" style={{ overflow: "visible" }}>
+      <polyline points={points.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ")} fill="none" stroke="#16a34a" strokeWidth="2" strokeLinejoin="round" />
+      <path d={pathD} fill="none" />
+      {points.map((p, i) => (
+        <g key={i}>
+          <circle cx={p.x} cy={p.y} r={3} fill="#16a34a" />
+          {(i === 0 || i === points.length - 1 || entries.length <= 8) && (
+            <text x={p.x} y={p.y - 7} textAnchor="middle" fontSize="8" fill="#16a34a" fontWeight="700">
+              {p.peso}
+            </text>
+          )}
+        </g>
+      ))}
+      <text x={pad} y={H + 14} fontSize="8" fill="#bbb">{new Date(points[0].data + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }).replace(".", "")}</text>
+      <text x={W - pad} y={H + 14} fontSize="8" fill="#bbb" textAnchor="end">{new Date(points[points.length - 1].data + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }).replace(".", "")}</text>
+    </svg>
+  );
+}
+
 function BarChart({ days, meta }: { days: DayEntry[]; meta: number }) {
   // Pega os últimos 7 dias disponíveis (ou preenche com zeros)
   const today = new Date();
@@ -144,6 +186,10 @@ export default function Historico() {
   const [editState, setEditState] = useState<EditState | null>(null);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [weightEntries, setWeightEntries] = useState<PesoEntry[]>([]);
+  const [showWeightInput, setShowWeightInput] = useState(false);
+  const [newWeight, setNewWeight] = useState("");
+  const [savingWeight, setSavingWeight] = useState(false);
 
   const loadData = useCallback(async (semana: string) => {
     setLoading(true);
@@ -188,6 +234,12 @@ export default function Historico() {
         loadData(isoWeek(new Date())),
         loadMediasAnterior(),
       ]);
+
+      // Carrega histórico de peso
+      fetch("/api/peso")
+        .then((r) => r.json())
+        .then((d) => { if (d.registros) setWeightEntries(d.registros); })
+        .catch(() => {});
     }
     init();
   }, [user, authLoading, loadData, loadMediasAnterior]);
@@ -218,6 +270,27 @@ export default function Historico() {
       })).filter((day) => day.refeicoes.length > 0)
     );
     setDeletingId(null);
+  }
+
+  async function handleSaveWeight() {
+    const pesoNum = parseFloat(newWeight.replace(",", "."));
+    if (!pesoNum || pesoNum <= 0 || pesoNum > 500) return;
+    setSavingWeight(true);
+    const res = await fetch("/api/peso", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ peso: pesoNum }),
+    });
+    if (res.ok) {
+      const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
+      setWeightEntries((prev) => {
+        const sem = prev.filter((e) => e.data !== hoje);
+        return [...sem, { id: Date.now().toString(), peso: pesoNum, data: hoje }].sort((a, b) => a.data.localeCompare(b.data));
+      });
+      setNewWeight("");
+      setShowWeightInput(false);
+    }
+    setSavingWeight(false);
   }
 
   async function handleSaveEdit() {
@@ -466,6 +539,61 @@ export default function Historico() {
             </div>
           );
         })}
+
+        {/* Seção de peso */}
+        <div className="bg-white rounded-[20px] border border-[#f0f0f0] overflow-hidden mt-1">
+          <div className="px-5 pt-4 pb-3 flex items-center justify-between">
+            <div>
+              <p className="text-[14px] font-bold text-[#111]">Evolução do peso</p>
+              {weightEntries.length > 0 && (
+                <p className="text-[11px] text-[#aaa] mt-0.5">
+                  Último: {weightEntries[weightEntries.length - 1].peso} kg
+                </p>
+              )}
+            </div>
+            <button
+              onClick={() => setShowWeightInput((v) => !v)}
+              className="bg-[#f0fdf4] text-[#16a34a] text-[12px] font-bold px-3 py-1.5 rounded-full border border-[#bbf7d0]"
+            >
+              {showWeightInput ? "Cancelar" : "+ Registrar"}
+            </button>
+          </div>
+
+          {showWeightInput && (
+            <div className="px-5 pb-4 flex gap-2">
+              <input
+                type="number"
+                step="0.1"
+                value={newWeight}
+                onChange={(e) => setNewWeight(e.target.value)}
+                placeholder="Ex: 75.4"
+                className="flex-1 border border-[#e5e5e5] rounded-[12px] px-3 py-2.5 text-[15px] font-bold text-[#111] focus:outline-none focus:border-[#16a34a]"
+              />
+              <span className="flex items-center text-[13px] text-[#aaa] font-semibold">kg</span>
+              <button
+                onClick={handleSaveWeight}
+                disabled={savingWeight || !newWeight}
+                className="bg-[#16a34a] text-white px-4 py-2.5 rounded-[12px] text-[13px] font-bold disabled:opacity-50"
+              >
+                {savingWeight ? "..." : "Salvar"}
+              </button>
+            </div>
+          )}
+
+          {weightEntries.length >= 2 ? (
+            <div className="px-5 pb-4">
+              <WeightChart entries={weightEntries} />
+            </div>
+          ) : weightEntries.length === 0 ? (
+            <div className="px-5 pb-5 text-center">
+              <p className="text-[12px] text-[#aaa]">Registre seu peso diariamente para ver a evolução.</p>
+            </div>
+          ) : (
+            <div className="px-5 pb-4 text-center">
+              <p className="text-[12px] text-[#aaa]">Registre pelo menos 2 dias para ver o gráfico.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

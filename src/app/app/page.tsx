@@ -12,6 +12,7 @@ interface Profile {
   fotos_hoje: number;
   plano: string;
   meta_calorica: number;
+  meta_proteina: number;
   ultimo_registro: string | null;
 }
 
@@ -46,6 +47,7 @@ export default function AppHome() {
   const [daily, setDaily] = useState<DailySummary>({ calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0, count: 0 });
   const [loading, setLoading] = useState(true);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [insight, setInsight] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -62,7 +64,7 @@ export default function AppHome() {
       const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
 
       const [profileRes, refeicoesRes] = await Promise.all([
-        supabase.from("profiles").select("nome, streak, fotos_hoje, plano, meta_calorica, ultimo_registro").eq("id", userId).single(),
+        supabase.from("profiles").select("nome, streak, fotos_hoje, plano, meta_calorica, meta_proteina, ultimo_registro").eq("id", userId).single(),
         supabase.from("refeicoes").select("calorias, proteinas, carboidratos, gorduras").eq("user_id", userId).eq("data", today),
       ]);
 
@@ -83,6 +85,12 @@ export default function AppHome() {
       }
 
       setLoading(false);
+
+      // Busca insight do Vicente em background (não bloqueia a tela)
+      fetch("/api/insight-diario")
+        .then((r) => r.json())
+        .then((d) => { if (d.insight) setInsight(d.insight); })
+        .catch(() => {});
     }
     load();
   }, [user, authLoading]);
@@ -97,6 +105,8 @@ export default function AppHome() {
   const streakEfetivo = streakAtivo ? (profile?.streak ?? 0) : 0;
 
   const meta = profile?.meta_calorica ?? 2000;
+  const metaProteina = profile?.meta_proteina ?? 120;
+  const metasBatidas = daily.count > 0 && daily.calorias >= meta && daily.proteinas >= metaProteina;
   const pct = Math.min(100, Math.round((daily.calorias / meta) * 100));
   const restantes = Math.max(0, meta - daily.calorias);
   const acima = daily.calorias > meta;
@@ -253,6 +263,13 @@ export default function AppHome() {
               </div>
             ))}
           </div>
+
+          {/* Banner parabéns — metas batidas */}
+          {metasBatidas && (
+            <div className="mt-3 pt-3 border-t border-[#f0fdf4] text-center">
+              <p className="text-[13px] font-bold text-[#16a34a]">🎯 Missão cumprida! Meta de calorias e proteína batidas hoje.</p>
+            </div>
+          )}
         </div>
 
         {/* Empty state — sem registros hoje */}
@@ -289,6 +306,14 @@ export default function AppHome() {
             </Link>
           )}
         </div>
+
+        {/* Card insight do Vicente */}
+        {insight && (
+          <div className="bg-[#f0fdf4] rounded-[20px] p-4 border border-[#bbf7d0]">
+            <p className="text-[11px] font-bold text-[#16a34a] mb-1.5 uppercase tracking-widest">Vicente diz</p>
+            <p className="text-[13px] text-[#166534] leading-relaxed">{insight}</p>
+          </div>
+        )}
 
         {/* Card socorro */}
         <div className="bg-[#fff7ed] rounded-[20px] p-5 border border-[#fed7aa]">

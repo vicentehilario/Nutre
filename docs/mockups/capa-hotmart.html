@@ -38,34 +38,9 @@
   .icon-box {
     width: 220px;
     height: 220px;
-    background: linear-gradient(135deg, #1c2b1e, #0d1a0f);
     border-radius: 50px;
-    border: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(34,197,94,0.15);
-    position: relative;
-  }
-
-  .icon-n {
-    font-size: 138px;
-    font-weight: 900;
-    color: white;
-    line-height: 1;
-    letter-spacing: -6px;
-    margin-top: 10px;
-  }
-
-  .icon-leaf {
-    position: absolute;
-    top: 28px;
-    right: 34px;
-    width: 40px;
-    height: 20px;
-    background: #22c55e;
-    border-radius: 50% 50% 50% 0;
-    transform: rotate(-35deg);
+    overflow: hidden;
   }
 
   /* Textos */
@@ -93,8 +68,16 @@
   <div class="glow"></div>
   <div class="icon-wrap">
     <div class="icon-box">
-      <span class="icon-n">N</span>
-      <div class="icon-leaf"></div>
+      <svg width="220" height="220" viewBox="0 0 100 100" fill="none">
+        <rect width="100" height="100" fill="url(#grad)"/>
+        <defs>
+          <linearGradient id="grad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#1c2b1e"/>
+            <stop offset="100%" stop-color="#0d1a0f"/>
+          </linearGradient>
+        </defs>
+        <path d="M 18,18 L 31,18 L 68,82 L 82,82 L 82,18 L 69,18 L 32,82 L 18,82 Z" fill="white"/>
+      </svg>
     </div>
   </div>
 

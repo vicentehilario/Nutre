@@ -29,14 +29,24 @@ export async function POST(req: NextRequest) {
           } as Anthropic.DocumentBlockParam,
           {
             type: "text",
-            text: `Analise este plano nutricional prescrito. Extraia as seguintes informações e responda SOMENTE com JSON válido:
+            text: `Analise este plano nutricional prescrito por um nutricionista e extraia as metas diárias totais.
+
+PASSO 1 — Procure um "Relatório de nutrientes" ou tabela de totais no PDF. Se existir, use os valores direto.
+
+PASSO 2 — Se NÃO existir relatório, some manualmente todas as refeições do dia (café, almoço, lanches, jantar, ceia) usando as quantidades e alimentos listados para estimar calorias e proteína total.
+
+Regras para classificar o objetivo:
+- Se calorias < 1800 ou há déficit claro → "perda_de_peso"
+- Se calorias entre 1800-2400 sem foco em ganho → "manutencao"
+- Se calorias > 2400 ou foco em ganho de massa → "ganho_de_massa"
+
+Responda SOMENTE com JSON válido, sem markdown, sem explicações:
 {
-  "meta_calorica": número total de calorias diárias prescritas (inteiro),
-  "meta_proteina": gramas de proteína diária prescritas (inteiro),
-  "refeicoes_por_dia": número de refeições por dia (inteiro),
-  "objetivo": um de "perda_de_peso" | "manutencao" | "ganho_de_massa"
-}
-Se não encontrar algum valor com clareza, use os padrões: meta_calorica 2000, meta_proteina 120, refeicoes_por_dia 4, objetivo "manutencao".`,
+  "meta_calorica": número inteiro de kcal diárias totais,
+  "meta_proteina": número inteiro de gramas de proteína diária,
+  "refeicoes_por_dia": número inteiro de refeições distintas no plano,
+  "objetivo": "perda_de_peso" | "manutencao" | "ganho_de_massa"
+}`,
           },
         ],
       },

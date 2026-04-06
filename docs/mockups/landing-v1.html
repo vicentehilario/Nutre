@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutre — Seu nutri pessoal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: #fff; color: #111; -webkit-font-smoothing: antialiased; }
+
+  :root {
+    --g900: #0f2414;
+    --g800: #1a3a20;
+    --g700: #1e5128;
+    --g400: #4a9157;
+    --g200: #b6d9bc;
+    --g100: #e8f2e9;
+    --g50:  #f4f9f4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 64px; height: 64px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo span { font-size: 18px; font-weight: 800; color: #111; letter-spacing: -0.5px; }
+  .nav-cta {
+    background: var(--g800); color: #fff;
+    padding: 10px 24px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; text-decoration: none;
+    letter-spacing: 0.1px;
+    transition: background 0.15s;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    padding: 80px 64px 0;
+    background: #fff;
+    gap: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 55%;
+    height: 100%;
+    background: var(--g50);
+    z-index: 0;
+    border-left: 1px solid var(--g100);
+  }
+  .hero-content { position: relative; z-index: 1; padding-right: 64px; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--g200);
+    background: var(--g50);
+    color: var(--g700);
+    padding: 5px 12px; border-radius: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .hero h1 {
+    font-size: 60px; font-weight: 900; line-height: 1.0;
+    letter-spacing: -3px; margin-bottom: 24px; color: #0a0a0a;
+  }
+  .hero h1 em { color: var(--g700); font-style: normal; }
+  .hero-sub {
+    font-size: 17px; color: #666; line-height: 1.7;
+    margin-bottom: 40px; max-width: 400px; font-weight: 400;
+  }
+  .hero-ctas { display: flex; gap: 12px; margin-bottom: 48px; }
+  .btn-hero-primary {
+    background: var(--g800); color: #fff;
+    padding: 16px 28px; border-radius: 8px;
+    font-size: 14px; font-weight: 700; text-decoration: none;
+    letter-spacing: 0.1px; white-space: nowrap;
+  }
+  .btn-hero-secondary {
+    background: transparent; color: #555; border: 1px solid #ddd;
+    padding: 16px 24px; border-radius: 8px;
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    white-space: nowrap;
+  }
+  .hero-proof {
+    display: flex; align-items: center; gap: 12px;
+    padding-top: 24px;
+    border-top: 1px solid #ebebeb;
+  }
+  .proof-faces { display: flex; }
+  .proof-faces span {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--g800); border: 2px solid #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #fff; font-weight: 700;
+    margin-left: -7px;
+  }
+  .proof-faces span:first-child { margin-left: 0; }
+  .hero-proof p { font-size: 13px; color: #888; }
+  .hero-proof p strong { color: #333; font-weight: 600; }
+
+  /* HERO PHOTO SIDE */
+  .hero-visual {
+    position: relative; z-index: 1;
+    display: flex; justify-content: center; align-items: flex-end;
+    height: calc(100vh - 80px);
+    padding-bottom: 0;
+  }
+  .hero-visual img {
+    height: 90%;
+    max-height: 620px;
+    width: auto;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 60px rgba(0,0,0,0.1);
+  }
+  .hero-card {
+    position: absolute;
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    border: 1px solid #f0f0f0;
+  }
+  .hero-card-credential {
+    bottom: 40px; left: -32px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .crn-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--g400); flex-shrink: 0; }
+  .hero-card-credential strong { font-size: 13px; font-weight: 700; display: block; }
+  .hero-card-credential span { font-size: 11px; color: #999; }
+  .hero-card-stat {
+    top: 80px; right: -32px;
+    text-align: center; min-width: 110px;
+  }
+  .hero-card-stat .stat-num { font-size: 28px; font-weight: 900; color: var(--g700); letter-spacing: -1px; }
+  .hero-card-stat .stat-label { font-size: 11px; color: #999; margin-top: 2px; line-height: 1.4; }
+
+  /* ─── SECTION BASE ─── */
+  .section-tag {
+    display: inline-block;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--g700); margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 40px; font-weight: 900; letter-spacing: -1.5px; line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .section-sub { font-size: 17px; color: #777; line-height: 1.65; }
+
+  /* ─── DOR ─── */
+  .dor {
+    padding: 96px 64px;
+    background: var(--g900);
+    color: #fff;
+  }
+  .dor .inner { max-width: 1080px; margin: 0 auto; }
+  .dor .section-tag { color: #6db87a; }
+  .dor .section-title { color: #fff; margin-bottom: 12px; }
+  .dor .section-sub { color: #666; margin-bottom: 56px; }
+  .dor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #1e1e1e; border: 1px solid #1e1e1e; border-radius: 16px; overflow: hidden; }
+  .dor-item {
+    background: var(--g900); padding: 36px 32px;
+  }
+  .dor-item:hover { background: #111; }
+  .dor-num { font-size: 11px; font-weight: 700; color: #333; letter-spacing: 1px; margin-bottom: 20px; }
+  .dor-item h3 { font-size: 17px; font-weight: 700; margin-bottom: 12px; line-height: 1.4; }
+  .dor-item p { font-size: 14px; color: #666; line-height: 1.65; }
+
+  /* ─── COMO FUNCIONA ─── */
+  .como {
+    padding: 96px 64px;
+    background: #fff;
+  }
+  .como .inner { max-width: 1080px; margin: 0 auto; text-align: center; }
+  .como .section-sub { max-width: 480px; margin: 0 auto 64px; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; position: relative; }
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 28px; left: calc(16.6% + 28px); right: calc(16.6% + 28px);
+    height: 1px; background: var(--g200); z-index: 0;
+  }
+  .step { text-align: center; padding: 0 32px; position: relative; z-index: 1; }
+  .step-circle {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--g800); color: #fff;
+    font-size: 18px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 28px;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 1px var(--g200);
+  }
+  .step h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+  .step p { font-size: 14px; color: #888; line-height: 1.65; }
+
+  /* ─── AUTORIDADE ─── */
+  .autoridade {
+    padding: 96px 64px;
+    background: var(--g50);
+    border-top: 1px solid var(--g100);
+    border-bottom: 1px solid var(--g100);
+  }
+  .autoridade .inner {
+    max-width: 1080px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+  .autoridade-img-wrap { position: relative; }
+  .autoridade-img-wrap img {
+    width: 100%; border-radius: 16px;
+    object-fit: cover; object-position: top;
+    height: 520px;
+    box-shadow: 0 20px 60px rgba(15,36,20,0.15);
+  }
+  .autoridade-badge {
+    position: absolute; bottom: -20px; right: -20px;
+    background: var(--g800); color: #fff;
+    border-radius: 12px; padding: 16px 20px;
+    box-shadow: 0 8px 32px rgba(15,36,20,0.3);
+  }
+  .autoridade-badge .b-num { font-size: 30px; font-weight: 900; letter-spacing: -1px; }
+  .autoridade-badge .b-label { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .autoridade-content .section-title { font-size: 36px; }
+  .autoridade-content p { font-size: 16px; color: #555; line-height: 1.75; margin-bottom: 16px; }
+  .autoridade-content p:last-of-type { margin-bottom: 32px; }
+  .crn-block {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #fff; border: 1px solid var(--g200);
+    border-radius: 8px; padding: 12px 16px;
+  }
+  .crn-block .crn-badge {
+    background: var(--g800); color: #fff;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+    padding: 3px 8px; border-radius: 4px;
+  }
+  .crn-block span { font-size: 13px; color: #555; font-weight: 500; }
+
+  /* ─── DEPOIMENTOS ─── */
+  .depoimentos {
+    padding: 96px 64px;
+    background: #fff;
+  }
+  .depoimentos .inner { max-width: 1080px; margin: 0 auto; }
+  .depoimentos .section-title { margin-bottom: 8px; }
+  .depoimentos .section-sub { margin-bottom: 52px; }
+  .dep-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .dep-card {
+    border: 1px solid #ebebeb; border-radius: 14px; padding: 28px 24px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .dep-card.featured {
+    background: var(--g900); border-color: var(--g900); color: #fff;
+    grid-column: span 1;
+  }
+  .dep-stars { display: flex; gap: 2px; }
+  .dep-stars span { width: 14px; height: 14px; background: #f59e0b; border-radius: 2px; display: block; }
+  .dep-card.featured .dep-stars span { background: #fbbf24; }
+  .dep-quote {
+    font-size: 15px; line-height: 1.7; color: #333; flex: 1;
+    quotes: "\201C" "\201D";
+  }
+  .dep-quote::before { content: open-quote; color: var(--g400); font-size: 24px; line-height: 0; vertical-align: -8px; margin-right: 2px; }
+  .dep-card.featured .dep-quote { color: rgba(255,255,255,0.85); }
+  .dep-card.featured .dep-quote::before { color: #6db87a; }
+  .dep-result {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--g50); border: 1px solid var(--g200);
+    border-radius: 6px; padding: 6px 10px;
+    font-size: 12px; font-weight: 700; color: var(--g700);
+  }
+  .dep-card.featured .dep-result { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); color: #6db87a; }
+  .dep-author { display: flex; align-items: center; gap: 10px; }
+  .dep-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--g100); border: 1px solid var(--g200);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: var(--g700); flex-shrink: 0;
+  }
+  .dep-card.featured .dep-avatar { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); color: #fff; }
+  .dep-name { font-size: 13px; font-weight: 700; }
+  .dep-meta { font-size: 12px; color: #aaa; margin-top: 1px; }
+  .dep-card.featured .dep-meta { color: rgba(255,255,255,0.4); }
+
+  /* ─── PREÇO ─── */
+  .preco {
+    padding: 96px 64px;
+    background: var(--g50);
+    border-top: 1px solid var(--g100);
+  }
+  .preco .inner { max-width: 1080px; margin: 0 auto; }
+  .preco .section-title { margin-bottom: 8px; }
+  .preco .section-sub { margin-bottom: 52px; }
+  .preco-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .preco-card {
+    background: #fff; border-radius: 16px; padding: 32px;
+    border: 1px solid #e8e8e8; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .preco-card.highlight {
+    background: var(--g900); border-color: var(--g900); color: #fff;
+  }
+  .popular-tag {
+    position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+    background: var(--g400); color: #fff;
+    font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+    padding: 3px 12px; border-radius: 20px; white-space: nowrap;
+  }
+  .preco-tier { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #bbb; margin-bottom: 16px; }
+  .preco-card.highlight .preco-tier { color: rgba(255,255,255,0.35); }
+  .preco-amount { margin-bottom: 24px; }
+  .preco-amount .currency { font-size: 16px; font-weight: 700; vertical-align: super; line-height: 1; color: #555; }
+  .preco-card.highlight .preco-amount .currency { color: rgba(255,255,255,0.6); }
+  .preco-amount .value { font-size: 48px; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+  .preco-amount .period { font-size: 13px; color: #aaa; display: block; margin-top: 4px; }
+  .preco-card.highlight .preco-amount .period { color: rgba(255,255,255,0.4); }
+  .preco-divider { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; }
+  .preco-card.highlight .preco-divider { border-top-color: rgba(255,255,255,0.08); }
+  .preco-features { list-style: none; display: flex; flex-direction: column; gap: 10px; flex: 1; margin-bottom: 28px; }
+  .preco-features li { font-size: 14px; display: flex; align-items: flex-start; gap: 8px; color: #555; line-height: 1.45; }
+  .preco-card.highlight .preco-features li { color: rgba(255,255,255,0.7); }
+  .preco-features li::before { content: ''; width: 16px; height: 16px; border-radius: 50%; background: var(--g100); border: 1.5px solid var(--g200); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' fill='none'%3E%3Cpath d='M1 4l2.5 2.5L9 1' stroke='%231e5128' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; }
+  .preco-card.highlight .preco-features li::before { background-color: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' fill='none'%3E%3Cpath d='M1 4l2.5 2.5L9 1' stroke='%236db87a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+  .btn-plan {
+    display: block; text-align: center; text-decoration: none;
+    padding: 14px; border-radius: 8px;
+    font-size: 14px; font-weight: 700;
+  }
+  .btn-plan-solid { background: var(--g800); color: #fff; }
+  .btn-plan-outline { background: transparent; color: #555; border: 1px solid #ddd; }
+  .btn-plan-white { background: #fff; color: var(--g800); }
+  .savings-tag {
+    display: inline-block; background: rgba(109,184,122,0.15); color: #6db87a;
+    font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px;
+    margin-left: 6px; vertical-align: middle;
+  }
+
+  /* ─── CTA FINAL ─── */
+  .cta-final {
+    padding: 120px 64px;
+    background: var(--g800);
+    color: #fff; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-final::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 100%, rgba(255,255,255,0.04), transparent);
+  }
+  .cta-final .inner { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; }
+  .cta-final h2 { font-size: 48px; font-weight: 900; letter-spacing: -2px; margin-bottom: 16px; line-height: 1.1; }
+  .cta-final p { font-size: 18px; color: rgba(255,255,255,0.65); margin-bottom: 40px; line-height: 1.6; }
+  .btn-cta-final {
+    display: inline-block; background: #fff; color: var(--g800);
+    padding: 18px 48px; border-radius: 8px;
+    font-size: 16px; font-weight: 800; text-decoration: none;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    letter-spacing: -0.2px;
+  }
+  .cta-guarantee { font-size: 13px; color: rgba(255,255,255,0.35); margin-top: 20px; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 24px 64px;
+    background: var(--g900); color: #444;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; border-top: 1px solid rgba(255,255,255,0.04);
+  }
+  .footer-brand { display: flex; align-items: center; gap: 8px; color: #666; }
+  .footer-brand strong { color: #888; }
+
+  /* ─── LOGO HOTMART STYLE ─── */
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #1c2b1e, #0d1a0f);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+  }
+  .logo-icon .icon-n {
+    font-size: 22px; font-weight: 900; color: #fff;
+    letter-spacing: -1px; line-height: 1;
+    font-family: -apple-system, 'Helvetica Neue', sans-serif;
+  }
+  .logo-icon .icon-leaf {
+    position: absolute;
+    top: 4px; right: 5px;
+    width: 9px; height: 5px;
+    background: #22c55e;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-35deg);
+  }
+
+  /* ─── PHONE MOCKUPS ─── */
+  .phone-wrap { margin-top: 40px; }
+  .phone {
+    width: 140px; height: 280px; margin: 0 auto;
+    background: #0d0d0d;
+    border-radius: 28px;
+    border: 2px solid #2a2a2a;
+    padding: 18px 10px 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .phone::before {
+    content: '';
+    position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+    width: 36px; height: 4px; background: #2a2a2a; border-radius: 3px;
+  }
+  .phone-screen { height: 100%; display: flex; flex-direction: column; gap: 6px; }
+
+  /* Screen 1 – Camera */
+  .phone-cam {
+    flex: 1; background: #1a1a1a; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .cam-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  .cam-focus {
+    width: 56px; height: 56px; border: 2px solid rgba(255,255,255,0.7);
+    border-radius: 8px; position: relative; z-index: 1;
+  }
+  .cam-label {
+    position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+    font-size: 7px; color: rgba(255,255,255,0.4); white-space: nowrap;
+    z-index: 1;
+  }
+  .cam-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--g800); border: 3px solid rgba(255,255,255,0.2);
+    margin: 0 auto; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cam-btn-inner { width: 18px; height: 18px; border-radius: 50%; background: #fff; }
+
+  /* Screen 2 – Analysis */
+  .phone-analysis {
+    background: #f8faf8; border-radius: 14px; padding: 8px; flex: 1;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .analysis-photo {
+    height: 70px; background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: #4caf50;
+  }
+  .analysis-title { font-size: 7px; font-weight: 700; color: #111; }
+  .macro-row { display: flex; gap: 3px; }
+  .macro-chip {
+    flex: 1; background: #f0f4f0; border-radius: 5px; padding: 4px 3px;
+    text-align: center;
+  }
+  .macro-chip .m-val { font-size: 9px; font-weight: 800; color: var(--g700); }
+  .macro-chip .m-key { font-size: 6px; color: #999; }
+  .analysis-total {
+    background: var(--g800); border-radius: 7px; padding: 5px 7px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .analysis-total .t-label { font-size: 7px; color: rgba(255,255,255,0.6); }
+  .analysis-total .t-val { font-size: 11px; font-weight: 800; color: #fff; }
+
+  /* Screen 3 – Progress */
+  .phone-progress {
+    background: #f8faf8; border-radius: 14px; padding: 8px; flex: 1;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .prog-header { display: flex; justify-content: space-between; align-items: center; }
+  .prog-title { font-size: 8px; font-weight: 700; color: #111; }
+  .prog-streak { font-size: 7px; color: var(--g700); font-weight: 600; }
+  .prog-bar-wrap { background: var(--g100); border-radius: 4px; height: 6px; }
+  .prog-bar { height: 6px; background: var(--g700); border-radius: 4px; }
+  .prog-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .prog-day {
+    height: 20px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 5px; font-weight: 700;
+  }
+  .prog-day.done { background: var(--g800); color: #fff; }
+  .prog-day.today { background: var(--g400); color: #fff; }
+  .prog-day.empty { background: #f0f0f0; color: #ccc; }
+  .prog-chart { flex: 1; display: flex; align-items: flex-end; gap: 3px; padding-top: 6px; }
+  .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .chart-bar { width: 100%; background: var(--g100); border-radius: 3px 3px 0 0; min-height: 4px; }
+  .chart-bar.active { background: var(--g700); }
+  .chart-lbl { font-size: 5px; color: #bbb; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-icon">
+      <span class="icon-n">N</span>
+      <div class="icon-leaf"></div>
+    </div>
+    <span>Nutre</span>
+  </a>
+  <a href="#" class="nav-cta">Começar grátis</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Nutricionista · CRN4 23101536</div>
+    <h1>Pare de<br>adivinhar<br>o que <em>comer.</em></h1>
+    <p class="hero-sub">Tire uma foto da sua refeição e descubra na hora as calorias e macronutrientes — com a orientação de um nutricionista formado por trás de cada resposta.</p>
+    <div class="hero-ctas">
+      <a href="#" class="btn-hero-primary">Experimentar grátis</a>
+      <a href="#" class="btn-hero-secondary">Como funciona</a>
+    </div>
+    <div class="hero-proof">
+      <div class="proof-faces">
+        <span>A</span><span>H</span><span>L</span><span>M</span>
+      </div>
+      <p><strong>+600 pacientes</strong> já transformaram sua alimentação</p>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <img src="http://localhost:4445/public/vicente-hero.jpg" alt="Vicente Hilário — Nutricionista">
+    <div class="hero-card hero-card-credential">
+      <div class="crn-dot"></div>
+      <div>
+        <strong>Vicente Hilário</strong>
+        <span>Nutricionista · CRN4 23101536</span>
+      </div>
+    </div>
+    <div class="hero-card hero-card-stat">
+      <div class="stat-num">+600</div>
+      <div class="stat-label">pacientes<br>atendidos</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOR -->
+<section class="dor">
+  <div class="inner">
+    <div class="section-tag">O problema</div>
+    <h2 class="section-title">Você sabe que precisa<br>mudar — mas não sabe por onde começar.</h2>
+    <p class="section-sub">A maioria das pessoas que quer emagrecer trava nos mesmos pontos. O Nutre foi criado para resolver cada um deles.</p>
+    <div class="dor-grid">
+      <div class="dor-item">
+        <div class="dor-num">01</div>
+        <h3>"Não sei quantas calorias tem o que estou comendo"</h3>
+        <p>Pesquisar alimento por alimento é trabalhoso e impreciso. Você desiste depois de dois dias.</p>
+      </div>
+      <div class="dor-item">
+        <div class="dor-num">02</div>
+        <h3>"Toda dieta que faço é rígida demais para manter"</h3>
+        <p>Regras fixas geram culpa quando você sai um pouco. Aí vem a desistência e o efeito sanfona.</p>
+      </div>
+      <div class="dor-item">
+        <div class="dor-num">03</div>
+        <h3>"Na hora da vontade, não tenho com quem falar"</h3>
+        <p>Sem suporte no momento crítico, você cede. O Nutre tem um botão SOS exatamente para essa hora.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="como">
+  <div class="inner">
+    <div class="section-tag">Como funciona</div>
+    <h2 class="section-title">Simples como tirar uma foto</h2>
+    <p class="section-sub">Sem planilhas, sem pesar alimento, sem complicação. Você fotografa, a IA analisa.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-circle">1</div>
+        <h3>Fotografe sua refeição</h3>
+        <p>Prato montado, marmita ou lanche — qualquer coisa, exatamente como está. Sem preparação.</p>
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="phone-cam">
+                <div class="cam-grid"></div>
+                <div class="cam-focus"></div>
+                <div class="cam-label">Enquadre sua refeição</div>
+              </div>
+              <div class="cam-btn">
+                <div class="cam-btn-inner"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-circle">2</div>
+        <h3>A IA analisa na hora</h3>
+        <p>Em segundos você vê calorias, proteínas, carboidratos e gorduras. Com base na metodologia do Vicente.</p>
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="phone-analysis">
+                <div class="analysis-photo">🍽️</div>
+                <div class="analysis-title">Frango grelhado com arroz</div>
+                <div class="macro-row">
+                  <div class="macro-chip"><div class="m-val">38g</div><div class="m-key">Proteína</div></div>
+                  <div class="macro-chip"><div class="m-val">42g</div><div class="m-key">Carbo</div></div>
+                  <div class="macro-chip"><div class="m-val">8g</div><div class="m-key">Gordura</div></div>
+                </div>
+                <div class="analysis-total">
+                  <span class="t-label">Total kcal</span>
+                  <span class="t-val">396 kcal</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-circle">3</div>
+        <h3>Acompanhe seu progresso</h3>
+        <p>Histórico diário, streak de consistência e metas personalizadas. Tudo no bolso.</p>
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="phone-progress">
+                <div class="prog-header">
+                  <div class="prog-title">Progresso semanal</div>
+                  <div class="prog-streak">🔥 14 dias</div>
+                </div>
+                <div class="prog-bar-wrap"><div class="prog-bar" style="width:68%"></div></div>
+                <div class="prog-days">
+                  <div class="prog-day done">S</div>
+                  <div class="prog-day done">T</div>
+                  <div class="prog-day done">Q</div>
+                  <div class="prog-day done">Q</div>
+                  <div class="prog-day done">S</div>
+                  <div class="prog-day today">S</div>
+                  <div class="prog-day empty">D</div>
+                </div>
+                <div class="prog-chart">
+                  <div class="chart-bar-wrap"><div class="chart-bar active" style="height:32px"></div><div class="chart-lbl">S</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar active" style="height:44px"></div><div class="chart-lbl">T</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar active" style="height:28px"></div><div class="chart-lbl">Q</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar active" style="height:50px"></div><div class="chart-lbl">Q</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar active" style="height:38px"></div><div class="chart-lbl">S</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar" style="height:20px"></div><div class="chart-lbl">S</div></div>
+                  <div class="chart-bar-wrap"><div class="chart-bar" style="height:10px"></div><div class="chart-lbl">D</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTORIDADE -->
+<section class="autoridade">
+  <div class="inner">
+    <div class="autoridade-img-wrap">
+      <img src="http://localhost:4445/public/vicente-autoridade.jpg" alt="Vicente Hilário">
+      <div class="autoridade-badge">
+        <div class="b-num">+600</div>
+        <div class="b-label">pacientes atendidos</div>
+      </div>
+    </div>
+    <div class="autoridade-content">
+      <div class="section-tag">Quem está por trás do Nutre</div>
+      <h2 class="section-title">Uma metodologia real,<br>treinada em IA</h2>
+      <p>O Nutre não é um app genérico. Formado há 3 anos, já atendi mais de 600 pacientes que queriam emagrecer de forma sustentável — e aprendi que o que funciona é simples: consistência, sem culpa e orientação certa.</p>
+      <p>A IA do Nutre foi treinada com essa metodologia. Ela responde do jeito que eu responderia numa consulta: direta, sem enrolação, adaptada à sua realidade.</p>
+      <div class="crn-block">
+        <div class="crn-badge">CRN4</div>
+        <span>Vicente Hilário · 23101536</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section class="depoimentos">
+  <div class="inner">
+    <div class="section-tag">Resultados reais</div>
+    <h2 class="section-title">Pacientes que provaram<br>a metodologia</h2>
+    <p class="section-sub">Resultados reais de pessoas reais — com a mesma metodologia que o Nutre usa.</p>
+    <div class="dep-grid">
+
+      <!-- André -->
+      <div class="dep-card featured">
+        <div class="dep-stars"><span></span><span></span><span></span><span></span><span></span></div>
+        <p class="dep-quote">Vesti minha calça antiga número 58 — nem servia mais. Estou com 56 e já está enorme. Vou pra 54. Sai da camisa G5 pra G2, com folga.</p>
+        <div class="dep-result">Calça 58 → rumo à 54</div>
+        <div class="dep-author">
+          <div class="dep-avatar">A</div>
+          <div>
+            <div class="dep-name">André</div>
+            <div class="dep-meta">Paciente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Helena -->
+      <div class="dep-card">
+        <div class="dep-stars"><span></span><span></span><span></span><span></span><span></span></div>
+        <p class="dep-quote">De fato, dessa vez foi a maior e melhor evolução que eu já tive. Melhorei não só meu físico, mas meu mental e a forma como enxergo a alimentação na minha vida.</p>
+        <div class="dep-result">Transformação física e mental</div>
+        <div class="dep-author">
+          <div class="dep-avatar">H</div>
+          <div>
+            <div class="dep-name">Helena</div>
+            <div class="dep-meta">Paciente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leticia -->
+      <div class="dep-card">
+        <div class="dep-stars"><span></span><span></span><span></span><span></span><span></span></div>
+        <p class="dep-quote">Eu tava com 59kg e pouco. Tô com 55 e pouco. Parece que o físico tá evoluindo — senti MUITA diferença.</p>
+        <div class="dep-result">59kg → 55kg</div>
+        <div class="dep-author">
+          <div class="dep-avatar">L</div>
+          <div>
+            <div class="dep-name">Leticia Caetano</div>
+            <div class="dep-meta">Paciente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Margot -->
+      <div class="dep-card">
+        <div class="dep-stars"><span></span><span></span><span></span><span></span><span></span></div>
+        <p class="dep-quote">Antes sentia muita fome ao longo do dia, principalmente à tarde. Hoje me sinto saciada tranquilamente, sem me sentir "lotada".</p>
+        <div class="dep-result">Fim da fome à tarde</div>
+        <div class="dep-author">
+          <div class="dep-avatar">M</div>
+          <div>
+            <div class="dep-name">Margot</div>
+            <div class="dep-meta">Paciente · RJ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Camilly -->
+      <div class="dep-card">
+        <div class="dep-stars"><span></span><span></span><span></span><span></span><span></span></div>
+        <p class="dep-quote">Vicente do céu! 150g de carne é MUITA coisa. Aprendi a comer as quantidades certas sem precisar sofrer com restrição.</p>
+        <div class="dep-result">Reeducação alimentar real</div>
+        <div class="dep-author">
+          <div class="dep-avatar">C</div>
+          <div>
+            <div class="dep-name">Camilly</div>
+            <div class="dep-meta">Paciente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA card -->
+      <div class="dep-card" style="background: var(--g50); border-color: var(--g100); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 16px;">
+        <div style="font-size: 13px; color: var(--g700); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;">Próximo resultado</div>
+        <p style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.3; color: #111;">Pode ser<br>o seu.</p>
+        <a href="#" style="background: var(--g800); color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-block;">Começar agora</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PREÇO -->
+<section class="preco">
+  <div class="inner">
+    <div class="section-tag">Planos</div>
+    <h2 class="section-title">Simples e transparente</h2>
+    <p class="section-sub">Comece grátis. Faça upgrade quando quiser.</p>
+    <div class="preco-grid">
+
+      <div class="preco-card">
+        <div class="preco-tier">Grátis</div>
+        <div class="preco-amount">
+          <span class="currency">R$</span>
+          <span class="value">0</span>
+          <span class="period">para sempre</span>
+        </div>
+        <hr class="preco-divider">
+        <ul class="preco-features">
+          <li>2 registros por dia</li>
+          <li>Análise nutricional por foto</li>
+          <li>Streak de consistência</li>
+        </ul>
+        <a href="#" class="btn-plan btn-plan-outline">Começar grátis</a>
+      </div>
+
+      <div class="preco-card highlight">
+        <div class="popular-tag">Mais popular</div>
+        <div class="preco-tier">Premium Mensal</div>
+        <div class="preco-amount">
+          <span class="currency">R$</span>
+          <span class="value">47</span>
+          <span class="period">por mês · cancele quando quiser</span>
+        </div>
+        <hr class="preco-divider">
+        <ul class="preco-features">
+          <li>Registros ilimitados</li>
+          <li>Análise nutricional com IA</li>
+          <li>Histórico completo</li>
+          <li>Botão SOS — momento crítico</li>
+          <li>Metas personalizadas</li>
+        </ul>
+        <a href="https://go.hotmart.com/R105181472H?off=5sks6hjc" class="btn-plan btn-plan-white">Assinar agora</a>
+      </div>
+
+      <div class="preco-card">
+        <div class="preco-tier">Premium Anual <span class="savings-tag">−30%</span></div>
+        <div class="preco-amount">
+          <span class="currency">R$</span>
+          <span class="value">397</span>
+          <span class="period">por ano · equivale a R$ 33/mês</span>
+        </div>
+        <hr class="preco-divider">
+        <ul class="preco-features">
+          <li>Tudo do plano mensal</li>
+          <li>Economia de R$ 167 no ano</li>
+          <li>Importação de plano alimentar PDF</li>
+        </ul>
+        <a href="https://go.hotmart.com/R105181472H?off=w71953zf" class="btn-plan btn-plan-solid">Assinar anual</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="inner">
+    <h2>Comece hoje.<br>Sua primeira análise é grátis.</h2>
+    <p>Tire uma foto da sua próxima refeição e veja na hora o que está comendo — sem planilha, sem complicação.</p>
+    <a href="#" class="btn-cta-final">Baixar o Nutre grátis</a>
+    <p class="cta-guarantee">Sem cartão de crédito · Cancele quando quiser</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="logo-icon" style="width:22px;height:22px;border-radius:6px;">
+      <span class="icon-n" style="font-size:15px;">N</span>
+      <div class="icon-leaf" style="width:6px;height:3px;top:3px;right:3px;"></div>
+    </div>
+    <strong>Nutre</strong> · Vicente Hilário · CRN4 23101536
+  </div>
+  <div>© 2026 Nutre. Todos os direitos reservados.</div>
+</footer>
+
+</body>
+</html>

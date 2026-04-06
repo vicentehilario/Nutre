@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import crypto from "crypto";
 import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -12,6 +13,27 @@ const supabaseAdmin = createSupabaseAdmin(
 
 export async function POST(req: NextRequest) {
   try {
+  // Verificar autenticação
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
+  // Verificar limite de análises para plano grátis
+  const { data: profileData } = await supabaseAdmin
+    .from("profiles")
+    .select("plano, fotos_hoje")
+    .eq("id", user.id)
+    .single();
+
+  if (profileData?.plano === "gratis" && (profileData?.fotos_hoje ?? 0) >= 2) {
+    return NextResponse.json(
+      { error: "Limite de análises atingido. Faça upgrade para continuar." },
+      { status: 403 }
+    );
+  }
+
   const { fotoUrl, descricao } = await req.json();
 
   // Cache lookup para consultas apenas de descrição (sem foto)
