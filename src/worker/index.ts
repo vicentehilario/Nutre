@@ -11,7 +11,6 @@ sw.addEventListener("push", (event) => {
     icon: "/icon-192.png",
     badge: "/icon-192.png",
     tag: "nutre-reminder",
-    renotify: true,
     data: { url: "/app" },
   };
   event.waitUntil(sw.registration.showNotification(title, options));
