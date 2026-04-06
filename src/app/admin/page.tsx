@@ -241,13 +241,24 @@ export default function AdminDashboard() {
                         : "—"}
                     </span>
                   </td>
-                  <td className="px-5 py-3.5 text-right">
+                  <td className="px-5 py-3.5 text-right whitespace-nowrap">
                     <button
                       onClick={() => doAction(u.id, "reset_fotos")}
                       disabled={actionLoading === u.id + "reset_fotos" || u.fotos_hoje === 0}
                       className="text-[11px] font-semibold text-[#ea580c] hover:underline disabled:text-[#ccc] disabled:no-underline"
                     >
                       {actionLoading === u.id + "reset_fotos" ? "..." : "Resetar fotos"}
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (window.confirm(`Excluir ${u.nome} (${u.email})?\n\nTodos os registros serão apagados. Esta ação não pode ser desfeita.`)) {
+                          doAction(u.id, "delete_user");
+                        }
+                      }}
+                      disabled={actionLoading === u.id + "delete_user"}
+                      className="text-[11px] font-semibold text-[#dc2626] hover:underline disabled:text-[#ccc] disabled:no-underline ml-3"
+                    >
+                      {actionLoading === u.id + "delete_user" ? "..." : "Excluir"}
                     </button>
                   </td>
                 </tr>

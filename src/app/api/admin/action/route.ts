@@ -46,5 +46,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
+  if (action === "delete_user") {
+    await supabaseAdmin.from("refeicoes").delete().eq("user_id", user_id);
+    await supabaseAdmin.from("profiles").delete().eq("id", user_id);
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(user_id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true });
+  }
+
   return NextResponse.json({ error: "Ação inválida" }, { status: 400 });
 }

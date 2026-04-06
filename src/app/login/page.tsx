@@ -47,6 +47,12 @@ export default function Login() {
     <main className="min-h-full flex flex-col items-center justify-center px-6 py-12">
       <div className="w-full max-w-sm space-y-8">
         <div className="text-center space-y-1">
+          <div className="flex justify-center mb-3">
+            <svg width="56" height="56" viewBox="0 0 100 100" fill="none">
+              <rect width="100" height="100" rx="22" fill="#1a3a20"/>
+              <path d="M 18,18 L 31,18 L 68,82 L 82,82 L 82,18 L 69,18 L 32,82 L 18,82 Z" fill="white"/>
+            </svg>
+          </div>
           <Link href="/" className="text-3xl font-bold text-green-700 block">Nutre</Link>
           <p className="text-gray-500 text-sm">Bem-vindo de volta</p>
         </div>

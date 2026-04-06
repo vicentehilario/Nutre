@@ -1,11 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import crypto from "crypto";
+import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const supabaseAdmin = createSupabaseAdmin(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function POST(req: NextRequest) {
   try {
   const { fotoUrl, descricao } = await req.json();
+
+  // Cache lookup para consultas apenas de descrição (sem foto)
+  let cacheHash: string | null = null;
+  if (!fotoUrl && descricao?.trim()) {
+    cacheHash = crypto.createHash("sha256").update(descricao.trim().toLowerCase()).digest("hex").slice(0, 32);
+    const { data: cached } = await supabaseAdmin
+      .from("analise_cache")
+      .select("result")
+      .eq("hash", cacheHash)
+      .single();
+    if (cached?.result) {
+      return NextResponse.json(cached.result);
+    }
+  }
 
   const content: Anthropic.MessageParam["content"] = [];
 
@@ -93,6 +114,10 @@ Ao analisar uma refeição, responda SOMENTE com JSON válido neste formato:
 
   try {
     const json = JSON.parse(text.replace(/```json\n?|\n?```/g, "").trim());
+    // Salva no cache se foi consulta por descrição
+    if (cacheHash) {
+      await supabaseAdmin.from("analise_cache").upsert({ hash: cacheHash, result: json });
+    }
     return NextResponse.json(json);
   } catch (parseErr) {
     return NextResponse.json({
