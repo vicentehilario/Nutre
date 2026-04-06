@@ -89,26 +89,49 @@ export default function Metas() {
     setPdfLoading(true);
     setPdfErro(null);
 
-    const form = new FormData();
-    form.append("pdf", file);
+    try {
+      const form = new FormData();
+      form.append("pdf", file);
 
-    const res = await fetch("/api/importar-plano", { method: "POST", body: form });
-    const json = await res.json();
+      const res = await fetch("/api/importar-plano", { method: "POST", body: form });
 
-    if (!res.ok) {
-      setPdfErro(json.error ?? "Erro ao importar. Tente novamente.");
-    } else {
-      setMetas((prev) => ({
-        ...prev,
-        meta_calorica: json.meta_calorica ?? prev.meta_calorica,
-        meta_proteina: json.meta_proteina ?? prev.meta_proteina,
-        objetivo: json.objetivo ?? prev.objetivo,
-        refeicoes_por_dia: json.refeicoes_por_dia ?? prev.refeicoes_por_dia,
-        plano_pdf_importado_em: new Date().toISOString(),
-        plano_origem: "pdf",
-      }));
+      let json: Record<string, unknown> = {};
+      try {
+        json = await res.json();
+      } catch {
+        setPdfErro("O servidor retornou uma resposta inesperada. Tente novamente.");
+        setPdfLoading(false);
+        return;
+      }
+
+      if (!res.ok) {
+        setPdfErro((json.error as string) ?? "Erro ao importar. Tente novamente.");
+      } else {
+        setMetas((prev) => ({
+          ...prev,
+          meta_calorica: (json.meta_calorica as number) ?? prev.meta_calorica,
+          meta_proteina: (json.meta_proteina as number) ?? prev.meta_proteina,
+          objetivo: (json.objetivo as string) ?? prev.objetivo,
+          refeicoes_por_dia: (json.refeicoes_por_dia as number) ?? prev.refeicoes_por_dia,
+          plano_pdf_importado_em: new Date().toISOString(),
+          plano_origem: "pdf",
+        }));
+      }
+    } catch {
+      setPdfErro("Falha na conexão. Verifique sua internet e tente novamente.");
+    } finally {
+      setPdfLoading(false);
     }
-    setPdfLoading(false);
+  }
+
+  async function limparPdf() {
+    if (!user) return;
+    const supabase = createClient();
+    await supabase.from("profiles").update({
+      plano_origem: "manual",
+      plano_pdf_importado_em: null,
+    }).eq("id", user.id);
+    setMetas((prev) => ({ ...prev, plano_origem: "manual", plano_pdf_importado_em: null }));
   }
 
   function step(field: "meta_calorica" | "meta_proteina", delta: number) {
@@ -274,11 +297,21 @@ export default function Metas() {
           <input
             ref={fileRef}
             type="file"
-            accept=".pdf,application/pdf"
+            accept="application/pdf"
             onChange={handlePdf}
             className="hidden"
           />
         </div>
+
+        {/* Botão remover plano PDF — só aparece se importado */}
+        {pdfImportado && (
+          <button
+            onClick={limparPdf}
+            className="w-full border border-[#fecaca] bg-[#fff5f5] text-[#dc2626] rounded-[14px] py-3 text-[13px] font-semibold"
+          >
+            Remover plano importado
+          </button>
+        )}
 
       </div>
     </div>
