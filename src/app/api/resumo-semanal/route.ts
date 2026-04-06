@@ -96,7 +96,7 @@ export async function GET(req: NextRequest) {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Nutre <resumo@nutre.app>",
+        from: "Nutre <onboarding@resend.dev>",
         to: profile.email,
         subject: `${nome}, aqui está o seu resumo da semana 📊`,
         html,
