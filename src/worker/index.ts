@@ -1,8 +1,9 @@
 /// <reference lib="webworker" />
 
-declare const self: ServiceWorkerGlobalScope;
+// eslint-disable-next-line no-restricted-globals
+const sw = self as unknown as ServiceWorkerGlobalScope;
 
-self.addEventListener("push", (event) => {
+sw.addEventListener("push", (event) => {
   const data = event.data?.json() ?? {};
   const title = data.title ?? "Nutre";
   const options: NotificationOptions = {
@@ -13,13 +14,13 @@ self.addEventListener("push", (event) => {
     renotify: true,
     data: { url: "/app" },
   };
-  event.waitUntil(self.registration.showNotification(title, options));
+  event.waitUntil(sw.registration.showNotification(title, options));
 });
 
-self.addEventListener("notificationclick", (event) => {
+sw.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const url = event.notification.data?.url ?? "/app";
   event.waitUntil(
-    (self as unknown as { clients: { openWindow: (url: string) => Promise<unknown> } }).clients.openWindow(url)
+    (sw as unknown as { clients: { openWindow: (url: string) => Promise<unknown> } }).clients.openWindow(url)
   );
 });
