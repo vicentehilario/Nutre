@@ -627,3 +627,91 @@
   width: 22px; height: 22px;
   flex-shrink: 0; display: block;
 }
+
+/* ─── RESPONSIVE: MOBILE ─── */
+@media (max-width: 768px) {
+
+  /* NAV */
+  .nav {
+    padding: 0 20px; height: 56px;
+  }
+  .navLogo span { font-size: 16px; }
+  .navCta { padding: 8px 16px; font-size: 12px; }
+
+  /* HERO */
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 72px 24px 0;
+    gap: 0;
+  }
+  .hero::before { display: none; }
+  .heroContent { padding-right: 0; padding-bottom: 32px; }
+  .heroEyebrow { font-size: 10px; margin-bottom: 20px; }
+  .heroH1 { font-size: 40px; letter-spacing: -2px; margin-bottom: 16px; }
+  .heroSub { font-size: 15px; max-width: 100%; margin-bottom: 28px; }
+  .heroCtas { flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .btnHeroPrimary, .btnHeroSecondary { text-align: center; padding: 15px 20px; }
+  .heroProof p { font-size: 12px; }
+
+  /* HERO VISUAL: smaller photo below text */
+  .heroVisual {
+    height: 320px;
+    margin: 0 -24px;
+    align-items: center;
+    overflow: hidden;
+  }
+  .heroCardCredential, .heroCardStat { display: none; }
+
+  /* SECTION BASE */
+  .sectionTitle { font-size: 28px; letter-spacing: -1px; }
+  .sectionSub { font-size: 15px; }
+
+  /* DOR */
+  .dor { padding: 64px 24px; }
+  .dorGrid { grid-template-columns: 1fr; }
+  .dorItem { padding: 28px 24px; }
+
+  /* COMO FUNCIONA */
+  .como { padding: 64px 24px; }
+  .comoInner .sectionSub { margin-bottom: 40px; }
+  .steps { grid-template-columns: 1fr; gap: 40px; }
+  .steps::before { display: none; }
+  .step { padding: 0; }
+  .phone { width: 160px; height: 320px; }
+
+  /* AUTORIDADE */
+  .autoridade { padding: 64px 24px; }
+  .autoridadeInner { grid-template-columns: 1fr; gap: 40px; }
+  .autoridadeImgWrap img { height: 360px; }
+  .autoridadeBadge { bottom: -12px; right: 12px; padding: 12px 16px; }
+  .bNum { font-size: 24px; }
+  .autoridadeContent .sectionTitle { font-size: 28px; }
+  .autoridadeContent p { font-size: 15px; }
+
+  /* DEPOIMENTOS */
+  .depoimentos { padding: 64px 24px; }
+  .depGrid { grid-template-columns: 1fr; }
+  .depCard { padding: 24px 20px; }
+  .depQuote { font-size: 14px; }
+
+  /* PREÇO */
+  .preco { padding: 64px 24px; }
+  .precoGrid { grid-template-columns: 1fr; gap: 20px; }
+  .precoCard { padding: 28px 24px; }
+  .priceValue { font-size: 40px; }
+
+  /* CTA FINAL */
+  .ctaFinal { padding: 80px 24px; }
+  .ctaFinal h2 { font-size: 34px; letter-spacing: -1.5px; }
+  .ctaFinal p { font-size: 16px; }
+  .btnCtaFinal { padding: 16px 32px; font-size: 15px; display: block; }
+
+  /* FOOTER */
+  .footer {
+    padding: 28px 20px;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}

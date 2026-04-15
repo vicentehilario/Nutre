@@ -72,7 +72,7 @@ export default function Home() {
             alt="Vicente Hilário — Nutricionista"
             width={480}
             height={640}
-            style={{ height: "90%", maxHeight: 620, width: "auto", objectFit: "cover", objectPosition: "top center", borderRadius: "20px 20px 0 0", boxShadow: "0 -8px 60px rgba(0,0,0,0.1)" }}
+            style={{ height: "100%", maxHeight: 620, width: "100%", objectFit: "cover", objectPosition: "top center", borderRadius: "20px 20px 0 0", boxShadow: "0 -8px 60px rgba(0,0,0,0.1)" }}
             priority
           />
           <div className={`${s.heroCard} ${s.heroCardCredential}`}>
