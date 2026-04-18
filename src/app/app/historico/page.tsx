@@ -14,6 +14,7 @@ interface Refeicao {
   gorduras: number;
   dentro_do_plano: boolean;
   created_at: string;
+  foto_url?: string | null;
 }
 
 interface DayEntry {
@@ -509,7 +510,10 @@ export default function Historico() {
                   {/* Lista de refeições */}
                   <div className="divide-y divide-[#f5f5f5]">
                     {day.refeicoes.map((r) => (
-                      <div key={r.id} className="flex items-center px-4 py-3 gap-3">
+                      <div key={r.id} className="flex items-start px-4 py-3 gap-3">
+                        {r.foto_url && (
+                          <img src={r.foto_url} alt="refeição" className="w-12 h-12 rounded-[10px] object-cover flex-shrink-0 border border-[#f0f0f0] mt-0.5" />
+                        )}
                         <div className="flex-1 min-w-0">
                           <p className="text-[13px] font-semibold text-[#111] truncate">{r.descricao || "Refeição"}</p>
                           <p className="text-[11px] text-[#aaa] mt-0.5">

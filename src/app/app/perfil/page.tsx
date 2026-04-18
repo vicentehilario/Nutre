@@ -11,6 +11,8 @@ interface Profile {
   email: string;
   plano: string;
   streak: number;
+  created_at?: string;
+  plano_ativado_em?: string | null;
 }
 
 const planoLabel: Record<string, string> = {
@@ -50,7 +52,7 @@ export default function Perfil() {
     const userId = user.id;
     async function load() {
       const supabase = createClient();
-      const { data } = await supabase.from("profiles").select("nome, email, plano, streak").eq("id", userId).single();
+      const { data } = await supabase.from("profiles").select("nome, email, plano, streak, created_at, plano_ativado_em").eq("id", userId).single();
       setProfile(data);
     }
     load();
@@ -189,6 +191,51 @@ export default function Perfil() {
               </div>
             )}
           </>
+        )}
+
+        {/* Status da assinatura — para usuários pagos */}
+        {isPago && profile && (
+          <div className="bg-white rounded-[20px] border border-[#f0f0f0] overflow-hidden">
+            <div className="px-[18px] py-4 border-b border-[#f5f5f5]">
+              <p className="text-[11px] text-[#aaa] font-semibold uppercase tracking-wide mb-0.5">Status da assinatura</p>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="w-2 h-2 rounded-full bg-[#22c55e] flex-shrink-0" />
+                <p className="text-[15px] font-bold text-[#16a34a]">Ativa</p>
+              </div>
+              {(profile.plano_ativado_em || profile.created_at) && (
+                <p className="text-[12px] text-[#aaa] mt-0.5">
+                  Ativo desde {new Date(profile.plano_ativado_em ?? profile.created_at!).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}
+                </p>
+              )}
+            </div>
+            <div className="px-[18px] py-4 border-b border-[#f5f5f5]">
+              <p className="text-[11px] text-[#aaa] font-semibold uppercase tracking-wide mb-1">Plano contratado</p>
+              <p className="text-[15px] font-bold text-[#111]">{planoLabel[profile.plano] ?? profile.plano}</p>
+            </div>
+            <div className="px-[18px] py-4">
+              <p className="text-[11px] text-[#aaa] font-semibold uppercase tracking-wide mb-2">Gerenciar assinatura</p>
+              <div className="flex flex-col gap-2">
+                <a
+                  href="https://app-vlp.hotmart.com/user/subscriptions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between w-full bg-[#fafafa] border border-[#e5e5e5] rounded-[12px] px-4 py-3"
+                >
+                  <span className="text-[13px] font-semibold text-[#333]">Ver no Hotmart</span>
+                  <span className="text-[#aaa] text-sm">→</span>
+                </a>
+                <a
+                  href={`https://wa.me/5528999888498?text=${encodeURIComponent("Olá! Preciso de ajuda com minha assinatura Nutre.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between w-full bg-[#f0fdf4] border border-[#bbf7d0] rounded-[12px] px-4 py-3"
+                >
+                  <span className="text-[13px] font-semibold text-[#16a34a]">Falar com suporte</span>
+                  <span className="text-[#16a34a] text-sm">→</span>
+                </a>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Notificações push */}

@@ -245,7 +245,15 @@ export default function Registrar() {
             }`}
           >
             {preview ? (
-              <img src={preview} alt="preview" className="h-full w-full object-cover" />
+              <div className="relative h-full w-full">
+                <img src={preview} alt="preview" className="h-full w-full object-cover" />
+                <button
+                  onClick={(e) => { e.stopPropagation(); setFoto(null); setPreview(null); setTimeout(() => fileRef.current?.click(), 50); }}
+                  className="absolute top-3 right-3 bg-black/60 text-white text-[12px] font-bold px-3 py-1.5 rounded-full backdrop-blur-sm"
+                >
+                  Refazer
+                </button>
+              </div>
             ) : (
               <div className="flex flex-col items-center gap-2">
                 <div className="w-16 h-16 rounded-full bg-[#f0fdf4] flex items-center justify-center text-3xl">📷</div>

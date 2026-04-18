@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 
   let query = supabase
     .from("refeicoes")
-    .select("id, data, descricao, calorias, proteinas, carboidratos, gorduras, dentro_do_plano, created_at")
+    .select("id, data, descricao, calorias, proteinas, carboidratos, gorduras, dentro_do_plano, created_at, foto_url")
     .eq("user_id", session.user.id)
     .order("data", { ascending: false })
     .order("created_at", { ascending: false });

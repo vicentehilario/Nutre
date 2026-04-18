@@ -325,7 +325,7 @@ export default function AppHome() {
             href="/app/momento-critico"
             className="block w-full py-3.5 rounded-[14px] text-center text-[13px] font-bold bg-[#ea580c] text-white transition"
           >
-            🆘 Preciso de ajuda agora
+            🆘 Me Salva, Vicente!
           </Link>
         </div>
 

@@ -20,7 +20,7 @@ const menuItems = [
   { href: "/app/registrar", label: "Registrar refeição", icon: "📷", desc: "Foto ou descrição" },
   { href: "/app/historico", label: "Histórico", icon: "📊", desc: "Refeições e peso" },
   { href: "/app/metas", label: "Metas", icon: "⚙️", desc: "Calorias e proteína" },
-  { href: "/app/momento-critico", label: "Momento crítico", icon: "🆘", desc: "Preciso de ajuda agora" },
+  { href: "/app/momento-critico", label: "Me Salva", icon: "🆘", desc: "Bateu a vontade? Vicente te ajuda" },
   { href: "/app/perfil", label: "Perfil", icon: "👤", desc: "Conta e plano" },
 ];
 
@@ -92,9 +92,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           {/* Backdrop */}
           <div className="absolute inset-0 bg-black/50" />
 
-          {/* Drawer panel */}
+          {/* Drawer panel — abre pela ESQUERDA */}
           <div
-            className="relative ml-auto w-[80%] max-w-[320px] h-full bg-white flex flex-col shadow-2xl"
+            className="relative mr-auto w-[80%] max-w-[320px] h-full bg-white flex flex-col shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
