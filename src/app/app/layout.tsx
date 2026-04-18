@@ -83,18 +83,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </nav>
 
-      {/* ─── WHATSAPP SUPPORT BUTTON ─── */}
-      <a
-        href={`https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MSG}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Suporte via WhatsApp"
-        className="fixed bottom-[88px] right-4 z-40 w-14 h-14 rounded-full bg-[#25d366] flex items-center justify-center shadow-lg active:scale-95 transition-transform"
-        style={{ boxShadow: "0 4px 20px rgba(37,211,102,0.45)" }}
-      >
-        <WhatsAppIcon />
-      </a>
-
       {/* ─── SIDE DRAWER OVERLAY ─── */}
       {drawerOpen && (
         <div
