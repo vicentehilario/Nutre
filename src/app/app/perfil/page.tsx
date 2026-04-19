@@ -43,6 +43,7 @@ export default function Perfil() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const { permission, subscribed, subscribe, unsubscribe } = usePushNotifications();
 
@@ -51,9 +52,21 @@ export default function Perfil() {
     if (!user) { router.push("/login"); return; }
     const userId = user.id;
     async function load() {
+      setProfileLoading(true);
       const supabase = createClient();
       const { data } = await supabase.from("profiles").select("nome, email, plano, streak, created_at, plano_ativado_em").eq("id", userId).single();
-      setProfile(data);
+      if (data) {
+        setProfile(data);
+      } else {
+        // Fallback: usar dados do auth quando o perfil ainda não foi criado na tabela
+        setProfile({
+          nome: user.user_metadata?.nome ?? user.email?.split("@")[0] ?? "Usuário",
+          email: user.email ?? "",
+          plano: "gratis",
+          streak: 0,
+        });
+      }
+      setProfileLoading(false);
     }
     load();
   }, [user, authLoading, router]);
@@ -65,6 +78,17 @@ export default function Perfil() {
   }
 
   const isPago = profile?.plano && profile.plano !== "gratis";
+
+  if (authLoading || profileLoading) {
+    return (
+      <div className="bg-[#fafafa] min-h-screen flex items-center justify-center">
+        <div className="relative w-12 h-12">
+          <div className="absolute inset-0 rounded-full border-4 border-[#f0f0f0]" />
+          <div className="absolute inset-0 rounded-full border-4 border-[#16a34a] border-t-transparent animate-spin" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#fafafa] min-h-screen">
