@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import type { AuthChangeEvent } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ResetSenha() {
@@ -16,11 +17,11 @@ export default function ResetSenha() {
   useEffect(() => {
     // Supabase converte o hash fragment em sessão automaticamente ao carregar a página
     const supabase = createClient();
-    supabase.auth.getSession().then(({ data }: { data: { session: import("@supabase/supabase-js").Session | null } }) => {
+    supabase.auth.getSession().then(({ data }) => {
       if (data.session) setSessionReady(true);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((event) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event: AuthChangeEvent) => {
       if (event === "PASSWORD_RECOVERY") setSessionReady(true);
     });
 
