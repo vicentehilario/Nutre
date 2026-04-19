@@ -261,7 +261,7 @@ export default function Registrar() {
                 <p className="text-[11px] text-[#aaa]">ou escolher da galeria</p>
               </div>
             )}
-            <input ref={fileRef} type="file" accept="image/*" capture="environment" onChange={handleFoto} className="hidden" />
+            <input ref={fileRef} type="file" accept="image/*" onChange={handleFoto} className="hidden" />
           </div>
         )}
 
