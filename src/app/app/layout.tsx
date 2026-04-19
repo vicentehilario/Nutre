@@ -42,8 +42,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col h-full max-w-md mx-auto bg-[#fafafa]">
       {/* ─── TOP BAR ─── */}
       <div className="fixed top-0 left-0 right-0 max-w-md mx-auto z-30 bg-white border-b border-[#f0f0f0] flex items-center justify-between px-4 h-12">
-        <div className="w-9" />
-        <span className="text-[15px] font-extrabold text-[#1a3a20] tracking-tight">Nutre</span>
         <button
           onClick={() => setDrawerOpen(true)}
           className="w-9 h-9 flex items-center justify-center text-[#333] active:text-[#16a34a] rounded-full"
@@ -51,6 +49,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         >
           <HamburgerIcon />
         </button>
+        <div className="flex items-center gap-1.5">
+          <svg width="22" height="22" viewBox="0 0 100 100" fill="none">
+            <rect width="100" height="100" rx="22" fill="#1a3a20"/>
+            <path d="M 18,18 L 31,18 L 68,82 L 82,82 L 82,18 L 69,18 L 32,82 L 18,82 Z" fill="white"/>
+          </svg>
+          <span className="text-[15px] font-extrabold text-[#1a3a20] tracking-tight">Nutre</span>
+        </div>
+        <div className="w-9" />
       </div>
 
       <main className="flex-1 overflow-y-auto pt-12 pb-20">{children}</main>
@@ -85,9 +91,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           {/* Backdrop */}
           <div className="absolute inset-0 bg-black/50" />
 
-          {/* Drawer panel — abre pela DIREITA */}
+          {/* Drawer panel — abre pela ESQUERDA */}
           <div
-            className="relative ml-auto w-[80%] max-w-[320px] h-full bg-white flex flex-col shadow-2xl"
+            className="relative mr-auto w-[80%] max-w-[320px] h-full bg-white flex flex-col shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}

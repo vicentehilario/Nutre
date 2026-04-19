@@ -199,7 +199,7 @@ export default function Registrar() {
               Registrar outra
             </button>
             <button
-              onClick={() => router.push("/app")}
+              onClick={() => { window.location.href = "/app"; }}
               className="flex-1 bg-[#16a34a] text-white rounded-[14px] py-3.5 text-[13px] font-bold"
             >
               Ir para início

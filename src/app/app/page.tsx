@@ -216,8 +216,8 @@ export default function AppHome() {
       {/* Header */}
       <div className="bg-white px-6 pt-5 pb-4 border-b border-[#f0f0f0]">
         <p className="text-xs text-[#999] font-medium">{saudacao()}</p>
-        <h1 className="text-2xl font-bold text-[#111] tracking-tight mt-0.5 flex items-center">
-          {profile?.nome?.split(" ")[0] ?? "bem-vindo"} <NutreLogo />
+        <h1 className="text-2xl font-bold text-[#111] tracking-tight mt-0.5">
+          {profile?.nome?.split(" ")[0] ?? "bem-vindo"}
         </h1>
         <p className="text-xs text-[#22c55e] font-semibold mt-1">
           🔥 {streakEfetivo} {streakEfetivo === 1 ? "dia" : "dias"} de consistência
