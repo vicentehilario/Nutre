@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // onAuthStateChange dispara INITIAL_SESSION na inicialização com a sessão do localStorage
     // É a única fonte de verdade — não usar getSession() em paralelo pois pode setar loading=false com user=null
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
       setSession(session);
       setUser(session?.user ?? null);
 
