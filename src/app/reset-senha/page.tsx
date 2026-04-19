@@ -16,7 +16,7 @@ export default function ResetSenha() {
   useEffect(() => {
     // Supabase converte o hash fragment em sessão automaticamente ao carregar a página
     const supabase = createClient();
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(({ data }: { data: { session: import("@supabase/supabase-js").Session | null } }) => {
       if (data.session) setSessionReady(true);
     });
 
