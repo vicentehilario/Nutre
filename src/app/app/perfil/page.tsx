@@ -51,6 +51,7 @@ export default function Perfil() {
     if (authLoading) return;
     if (!user) { router.push("/login"); return; }
     const userId = user.id;
+    const authUser = user;
     async function load() {
       setProfileLoading(true);
       const supabase = createClient();
@@ -60,8 +61,8 @@ export default function Perfil() {
       } else {
         // Fallback: usar dados do auth quando o perfil ainda não foi criado na tabela
         setProfile({
-          nome: user.user_metadata?.nome ?? user.email?.split("@")[0] ?? "Usuário",
-          email: user.email ?? "",
+          nome: authUser.user_metadata?.nome ?? authUser.email?.split("@")[0] ?? "Usuário",
+          email: authUser.email ?? "",
           plano: "gratis",
           streak: 0,
         });
