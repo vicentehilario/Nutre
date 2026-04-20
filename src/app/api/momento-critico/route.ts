@@ -1,9 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { createClient } from "@/lib/supabase/server";
+import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+const supabaseAdmin = createSupabaseAdmin(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+const ME_SALVA_LIMIT = 3;
+
 export async function POST(req: NextRequest) {
+  // Verificar autenticação
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  }
+
+  // Verificar limite diário para plano grátis
+  const { data: profileData } = await supabaseAdmin
+    .from("profiles")
+    .select("plano, me_salva_hoje")
+    .eq("id", user.id)
+    .single();
+
+  if (profileData?.plano === "gratis" && (profileData?.me_salva_hoje ?? 0) >= ME_SALVA_LIMIT) {
+    return NextResponse.json(
+      { error: "Limite diário do Me Salva atingido. Faça upgrade para usar sem limites." },
+      { status: 429 }
+    );
+  }
+
+  // Incrementar contador (best-effort, não bloqueia a resposta)
+  if (profileData?.plano === "gratis") {
+    supabaseAdmin
+      .from("profiles")
+      .update({ me_salva_hoje: (profileData?.me_salva_hoje ?? 0) + 1 })
+      .eq("id", user.id)
+      .then(() => {});
+  }
+
   const { vontade } = await req.json();
 
   const msg = await client.messages.create({

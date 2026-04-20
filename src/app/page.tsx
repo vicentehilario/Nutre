@@ -381,7 +381,11 @@ export default function Home() {
           <NutreLogo size="footer" />
           <strong>Nutre</strong> · Vicente Hilário · CRN4 23101536
         </div>
-        <div>© 2026 Nutre. Todos os direitos reservados.</div>
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm">
+          <span>© 2026 Nutre.</span>
+          <Link href="/privacidade" className="underline opacity-70 hover:opacity-100">Política de Privacidade</Link>
+          <Link href="/termos" className="underline opacity-70 hover:opacity-100">Termos de Uso</Link>
+        </div>
       </footer>
     </div>
   );
