@@ -12,6 +12,15 @@ export function usePushNotifications() {
       return;
     }
     setPermission(Notification.permission);
+
+    // Verifica se já tem subscription ativa
+    if (Notification.permission === "granted") {
+      navigator.serviceWorker.ready.then((reg) => {
+        reg.pushManager.getSubscription().then((sub) => {
+          setSubscribed(!!sub);
+        });
+      });
+    }
   }, []);
 
   async function subscribe() {
@@ -23,10 +32,12 @@ export function usePushNotifications() {
 
     const registration = await navigator.serviceWorker.ready;
     const existing = await registration.pushManager.getSubscription();
-    const sub = existing ?? await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
-    });
+    const sub =
+      existing ??
+      (await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
+      }));
 
     await fetch("/api/push/subscribe", {
       method: "POST",

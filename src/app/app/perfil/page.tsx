@@ -266,26 +266,39 @@ export default function Perfil() {
         {/* Notificações push */}
         {permission !== "unsupported" && (
           <div className="bg-white rounded-[20px] border border-[#f0f0f0] p-5">
-            <p className="text-[13px] font-bold text-[#111] mb-1">Lembretes diários</p>
-            <p className="text-xs text-[#aaa] mb-3.5">
-              {subscribed || permission === "granted"
-                ? "Você receberá uma notificação ao meio-dia se não registrou ainda."
-                : "Ative para receber um lembrete diário de registrar suas refeições."}
-            </p>
+            <p className="text-[13px] font-bold text-[#111] mb-1">Lembretes inteligentes</p>
             {subscribed || permission === "granted" ? (
-              <button
-                onClick={unsubscribe}
-                className="w-full border border-[#e5e5e5] text-[#555] rounded-[14px] py-3 text-[13px] font-semibold bg-white"
-              >
-                Desativar lembretes
-              </button>
+              <>
+                <p className="text-xs text-[#aaa] mb-2">Você está recebendo:</p>
+                <ul className="space-y-1 mb-3.5">
+                  {[
+                    "💧 Água — 4x ao dia (8h, 11h, 14h, 17h)",
+                    "🍽️ Registrar refeição — 4x ao dia",
+                    "😮 Aviso de 1, 3 e 7 dias sem registro",
+                    "⚖️ Lembrete de peso — toda segunda-feira",
+                  ].map((item) => (
+                    <li key={item} className="text-xs text-[#555]">{item}</li>
+                  ))}
+                </ul>
+                <button
+                  onClick={unsubscribe}
+                  className="w-full border border-[#e5e5e5] text-[#555] rounded-[14px] py-3 text-[13px] font-semibold bg-white"
+                >
+                  Desativar lembretes
+                </button>
+              </>
             ) : (
-              <button
-                onClick={subscribe}
-                className="w-full bg-[#16a34a] text-white rounded-[14px] py-3 text-[13px] font-bold"
-              >
-                🔔 Ativar lembretes
-              </button>
+              <>
+                <p className="text-xs text-[#aaa] mb-3.5">
+                  Ative para receber lembretes de água, refeições, peso e alertas quando ficar dias sem registrar.
+                </p>
+                <button
+                  onClick={subscribe}
+                  className="w-full bg-[#16a34a] text-white rounded-[14px] py-3 text-[13px] font-bold"
+                >
+                  🔔 Ativar lembretes
+                </button>
+              </>
             )}
           </div>
         )}

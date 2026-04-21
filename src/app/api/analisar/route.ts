@@ -92,6 +92,64 @@ MÉTODO:
 - Whey antes de refeições mais calóricas ajuda a amortecer o impacto.
 - Docinho sempre após refeição grande, nunca avulso — o volume da refeição principal aumenta a saciedade.
 
+ALIMENTOS INDUSTRIALIZADOS — VALORES DE REFERÊNCIA (use estes dados para estimativas precisas):
+
+BARRINHAS DE PROTEÍNA (por unidade, ~60g):
+- Bold Bar (Bold Snacks): 210kcal, 20g proteína, 21g carb, 7g gordura
+- Darkness Protein Bar (IntegralMédica): 195kcal, 20g proteína, 18g carb, 6g gordura
+- Protein Bar (IntegralMédica): 200kcal, 20g proteína, 20g carb, 6g gordura
+- Crispy Bar (Probiótica): 185kcal, 15g proteína, 20g carb, 5g gordura
+- Whey Bar (Body Action): 190kcal, 15g proteína, 22g carb, 5g gordura
+- Nutri Bar Protein (BRF): 190kcal, 15g proteína, 20g carb, 6g gordura
+- UP! Protein Bar (UP!): 200kcal, 20g proteína, 18g carb, 7g gordura
+- Barrinha genérica de proteína (~60g): estime ~190-210kcal, 15-20g proteína
+
+BARRINHAS COMUNS (não proteicas, por unidade ~25g):
+- Nutry (Nestle): 90kcal, 1g proteína, 18g carb, 2g gordura
+- Quaker Cereal Bar: 85kcal, 1g proteína, 17g carb, 2g gordura
+- Belvita (Lacta): 130kcal, 2g proteína, 22g carb, 4g gordura
+
+IOGURTES (por unidade/pote):
+- Grego integral (170g): 190kcal, 17g proteína, 9g carb, 9g gordura
+- Grego zero lactose (170g): 150kcal, 15g proteína, 10g carb, 5g gordura
+- Whey Grego (170g): 160kcal, 20g proteína, 12g carb, 3g gordura
+- Iogurte natural integral (200g): 120kcal, 8g proteína, 10g carb, 4g gordura
+
+QUEIJOS (por fatia/porção 30g):
+- Mussarela: 80kcal, 6g proteína, 0g carb, 6g gordura
+- Prato: 85kcal, 6g proteína, 0g carb, 7g gordura
+- Cottage (100g): 100kcal, 12g proteína, 3g carb, 4g gordura
+
+FRIOS (por fatia ~15g):
+- Peito de peru: 20kcal, 4g proteína, 0g carb, 0.5g gordura
+- Presunto: 25kcal, 3g proteína, 0g carb, 1g gordura
+- Blanquet de peru: 18kcal, 3g proteína, 0g carb, 0.5g gordura
+
+PÃO DE FORMA (por fatia ~25g):
+- Pão branco tradicional: 65kcal, 2g proteína, 13g carb, 0.8g gordura
+- Pão integral: 60kcal, 2.5g proteína, 11g carb, 1g gordura
+
+BISCOITOS (por porção ~30g / ~4-6 unidades):
+- Cream Cracker: 130kcal, 3g proteína, 20g carb, 4g gordura
+- Bolacha Maria: 130kcal, 2g proteína, 23g carb, 3.5g gordura
+- Biscoito recheado (Oreo, etc.): 150kcal, 1.5g proteína, 22g carb, 7g gordura
+
+FAST-FOOD (por item):
+- X-burguer McDonald's: 300kcal, 15g proteína, 32g carb, 12g gordura
+- Big Mac: 490kcal, 27g proteína, 44g carb, 25g gordura
+- McFritas M: 320kcal, 4g proteína, 44g carb, 15g gordura
+- Whopper (BK): 630kcal, 29g proteína, 47g carb, 37g gordura
+- Pizza convencional (fatia ~120g): 280kcal, 13g proteína, 30g carb, 12g gordura
+
+BEBIDAS:
+- Whey protein (30g pó + 200ml água): 120kcal, 24g proteína, 3g carb, 2g gordura
+- Achocolatado Toddynho (200ml): 130kcal, 5g proteína, 23g carb, 2.5g gordura
+- Suco de laranja natural (200ml): 80kcal, 1g proteína, 19g carb, 0g gordura
+- Refrigerante cola lata 350ml: 140kcal, 0g proteína, 37g carb, 0g gordura
+- Cerveja long neck 355ml: 150kcal, 1g proteína, 13g carb, 0g gordura
+
+Quando o usuário mencionar qualquer produto industrializado não listado, estime com base nos valores mais similares acima. Sempre use o peso/porção informado para ajustar os cálculos.
+
 FEEDBACK DE REFEIÇÕES:
 - Se a refeição for equilibrada: elogie de forma genuína e prática.
 - Se tiver algo fora do padrão: aponte de forma leve, sem drama, e dê uma dica prática.
