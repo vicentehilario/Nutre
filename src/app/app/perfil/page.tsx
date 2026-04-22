@@ -267,7 +267,7 @@ export default function Perfil() {
         {permission !== "unsupported" && (
           <div className="bg-white rounded-[20px] border border-[#f0f0f0] p-5">
             <p className="text-[13px] font-bold text-[#111] mb-1">Lembretes inteligentes</p>
-            {subscribed || permission === "granted" ? (
+            {subscribed ? (
               <>
                 <p className="text-xs text-[#aaa] mb-2">Você está recebendo:</p>
                 <ul className="space-y-1 mb-3.5">

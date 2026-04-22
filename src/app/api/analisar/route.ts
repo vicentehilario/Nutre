@@ -69,8 +69,10 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const texto = descricao
-    ? `Analise esta refeição: ${descricao}`
+  const texto = descricao?.trim()
+    ? fotoUrl
+      ? `Analise a refeição na imagem. O usuário descreveu: "${descricao}". Se a descrição contém quantidades específicas (gramas, colheres, unidades, porções), use essas quantidades para calcular os macros — a foto serve como referência visual do preparo e ingredientes.`
+      : `Analise esta refeição: ${descricao}`
     : "Analise a refeição na imagem.";
 
   content.push({ type: "text", text: texto });
@@ -283,6 +285,30 @@ USDA — ALIMENTOS INTERNACIONAIS (por 100g):
 
 REGRA DE ESTIMATIVA: Para qualquer alimento não listado, estime com base no alimento mais similar em composição. Sempre ajuste os valores proporcionalmente ao peso/porção informado pelo usuário. Prefira sempre os valores TACO para alimentos brasileiros e USDA para alimentos importados ou internacionais.
 
+REGRA DE QUANTIDADES NA DESCRIÇÃO (PRIORIDADE MÁXIMA):
+Quando o usuário informar quantidades na descrição (ex: "200g de arroz", "1 frango de 150g", "2 colheres de azeite", "3 ovos"), OBRIGATORIAMENTE faça os cálculos passo a passo antes de gerar o JSON — não estime pelo tamanho visual da foto. A foto identifica o método de preparo e confirma os ingredientes; a descrição define as quantidades.
+
+FORMATO OBRIGATÓRIO quando há quantidades na descrição:
+Primeiro escreva o bloco de cálculo, depois o JSON:
+
+CÁLCULO:
+[ingrediente]: [qtd]g × ([kcal_tabela]/100) = [X]kcal, [Y]g prot, [Z]g carb, [W]g gord
+...
+TOTAL: [soma]kcal, [soma]g prot, [soma]g carb, [soma]g gord
+
+{"calorias": ..., "proteinas": ..., "carboidratos": ..., "gorduras": ..., "dentro_do_plano": ..., "feedback": "..."}
+
+Exemplo correto:
+CÁLCULO:
+100g arroz polido cozido: 100 × (128/100) = 128kcal, 2.5g prot, 28g carb, 0.2g gord
+200g frango peito grelhado: 200 × (163/100) = 326kcal, 62g prot, 0g carb, 6.4g gord
+70g batata doce cozida: 70 × (77/100) = 54kcal, 0.4g prot, 12.9g carb, 0.07g gord
+TOTAL: 508kcal, 64.9g prot, 40.9g carb, 6.67g gord
+
+{"calorias": 508, "proteinas": 65, "carboidratos": 41, "gorduras": 7, "dentro_do_plano": true, "feedback": "..."}
+
+Se a descrição menciona ingredientes SEM quantidades, aí sim use a foto para estimar as porções (sem bloco CÁLCULO).
+
 FEEDBACK DE REFEIÇÕES:
 - Se a refeição for equilibrada: elogie de forma genuína e prática.
 - Se tiver algo fora do padrão: aponte de forma leve, sem drama, e dê uma dica prática.
@@ -326,7 +352,9 @@ Ao analisar uma refeição, responda SOMENTE com JSON válido neste formato:
   const text = msg.content[0].type === "text" ? msg.content[0].text : "";
 
   try {
-    const json = JSON.parse(text.replace(/```json\n?|\n?```/g, "").trim());
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("No JSON found");
+    const json = JSON.parse(jsonMatch[0]);
     // Salva no cache se foi consulta por descrição
     if (cacheHash) {
       await supabaseAdmin.from("analise_cache").upsert({ hash: cacheHash, result: json });
