@@ -1,5 +1,18 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
+import webpush from "web-push";
+
+const supabaseAdmin = createSupabaseAdmin(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+webpush.setVapidDetails(
+  process.env.VAPID_MAILTO!,
+  process.env.VAPID_PUBLIC_KEY!,
+  process.env.VAPID_PRIVATE_KEY!
+);
 
 export async function POST() {
   const supabase = await createClient();
@@ -8,7 +21,7 @@ export async function POST() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("fotos_hoje, streak, ultimo_registro")
+    .select("fotos_hoje, streak, ultimo_registro, meta_calorica, push_subscription")
     .eq("id", user.id)
     .single();
 
@@ -43,6 +56,32 @@ export async function POST() {
       ultimo_registro: hoje,
     })
     .eq("id", user.id);
+
+  // Verifica meta calórica atingida
+  if (profile.meta_calorica && profile.push_subscription) {
+    const { data: refHoje } = await supabaseAdmin
+      .from("refeicoes")
+      .select("calorias")
+      .eq("user_id", user.id)
+      .eq("data", hoje);
+
+    const totalCalorias = (refHoje ?? []).reduce((s, r) => s + (r.calorias ?? 0), 0);
+    const meta = profile.meta_calorica;
+
+    if (totalCalorias >= meta * 0.95 && totalCalorias <= meta * 1.1) {
+      try {
+        await webpush.sendNotification(
+          profile.push_subscription as webpush.PushSubscription,
+          JSON.stringify({
+            title: "🎯 Meta do dia batida!",
+            body: `${totalCalorias} kcal registradas — você atingiu sua meta de ${meta} kcal. Boa!`,
+            tag: "nutre-goal",
+            url: "/app",
+          })
+        );
+      } catch { /* subscription expirada, ignora */ }
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }

@@ -53,6 +53,7 @@ type Profile = {
   id: string;
   push_subscription: unknown;
   ultimo_registro?: string | null;
+  streak?: number;
 };
 
 async function sendBatch(
@@ -95,7 +96,7 @@ export async function GET(req: NextRequest) {
 
   const { data: profiles } = await supabaseAdmin
     .from("profiles")
-    .select("id, push_subscription, ultimo_registro")
+    .select("id, push_subscription, ultimo_registro, streak")
     .not("push_subscription", "is", null);
 
   if (!profiles) return NextResponse.json({ ok: true, enviados: 0 });
@@ -131,6 +132,51 @@ export async function GET(req: NextRequest) {
       tag: "nutre-weight",
       url: "/app",
     }));
+  }
+
+  if (type === "streak_risk") {
+    enviados = await sendBatch(profiles, (p) => {
+      if (p.ultimo_registro === hoje) return null;
+      const streak = p.streak ?? 0;
+      if (streak < 1) return null;
+      return {
+        title: `🔥 Seu streak de ${streak} ${streak === 1 ? "dia" : "dias"} vai quebrar!`,
+        body: "Registra uma refeição agora — não deixa a sequência morrer hoje.",
+        tag: "nutre-streak",
+        url: "/app/registrar",
+      };
+    });
+  }
+
+  if (type === "weekly_summary") {
+    const semanaAtras = new Date();
+    semanaAtras.setDate(semanaAtras.getDate() - 6);
+    const semanaAtrasStr = semanaAtras.toISOString().split("T")[0];
+
+    const { data: refeicoesSemana } = await supabaseAdmin
+      .from("refeicoes")
+      .select("user_id, data")
+      .gte("data", semanaAtrasStr)
+      .lte("data", hoje);
+
+    const diasPorUser: Record<string, Set<string>> = {};
+    for (const r of refeicoesSemana ?? []) {
+      if (!diasPorUser[r.user_id]) diasPorUser[r.user_id] = new Set();
+      diasPorUser[r.user_id].add(r.data);
+    }
+
+    enviados = await sendBatch(profiles, (p) => {
+      const dias = diasPorUser[p.id]?.size ?? 0;
+      if (dias === 0) return null;
+      const streak = p.streak ?? 0;
+      const streakTxt = streak > 0 ? ` Sequência atual: ${streak} dias 🔥` : "";
+      return {
+        title: "📊 Resumo da semana",
+        body: `Você registrou ${dias} ${dias === 1 ? "dia" : "dias"} essa semana.${streakTxt}`,
+        tag: "nutre-weekly",
+        url: "/app/historico",
+      };
+    });
   }
 
   return NextResponse.json({ ok: true, type, slot, enviados });
