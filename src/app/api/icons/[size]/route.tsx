@@ -9,7 +9,7 @@ export async function GET(
 ) {
   const { size: sizeStr } = await params;
   const size = Math.min(512, Math.max(16, parseInt(sizeStr) || 192));
-  const innerSize = Math.round(size * 0.64);
+  const innerSize = Math.round(size * 0.72);
 
   return new ImageResponse(
     (
