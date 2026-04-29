@@ -325,25 +325,23 @@ Ao analisar uma refeição, responda SOMENTE com JSON válido neste formato:
   "feedback": "mensagem curta no estilo do Vicente, máximo 2 frases, sem culpa"
 }`;
 
+  const cachedSystem = [{ type: "text" as const, text: systemPrompt, cache_control: { type: "ephemeral" as const } }];
+  const callOptions = { headers: { "anthropic-beta": "prompt-caching-2024-07-31" } };
+
   let msg;
   try {
-    msg = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages: [{ role: "user", content }],
-    });
+    msg = await client.messages.create(
+      { model: "claude-sonnet-4-6", max_tokens: 1024, system: cachedSystem, messages: [{ role: "user", content }] },
+      callOptions
+    );
   } catch (imgErr: unknown) {
-    // Se falhou por causa da imagem, tenta só com texto
     const errMsg = String(imgErr);
     if (errMsg.includes("Could not process image") || errMsg.includes("invalid_request_error")) {
       const textOnlyContent = content.filter((c) => c.type === "text");
-      msg = await client.messages.create({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1024,
-        system: systemPrompt,
-        messages: [{ role: "user", content: textOnlyContent }],
-      });
+      msg = await client.messages.create(
+        { model: "claude-sonnet-4-6", max_tokens: 1024, system: cachedSystem, messages: [{ role: "user", content: textOnlyContent }] },
+        callOptions
+      );
     } else {
       throw imgErr;
     }
