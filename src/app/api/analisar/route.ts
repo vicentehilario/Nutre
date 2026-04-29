@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   // Verificar limite de análises para plano grátis
   const { data: profileData } = await supabaseAdmin
     .from("profiles")
-    .select("plano, fotos_hoje")
+    .select("plano, fotos_hoje, ip_cadastro")
     .eq("id", user.id)
     .single();
 
@@ -32,6 +32,32 @@ export async function POST(req: NextRequest) {
       { error: "Limite de análises atingido. Faça upgrade para continuar." },
       { status: 403 }
     );
+  }
+
+  // Proteção anti-multicontas por IP
+  const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim()
+    || req.headers.get("x-real-ip")
+    || "unknown";
+
+  if (ip !== "unknown" && profileData?.plano === "gratis") {
+    if (!profileData.ip_cadastro) {
+      // Salva o IP na primeira análise
+      await supabaseAdmin.from("profiles").update({ ip_cadastro: ip }).eq("id", user.id);
+    } else {
+      // Verifica quantas contas grátis existem com esse IP
+      const { count } = await supabaseAdmin
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .eq("ip_cadastro", ip)
+        .eq("plano", "gratis");
+
+      if ((count ?? 0) >= 3) {
+        return NextResponse.json(
+          { error: "Limite de contas gratuitas atingido neste dispositivo." },
+          { status: 403 }
+        );
+      }
+    }
   }
 
   const { fotoUrl, descricao } = await req.json();
