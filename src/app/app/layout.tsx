@@ -11,6 +11,7 @@ const WHATSAPP_MSG = encodeURIComponent("Olá! Preciso de ajuda com o Nutre.");
 const tabs = [
   { href: "/app", label: "Início", icon: "🏠" },
   { href: "/app/historico", label: "Histórico", icon: "📊" },
+  { href: "/app/ranking", label: "Ranking", icon: "🏆" },
   { href: "/app/metas", label: "Metas", icon: "⚙️" },
   { href: "/app/perfil", label: "Perfil", icon: "👤" },
 ];
@@ -19,6 +20,7 @@ const menuItems = [
   { href: "/app", label: "Início", icon: "🏠", desc: "Resumo do dia" },
   { href: "/app/registrar", label: "Registrar refeição", icon: "📷", desc: "Foto ou descrição" },
   { href: "/app/historico", label: "Histórico", icon: "📊", desc: "Refeições e peso" },
+  { href: "/app/ranking", label: "Ranking", icon: "🏆", desc: "Sequências e competição" },
   { href: "/app/metas", label: "Metas", icon: "⚙️", desc: "Calorias e proteína" },
   { href: "/app/momento-critico", label: "Me Salva", icon: "🆘", desc: "Bateu a vontade? Vicente te ajuda" },
   { href: "/app/perfil", label: "Perfil", icon: "👤", desc: "Conta e plano" },

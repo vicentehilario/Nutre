@@ -39,7 +39,7 @@ export default function Home() {
           <NutreLogo />
           <span>Nutre</span>
         </a>
-        <Link href="/cadastro" className={s.navCta}>Começar grátis</Link>
+        <Link href="/quiz" className={s.navCta}>Descobrir meu perfil →</Link>
       </nav>
 
       {/* HERO */}
@@ -53,7 +53,7 @@ export default function Home() {
             Tire uma foto da sua refeição e descubra na hora as calorias e macronutrientes — com a orientação de um nutricionista formado por trás de cada resposta.
           </p>
           <div className={s.heroCtas}>
-            <Link href="/cadastro" className={s.btnHeroPrimary}>Experimentar grátis</Link>
+            <Link href="/quiz" className={s.btnHeroPrimary}>Descobrir meu perfil →</Link>
             <a href="#como-funciona" className={s.btnHeroSecondary}>Como funciona</a>
           </div>
           <div className={s.heroProof}>
