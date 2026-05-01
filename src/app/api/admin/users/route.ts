@@ -24,7 +24,11 @@ export async function GET(_req: NextRequest) {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const sevenDaysAgoStr = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(sevenDaysAgo);
 
-  const [profilesRes, refeicoesRes] = await Promise.all([
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const thirtyDaysAgoStr = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(thirtyDaysAgo);
+
+  const [profilesRes, refeicoesRes, custosRes] = await Promise.all([
     supabaseAdmin
       .from("profiles")
       .select("id, nome, email, plano, streak, fotos_hoje, ultimo_registro, created_at")
@@ -33,6 +37,11 @@ export async function GET(_req: NextRequest) {
       .from("refeicoes")
       .select("user_id, data")
       .gte("data", sevenDaysAgoStr),
+    supabaseAdmin
+      .from("refeicoes")
+      .select("user_id, custo_api_usd")
+      .gte("data", thirtyDaysAgoStr)
+      .not("custo_api_usd", "is", null),
   ]);
 
   if (profilesRes.error) {
@@ -47,10 +56,20 @@ export async function GET(_req: NextRequest) {
     if (r.data === today) ativosHoje.add(r.user_id);
   }
 
+  // Cost per user last 30 days
+  const custoPorUser: Record<string, number> = {};
+  let custoTotalMes = 0;
+  for (const r of custosRes.data ?? []) {
+    const c = r.custo_api_usd ?? 0;
+    custoPorUser[r.user_id] = (custoPorUser[r.user_id] ?? 0) + c;
+    custoTotalMes += c;
+  }
+
   const users = (profilesRes.data ?? []).map((p) => ({
     ...p,
     refeicoes_7d: refeicoesCount[p.id] ?? 0,
     ativo_hoje: ativosHoje.has(p.id),
+    custo_30d_usd: parseFloat((custoPorUser[p.id] ?? 0).toFixed(4)),
   }));
 
   // Stats
@@ -60,6 +79,9 @@ export async function GET(_req: NextRequest) {
   const dietaTreino = users.filter((u) => u.plano === "dieta_treino").length;
   const ativosHojeCount = users.filter((u) => u.ativo_hoje).length;
   const ativosSemana = users.filter((u) => u.refeicoes_7d > 0).length;
+
+  // Custo médio por usuário ativo no mês
+  const usuariosComCusto = Object.keys(custoPorUser).length;
 
   return NextResponse.json({
     users,
@@ -72,6 +94,8 @@ export async function GET(_req: NextRequest) {
       taxa_conversao: total > 0 ? Math.round(((premium + dietaTreino) / total) * 100) : 0,
       ativos_hoje: ativosHojeCount,
       ativos_semana: ativosSemana,
+      custo_total_mes_usd: parseFloat(custoTotalMes.toFixed(4)),
+      custo_medio_usuario_usd: usuariosComCusto > 0 ? parseFloat((custoTotalMes / usuariosComCusto).toFixed(4)) : 0,
     },
   });
 }

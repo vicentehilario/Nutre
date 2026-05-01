@@ -14,6 +14,7 @@ interface User {
   created_at: string;
   refeicoes_7d: number;
   ativo_hoje: boolean;
+  custo_30d_usd: number;
 }
 
 interface Stats {
@@ -25,6 +26,8 @@ interface Stats {
   taxa_conversao: number;
   ativos_hoje: number;
   ativos_semana: number;
+  custo_total_mes_usd: number;
+  custo_medio_usuario_usd: number;
 }
 
 const planoLabel: Record<string, string> = {
@@ -118,21 +121,35 @@ export default function AdminDashboard() {
 
         {/* Stats cards */}
         {stats && (
-          <div className="grid grid-cols-4 gap-4">
-            <StatCard label="Total de usuários" value={stats.total} />
-            <StatCard label="Plano Grátis" value={stats.gratis} sub={`${stats.total > 0 ? Math.round((stats.gratis / stats.total) * 100) : 0}% do total`} />
-            <StatCard
-              label="Pagantes"
-              value={stats.pagantes}
-              sub={`${stats.premium} Premium · ${stats.dieta_treino} D+T`}
-              highlight
-            />
-            <StatCard
-              label="Taxa de conversão"
-              value={`${stats.taxa_conversao}%`}
-              sub={`${stats.ativos_hoje} ativos hoje · ${stats.ativos_semana} na semana`}
-            />
-          </div>
+          <>
+            <div className="grid grid-cols-4 gap-4">
+              <StatCard label="Total de usuários" value={stats.total} />
+              <StatCard label="Plano Grátis" value={stats.gratis} sub={`${stats.total > 0 ? Math.round((stats.gratis / stats.total) * 100) : 0}% do total`} />
+              <StatCard
+                label="Pagantes"
+                value={stats.pagantes}
+                sub={`${stats.premium} Premium · ${stats.dieta_treino} D+T`}
+                highlight
+              />
+              <StatCard
+                label="Taxa de conversão"
+                value={`${stats.taxa_conversao}%`}
+                sub={`${stats.ativos_hoje} ativos hoje · ${stats.ativos_semana} na semana`}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <StatCard
+                label="Custo API — últimos 30 dias"
+                value={`$ ${stats.custo_total_mes_usd.toFixed(3)}`}
+                sub={`≈ R$ ${(stats.custo_total_mes_usd * 5.7).toFixed(2)} (×5.7 câmbio)`}
+              />
+              <StatCard
+                label="Custo médio por usuário ativo"
+                value={`$ ${stats.custo_medio_usuario_usd.toFixed(4)}`}
+                sub="Últimos 30 dias · claude-sonnet-4-6"
+              />
+            </div>
+          </>
         )}
 
         {/* Conversion bar */}
@@ -199,6 +216,7 @@ export default function AdminDashboard() {
                 <th className="text-center px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Fotos hoje</th>
                 <th className="text-center px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Ref. 7d</th>
                 <th className="text-left px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Último reg.</th>
+                <th className="text-right px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Custo 30d</th>
                 <th className="text-right px-5 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Ações</th>
               </tr>
             </thead>
@@ -241,6 +259,11 @@ export default function AdminDashboard() {
                         : "—"}
                     </span>
                   </td>
+                  <td className="px-4 py-3.5 text-right">
+                    <span className={`text-[12px] font-semibold ${u.custo_30d_usd > 0 ? "text-[#ea580c]" : "text-[#ccc]"}`}>
+                      {u.custo_30d_usd > 0 ? `$${u.custo_30d_usd.toFixed(3)}` : "—"}
+                    </span>
+                  </td>
                   <td className="px-5 py-3.5 text-right whitespace-nowrap">
                     <button
                       onClick={() => doAction(u.id, "reset_fotos")}
@@ -265,7 +288,7 @@ export default function AdminDashboard() {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="text-center py-12 text-[#bbb] text-sm">
+                  <td colSpan={8} className="text-center py-12 text-[#bbb] text-sm">
                     Nenhum usuário encontrado
                   </td>
                 </tr>

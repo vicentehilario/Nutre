@@ -77,29 +77,19 @@ export async function POST(req: NextRequest) {
   }
 
   const content: Anthropic.MessageParam["content"] = [];
+  let hasImage = false;
 
   if (fotoUrl) {
-    const imgRes = await fetch(fotoUrl);
-    const buffer = await imgRes.arrayBuffer();
-    const base64 = Buffer.from(buffer).toString("base64");
-
-    const ext = fotoUrl.split("?")[0].split(".").pop()?.toLowerCase();
-    const extMap: Record<string, "image/jpeg" | "image/png" | "image/webp" | "image/gif"> = {
-      jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif",
-    };
-    const mediaType = extMap[ext ?? ""] ?? "image/jpeg";
-
-    content.push({
-      type: "image",
-      source: { type: "base64", media_type: mediaType, data: base64 },
-    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    content.push({ type: "image", source: { type: "url", url: fotoUrl } as any });
+    hasImage = true;
   }
 
   const texto = descricao?.trim()
-    ? fotoUrl
+    ? hasImage
       ? `Analise a refeição na imagem. O usuário descreveu: "${descricao}". Se a descrição contém quantidades específicas (gramas, colheres, unidades, porções), use essas quantidades para calcular os macros — a foto serve como referência visual do preparo e ingredientes.`
       : `Analise esta refeição: ${descricao}`
-    : "Analise a refeição na imagem.";
+    : "Analise a refeição na imagem e estime os macronutrientes.";
 
   content.push({ type: "text", text: texto });
 
@@ -362,18 +352,38 @@ Ao analisar uma refeição, responda SOMENTE com JSON válido neste formato:
     );
   } catch (imgErr: unknown) {
     const errMsg = String(imgErr);
-    if (errMsg.includes("Could not process image") || errMsg.includes("invalid_request_error")) {
+    console.error("[analisar] Claude error:", errMsg.slice(0, 300));
+    const isImageError = errMsg.includes("Could not process image") || errMsg.includes("invalid_request_error") || errMsg.includes("could not be loaded") || errMsg.includes("image_parse_error");
+    if (isImageError && descricao?.trim()) {
       const textOnlyContent = content.filter((c) => c.type === "text");
       msg = await client.messages.create(
         { model: "claude-sonnet-4-6", max_tokens: 1024, system: cachedSystem, messages: [{ role: "user", content: textOnlyContent }] },
         callOptions
       );
+    } else if (isImageError) {
+      return NextResponse.json({
+        calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0,
+        dentro_do_plano: true,
+        feedback: "Não consegui analisar a foto. Tente descrever o que comeu para eu calcular direitinho.",
+      });
     } else {
       throw imgErr;
     }
   }
 
   const text = msg.content[0].type === "text" ? msg.content[0].text : "";
+
+  // Calcula custo da chamada (claude-sonnet-4-6, preços em $/M tokens)
+  const usage = msg.usage as { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
+  const cacheWrite = usage.cache_creation_input_tokens ?? 0;
+  const cacheRead = usage.cache_read_input_tokens ?? 0;
+  const inputRaw = (usage.input_tokens ?? 0) - cacheWrite - cacheRead;
+  const custoUsd = (
+    Math.max(0, inputRaw) * 3.00 +
+    cacheWrite * 3.75 +
+    cacheRead * 0.30 +
+    (usage.output_tokens ?? 0) * 15.00
+  ) / 1_000_000;
 
   try {
     const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -383,8 +393,9 @@ Ao analisar uma refeição, responda SOMENTE com JSON válido neste formato:
     if (cacheHash) {
       await supabaseAdmin.from("analise_cache").upsert({ hash: cacheHash, result: json });
     }
-    return NextResponse.json(json);
+    return NextResponse.json({ ...json, custo_api_usd: parseFloat(custoUsd.toFixed(6)) });
   } catch (parseErr) {
+    console.error("[analisar] JSON parse failed. Raw:", text.slice(0, 500));
     return NextResponse.json({
       calorias: 0,
       proteinas: 0,

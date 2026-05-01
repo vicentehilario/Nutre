@@ -14,6 +14,7 @@ interface Resultado {
   gorduras: number;
   feedback: string;
   dentro_do_plano: boolean;
+  custo_api_usd?: number;
 }
 
 export default function Registrar() {
@@ -106,6 +107,7 @@ export default function Registrar() {
       gorduras: analise.gorduras,
       feedback_ia: analise.feedback,
       dentro_do_plano: analise.dentro_do_plano,
+      custo_api_usd: analise.custo_api_usd ?? null,
     });
     await fetch("/api/atualizar-streak", { method: "POST" });
 
