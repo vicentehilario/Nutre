@@ -7,13 +7,120 @@ import { useAuth } from "@/lib/auth/AuthContext";
 type Modo = "vontade" | "receita";
 
 type ResultadoVontade = { mensagem: string; substituicoes: string[] };
+type Macros = { kcal: number; proteina: number | null; carbo: number | null; gordura: number | null } | null;
 type ResultadoReceita = {
   nome: string;
   porque: string;
   ingredientes: string[];
   preparo: string[];
   dica: string;
+  macros: Macros;
 };
+
+const CONTEXTO_TAGS = [
+  { label: "🥩 Proteico", value: "Proteico" },
+  { label: "🥗 Leve", value: "Leve" },
+  { label: "🍫 Docinho fit", value: "Docinho fit" },
+  { label: "⚡ Rápido", value: "Rápido" },
+  { label: "🫙 Fácil de fazer", value: "Fácil de fazer" },
+  { label: "💪 Pós-treino", value: "Pós-treino" },
+];
+
+function ReceitaCard({ receita, index }: { receita: ResultadoReceita; index: number }) {
+  const [expandido, setExpandido] = useState(false);
+  return (
+    <div className="bg-white rounded-[20px] border border-[#f0f0f0] overflow-hidden">
+      {/* Header com nome */}
+      <div className="bg-[#ea580c] px-5 pt-4 pb-3">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[10px] font-bold text-orange-200 uppercase tracking-widest">
+            Ideia {index + 1}
+          </span>
+          {receita.macros && (
+            <div className="flex gap-2">
+              <span className="text-[11px] font-bold text-orange-100">{receita.macros.kcal} kcal</span>
+              {receita.macros.proteina && (
+                <span className="text-[11px] text-orange-200">P {receita.macros.proteina}g</span>
+              )}
+            </div>
+          )}
+        </div>
+        <p className="text-[17px] font-extrabold text-white leading-tight">{receita.nome}</p>
+        <p className="text-[12px] text-orange-100 mt-1 leading-snug">{receita.porque}</p>
+      </div>
+
+      {/* Macros completos */}
+      {receita.macros && (receita.macros.proteina || receita.macros.carbo || receita.macros.gordura) && (
+        <div className="flex gap-0 border-b border-[#f5f5f5]">
+          {receita.macros.proteina != null && (
+            <div className="flex-1 flex flex-col items-center py-2.5 border-r border-[#f5f5f5]">
+              <span className="text-[13px] font-bold text-[#111]">{receita.macros.proteina}g</span>
+              <span className="text-[10px] text-[#aaa] uppercase tracking-wide">Proteína</span>
+            </div>
+          )}
+          {receita.macros.carbo != null && (
+            <div className="flex-1 flex flex-col items-center py-2.5 border-r border-[#f5f5f5]">
+              <span className="text-[13px] font-bold text-[#111]">{receita.macros.carbo}g</span>
+              <span className="text-[10px] text-[#aaa] uppercase tracking-wide">Carbo</span>
+            </div>
+          )}
+          {receita.macros.gordura != null && (
+            <div className="flex-1 flex flex-col items-center py-2.5">
+              <span className="text-[13px] font-bold text-[#111]">{receita.macros.gordura}g</span>
+              <span className="text-[10px] text-[#aaa] uppercase tracking-wide">Gordura</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Ingredientes */}
+      <div className="px-5 pt-3 pb-2">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-sm">🛒</span>
+          <p className="text-[12px] font-bold text-[#111] uppercase tracking-wide">Ingredientes</p>
+        </div>
+        {receita.ingredientes.map((item, i) => (
+          <div key={i} className="flex items-start gap-2 py-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#ea580c] flex-shrink-0 mt-1.5" />
+            <p className="text-[13px] text-[#333] leading-relaxed">{item}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Preparo - expansível */}
+      <div className="border-t border-[#f5f5f5]">
+        <button
+          onClick={() => setExpandido(!expandido)}
+          className="w-full flex items-center justify-between px-5 py-3"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-sm">📋</span>
+            <p className="text-[12px] font-bold text-[#111] uppercase tracking-wide">Como fazer</p>
+          </div>
+          <span className="text-[#ea580c] text-[18px] leading-none">{expandido ? "−" : "+"}</span>
+        </button>
+        {expandido && (
+          <div className="px-5 pb-3 space-y-2">
+            {receita.preparo.map((passo, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-5 h-5 rounded-full bg-[#fff7ed] border border-[#fed7aa] flex items-center justify-center text-[10px] font-extrabold text-[#ea580c] flex-shrink-0 mt-0.5">
+                  {i + 1}
+                </div>
+                <p className="text-[13px] text-[#333] leading-relaxed">{passo}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Dica */}
+      <div className="mx-4 mb-4 bg-[#fff7ed] rounded-[12px] p-3 border border-[#fed7aa]">
+        <p className="text-[11px] font-bold text-[#ea580c] uppercase tracking-widest mb-1">💡 Dica</p>
+        <p className="text-[12px] text-[#c2410c] leading-relaxed">{receita.dica}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function MeSalva() {
   const router = useRouter();
@@ -27,12 +134,24 @@ export default function MeSalva() {
   const [resultadoVontade, setResultadoVontade] = useState<ResultadoVontade | null>(null);
 
   // --- modo receita ---
-  const [contexto, setContexto] = useState("");
+  const [tagsAtivas, setTagsAtivas] = useState<string[]>([]);
+  const [textoExtra, setTextoExtra] = useState("");
   const [loadingReceita, setLoadingReceita] = useState(false);
-  const [resultadoReceita, setResultadoReceita] = useState<ResultadoReceita | null>(null);
+  const [resultadoReceitas, setResultadoReceitas] = useState<ResultadoReceita[] | null>(null);
 
   if (authLoading) return null;
   if (!user) { router.push("/login"); return null; }
+
+  function toggleTag(tag: string) {
+    setTagsAtivas(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+    );
+  }
+
+  function buildContexto() {
+    const parts = [...tagsAtivas, textoExtra.trim()].filter(Boolean);
+    return parts.join(", ");
+  }
 
   async function handleEnviarVontade() {
     if (!vontade.trim()) return;
@@ -58,10 +177,11 @@ export default function MeSalva() {
       const res = await fetch("/api/receita-diferente", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contexto }),
+        body: JSON.stringify({ contexto: buildContexto() }),
       });
       const data = await res.json();
-      setResultadoReceita(data);
+      // API agora retorna array de 2
+      setResultadoReceitas(Array.isArray(data) ? data : [data]);
     } catch {
       // silent
     } finally {
@@ -72,9 +192,10 @@ export default function MeSalva() {
   function trocarModo(novoModo: Modo) {
     setModo(novoModo);
     setResultadoVontade(null);
-    setResultadoReceita(null);
+    setResultadoReceitas(null);
     setVontade("");
-    setContexto("");
+    setTagsAtivas([]);
+    setTextoExtra("");
   }
 
   return (
@@ -96,9 +217,7 @@ export default function MeSalva() {
           <button
             onClick={() => trocarModo("vontade")}
             className={`flex-1 flex flex-col items-center gap-1 py-3 px-2 rounded-[12px] transition-all ${
-              modo === "vontade"
-                ? "bg-[#ea580c] text-white"
-                : "bg-transparent text-[#777]"
+              modo === "vontade" ? "bg-[#ea580c] text-white" : "bg-transparent text-[#777]"
             }`}
           >
             <span className="text-xl">🤤</span>
@@ -109,9 +228,7 @@ export default function MeSalva() {
           <button
             onClick={() => trocarModo("receita")}
             className={`flex-1 flex flex-col items-center gap-1 py-3 px-2 rounded-[12px] transition-all ${
-              modo === "receita"
-                ? "bg-[#ea580c] text-white"
-                : "bg-transparent text-[#777]"
+              modo === "receita" ? "bg-[#ea580c] text-white" : "bg-transparent text-[#777]"
             }`}
           >
             <span className="text-xl">🍳</span>
@@ -223,31 +340,31 @@ export default function MeSalva() {
         {/* ========== MODO: QUERO COMER ALGO DIFERENTE ========== */}
         {modo === "receita" && (
           <>
-            {!resultadoReceita ? (
+            {!resultadoReceitas ? (
               <>
                 <div className="bg-white rounded-[20px] border border-[#f0f0f0] p-4">
-                  <p className="text-[11px] font-bold text-[#aaa] uppercase tracking-widest mb-3">Me conta um pouco (opcional)</p>
+                  <p className="text-[11px] font-bold text-[#aaa] uppercase tracking-widest mb-3">O que você está precisando?</p>
                   <div className="flex flex-wrap gap-2 mb-3">
-                    {["🥩 Proteico", "🥗 Leve", "🍫 Docinho fit", "⚡ Rápido", "🫙 Fácil de fazer", "💪 Pós-treino"].map((s) => (
+                    {CONTEXTO_TAGS.map((tag) => (
                       <button
-                        key={s}
-                        onClick={() => setContexto((prev) => prev ? `${prev}, ${s.slice(3)}` : s.slice(3))}
+                        key={tag.value}
+                        onClick={() => toggleTag(tag.value)}
                         className={`px-3 py-1.5 rounded-full text-[12px] font-semibold border transition ${
-                          contexto.includes(s.slice(3))
+                          tagsAtivas.includes(tag.value)
                             ? "bg-[#ea580c] text-white border-[#ea580c]"
                             : "bg-[#fafafa] text-[#555] border-[#e5e5e5]"
                         }`}
                       >
-                        {s}
+                        {tag.label}
                       </button>
                     ))}
                   </div>
                   <textarea
-                    value={contexto}
-                    onChange={(e) => setContexto(e.target.value)}
-                    rows={3}
+                    value={textoExtra}
+                    onChange={(e) => setTextoExtra(e.target.value)}
+                    rows={2}
                     className="w-full bg-[#fafafa] border border-[#f0f0f0] rounded-[14px] px-4 py-3 text-[14px] text-[#111] focus:outline-none focus:border-[#ea580c] resize-none"
-                    placeholder="Ex: quero algo proteico, tenho ovos e frango em casa, não quero passar muito tempo cozinhando..."
+                    placeholder="Detalhe mais (opcional): tenho ovos e frango em casa, não quero cozinhar muito..."
                   />
                 </div>
 
@@ -258,68 +375,33 @@ export default function MeSalva() {
                       <div className="absolute inset-0 rounded-full border-4 border-[#ea580c] border-t-transparent animate-spin" />
                       <div className="absolute inset-0 flex items-center justify-center text-xl">👨‍🍳</div>
                     </div>
-                    <p className="text-[13px] text-[#aaa]">Vicente está criando uma receita...</p>
+                    <p className="text-[13px] text-[#aaa]">Buscando 2 ideias para você...</p>
                   </div>
                 ) : (
                   <button
                     onClick={handleEnviarReceita}
                     className="w-full bg-[#ea580c] text-white rounded-[14px] py-4 text-[14px] font-bold transition-opacity"
                   >
-                    🍳 Quero uma ideia, Vicente!
+                    🍳 Quero 2 ideias, Vicente!
                   </button>
                 )}
               </>
             ) : (
               <>
-                {/* Nome e benefício */}
-                <div className="bg-[#ea580c] rounded-[20px] p-5">
-                  <p className="text-[11px] font-bold text-orange-200 uppercase tracking-widest mb-1">Receita do Vicente</p>
-                  <p className="text-[20px] font-extrabold text-white leading-tight mb-2">{resultadoReceita.nome}</p>
-                  <p className="text-[13px] text-orange-100 leading-relaxed">{resultadoReceita.porque}</p>
-                </div>
+                <p className="text-[11px] font-bold text-[#aaa] uppercase tracking-widest px-1">
+                  2 ideias para você agora
+                </p>
 
-                {/* Ingredientes */}
-                <div className="bg-white rounded-[20px] border border-[#f0f0f0] overflow-hidden">
-                  <div className="px-5 py-3 border-b border-[#f5f5f5] flex items-center gap-2">
-                    <span className="text-base">🛒</span>
-                    <p className="text-[13px] font-bold text-[#111]">Ingredientes</p>
-                  </div>
-                  {resultadoReceita.ingredientes.map((item, i) => (
-                    <div key={i} className={`flex items-center gap-3 px-5 py-3 ${i < resultadoReceita.ingredientes.length - 1 ? "border-b border-[#f5f5f5]" : ""}`}>
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#ea580c] flex-shrink-0" />
-                      <p className="text-[13px] text-[#333]">{item}</p>
-                    </div>
-                  ))}
-                </div>
+                {resultadoReceitas.map((receita, i) => (
+                  <ReceitaCard key={i} receita={receita} index={i} />
+                ))}
 
-                {/* Modo de preparo */}
-                <div className="bg-white rounded-[20px] border border-[#f0f0f0] overflow-hidden">
-                  <div className="px-5 py-3 border-b border-[#f5f5f5] flex items-center gap-2">
-                    <span className="text-base">📋</span>
-                    <p className="text-[13px] font-bold text-[#111]">Como fazer</p>
-                  </div>
-                  {resultadoReceita.preparo.map((passo, i) => (
-                    <div key={i} className={`flex items-start gap-3 px-5 py-4 ${i < resultadoReceita.preparo.length - 1 ? "border-b border-[#f5f5f5]" : ""}`}>
-                      <div className="w-6 h-6 rounded-full bg-[#fff7ed] border border-[#fed7aa] flex items-center justify-center text-[11px] font-extrabold text-[#ea580c] flex-shrink-0 mt-0.5">
-                        {i + 1}
-                      </div>
-                      <p className="text-[13px] text-[#333] leading-relaxed">{passo}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Dica do Vicente */}
-                <div className="bg-[#fff7ed] rounded-[16px] p-4 border border-[#fed7aa]">
-                  <p className="text-[11px] font-bold text-[#ea580c] uppercase tracking-widest mb-1">💡 Dica do Vicente</p>
-                  <p className="text-[13px] text-[#c2410c] leading-relaxed font-medium">{resultadoReceita.dica}</p>
-                </div>
-
-                <div className="flex gap-2">
+                <div className="flex gap-2 pt-1">
                   <button
-                    onClick={() => { setResultadoReceita(null); setContexto(""); }}
+                    onClick={() => { setResultadoReceitas(null); }}
                     className="flex-1 border border-[#e5e5e5] bg-white text-[#555] rounded-[14px] py-3.5 text-[13px] font-semibold"
                   >
-                    Outra receita
+                    Outras 2 ideias
                   </button>
                   <button
                     onClick={() => router.push("/app")}

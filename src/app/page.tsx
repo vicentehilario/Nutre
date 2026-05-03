@@ -115,6 +115,31 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FEATURES */}
+      <section style={{ background: "#fff", padding: "72px 0 80px" }} id="features">
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px" }}>
+          <div className={s.sectionTag}>Tudo o que o Nutre faz</div>
+          <h2 className={s.sectionTitle} style={{ marginBottom: 12 }}>Mais do que contar calorias</h2>
+          <p className={s.sectionSub} style={{ marginBottom: 56 }}>Um assistente nutricional completo no bolso — do café da manhã até a madrugada.</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 20 }}>
+            {[
+              { icon: "📸", title: "Análise por foto", desc: "Tire uma foto de qualquer refeição e veja calorias, proteínas, carboidratos e gorduras em segundos." },
+              { icon: "🧮", title: "Gasto Energético Total", desc: "Calculamos seu GET personalizado com base em peso, altura, idade, sexo e nível de atividade para calibrar suas metas." },
+              { icon: "🍳", title: "2 Receitas na hora", desc: "Quando quiser comer algo diferente, o app sugere 2 receitas funcionais com ingredientes, gramatura e macros completos." },
+              { icon: "🆘", title: "Botão SOS", desc: "Bateu uma vontade? O Vicente te ajuda a encontrar substituições sem culpa — sem julgamento, com solução." },
+              { icon: "🏆", title: "Ranking de usuários", desc: "Veja onde você está no ranking de consistência e se motive comparando seu streak com outros usuários." },
+              { icon: "📈", title: "Histórico & Streak", desc: "Acompanhe sua evolução diária, mantenha sua sequência ativa e receba insights personalizados toda semana." },
+            ].map((f, i) => (
+              <div key={i} style={{ background: "#fafafa", borderRadius: 16, padding: "28px 24px", border: "1px solid #f0f0f0" }}>
+                <div style={{ fontSize: 32, marginBottom: 12 }}>{f.icon}</div>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#111", marginBottom: 8 }}>{f.title}</h3>
+                <p style={{ fontSize: 13, color: "#666", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* COMO FUNCIONA */}
       <section className={s.como} id="como-funciona">
         <div className={s.comoInner}>
@@ -339,8 +364,10 @@ export default function Home() {
               <ul className={s.precoFeatures}>
                 <li>Registros ilimitados</li>
                 <li>Análise nutricional com IA</li>
-                <li>Histórico completo</li>
+                <li>Cálculo do Gasto Energético Total</li>
+                <li>2 Receitas personalizadas na hora</li>
                 <li>Botão SOS — momento crítico</li>
+                <li>Ranking de consistência</li>
                 <li>Metas personalizadas</li>
               </ul>
               <a href="https://go.hotmart.com/R105181472H?off=5sks6hjc" className={`${s.btnPlan} ${s.btnPlanWhite}`}>Assinar agora</a>
@@ -356,8 +383,8 @@ export default function Home() {
               <hr className={s.precoDivider} />
               <ul className={s.precoFeatures}>
                 <li>Tudo do plano mensal</li>
-                <li>Economia de R$ 167 no ano</li>
                 <li>Importação de plano alimentar PDF</li>
+                <li>Economia de R$ 167 no ano</li>
               </ul>
               <a href="https://go.hotmart.com/R105181472H?off=w71953zf" className={`${s.btnPlan} ${s.btnPlanSolid}`}>Assinar anual</a>
             </div>
