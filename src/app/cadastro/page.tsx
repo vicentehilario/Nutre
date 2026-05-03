@@ -43,7 +43,7 @@ export default function Cadastro() {
       });
     }
 
-    router.push("/app");
+    router.push("/app/onboarding");
   }
 
   return (

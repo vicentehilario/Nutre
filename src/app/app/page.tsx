@@ -14,6 +14,7 @@ interface Profile {
   meta_calorica: number;
   meta_proteina: number;
   ultimo_registro: string | null;
+  peso_kg: number | null;
 }
 
 function NutreLogo() {
@@ -52,7 +53,7 @@ export default function AppHome() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) { window.location.href = "/login"; return; }
-    // Redireciona para onboarding se nunca completou
+    // Fast-path: localStorage já marcado como feito
     if (typeof window !== "undefined" && localStorage.getItem("nutre_onboarding_v1") !== "done") {
       window.location.href = "/app/onboarding";
       return;
@@ -64,9 +65,16 @@ export default function AppHome() {
       const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
 
       const [profileRes, refeicoesRes] = await Promise.all([
-        supabase.from("profiles").select("nome, streak, fotos_hoje, plano, meta_calorica, meta_proteina, ultimo_registro").eq("id", userId).single(),
+        supabase.from("profiles").select("nome, streak, fotos_hoje, plano, meta_calorica, meta_proteina, ultimo_registro, peso_kg").eq("id", userId).single(),
         supabase.from("refeicoes").select("calorias, proteinas, carboidratos, gorduras").eq("user_id", userId).eq("data", today),
       ]);
+
+      // Fallback pelo banco: se peso_kg nunca foi preenchido, onboarding incompleto
+      if (profileRes.data && profileRes.data.peso_kg === null) {
+        if (typeof window !== "undefined") localStorage.removeItem("nutre_onboarding_v1");
+        window.location.href = "/app/onboarding";
+        return;
+      }
 
       setProfile(profileRes.data);
 

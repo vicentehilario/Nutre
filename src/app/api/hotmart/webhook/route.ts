@@ -27,9 +27,11 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
 
-  // Validate Hotmart webhook token (v2.0.0 sends it in the body as "hottok")
+  // Hotmart v2.0.0 envia o token no body como "hottok" ou no header
   const receivedToken = body?.hottok ?? req.headers.get("x-hotmart-webhook-token");
-  if (hotmartToken && receivedToken !== hotmartToken) {
+  // Bloqueia se: env var não configurada (obrigatória) OU token não bate
+  if (!hotmartToken || receivedToken !== hotmartToken) {
+    console.warn("[hotmart] webhook rejeitado — token inválido ou HOTMART_WEBHOOK_TOKEN não configurado");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
