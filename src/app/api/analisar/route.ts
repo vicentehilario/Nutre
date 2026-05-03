@@ -87,9 +87,9 @@ export async function POST(req: NextRequest) {
 
   const texto = descricao?.trim()
     ? hasImage
-      ? `Analise a refeição na imagem. O usuário descreveu: "${descricao}". Se a descrição contém quantidades específicas (gramas, colheres, unidades, porções), use essas quantidades para calcular os macros — a foto serve como referência visual do preparo e ingredientes.`
+      ? `Analise a refeição na imagem. O usuário descreveu: "${descricao}". Se a descrição contém quantidades específicas (gramas, colheres, unidades, porções), use essas quantidades para calcular os macros — a foto serve como referência visual do preparo e ingredientes. Se houver tabela nutricional visível na imagem, leia os valores diretamente dela.`
       : `Analise esta refeição: ${descricao}`
-    : "Analise a refeição na imagem e estime os macronutrientes.";
+    : "Analise a refeição na imagem e estime os macronutrientes. IMPORTANTE: Se houver uma tabela nutricional impressa visível na foto (tabela nutricional, nutrition facts), leia os valores diretamente dela e use-os exatamente. Se for um produto industrializado embalado, use seu conhecimento nutricional desse produto específico. Nunca retorne zeros — sempre estime com base no que está visível.";
 
   content.push({ type: "text", text: texto });
 
@@ -301,6 +301,20 @@ USDA — ALIMENTOS INTERNACIONAIS (por 100g):
 
 REGRA DE ESTIMATIVA: Para qualquer alimento não listado, estime com base no alimento mais similar em composição. Sempre ajuste os valores proporcionalmente ao peso/porção informado pelo usuário. Prefira sempre os valores TACO para alimentos brasileiros e USDA para alimentos importados ou internacionais.
 
+LEITURA DE TABELA NUTRICIONAL (PRIORIDADE MÁXIMA — acima de qualquer estimativa):
+Se a foto mostrar uma tabela nutricional impressa (rótulo de produto, embalagem, "Informação Nutricional", "Nutrition Facts"), leia os valores DIRETAMENTE do rótulo:
+- Identifique o tamanho da porção indicado na tabela
+- Copie os valores de calorias (kcal/kJ), proteínas, carboidratos e gorduras totais
+- Se o usuário informou quantidade diferente da porção do rótulo, faça a proporção: ex. rótulo diz 30g=100kcal, usuário comeu 60g → 200kcal
+- Preencha o JSON com esses valores exatos — não estime nada quando há tabela legível
+
+RECONHECIMENTO DE PRODUTOS INDUSTRIALIZADOS:
+Se a foto mostrar um produto embalado cujo nome/marca seja reconhecível (biscoito, iogurte, barra de proteína, suplemento, bebida etc.) mas sem tabela legível, use seu conhecimento desse produto específico. Exemplos:
+- Activia (Danone): iogurte com lactobacilos, ~70kcal/100g
+- Yakult: 80ml, 50kcal, 1g prot, 12g carb
+- Neston, Mucilon, Sustagen: use valor tabelado do produto
+Nunca retorne calorias: 0 para produtos reconhecíveis.
+
 REGRA DE QUANTIDADES NA DESCRIÇÃO (PRIORIDADE MÁXIMA):
 Quando o usuário informar quantidades na descrição (ex: "200g de arroz", "1 frango de 150g", "2 colheres de azeite", "3 ovos"), OBRIGATORIAMENTE faça os cálculos passo a passo antes de gerar o JSON — não estime pelo tamanho visual da foto. A foto identifica o método de preparo e confirma os ingredientes; a descrição define as quantidades.
 
@@ -361,11 +375,10 @@ Ao analisar uma refeição, responda SOMENTE com JSON válido neste formato:
         callOptions
       );
     } else if (isImageError) {
-      return NextResponse.json({
-        calorias: 0, proteinas: 0, carboidratos: 0, gorduras: 0,
-        dentro_do_plano: true,
-        feedback: "Não consegui analisar a foto. Tente descrever o que comeu para eu calcular direitinho.",
-      });
+      return NextResponse.json(
+        { error: "Não consegui processar essa foto. Tente tirar outra foto com mais luz, ou adicione uma descrição do que comeu para eu calcular." },
+        { status: 422 }
+      );
     } else {
       throw imgErr;
     }
@@ -396,14 +409,10 @@ Ao analisar uma refeição, responda SOMENTE com JSON válido neste formato:
     return NextResponse.json({ ...json, custo_api_usd: parseFloat(custoUsd.toFixed(6)) });
   } catch (parseErr) {
     console.error("[analisar] JSON parse failed. Raw:", text.slice(0, 500));
-    return NextResponse.json({
-      calorias: 0,
-      proteinas: 0,
-      carboidratos: 0,
-      gorduras: 0,
-      dentro_do_plano: true,
-      feedback: "Não consegui analisar essa refeição, tente descrever o que comeu.",
-    });
+    return NextResponse.json(
+      { error: "Não consegui calcular os valores dessa refeição. Tente descrever melhor o que comeu (ex: '150g arroz, 120g frango grelhado')." },
+      { status: 422 }
+    );
   }
   } catch (err) {
     console.error("[analisar] erro:", err);

@@ -82,8 +82,12 @@ export default function Registrar() {
         body: JSON.stringify({ fotoUrl, descricao }),
       });
       if (!res.ok) {
-        const text = await res.text();
-        setErro(`Erro ${res.status}: ${text.slice(0, 200)}`);
+        let msg = `Erro ${res.status}. Tente novamente.`;
+        try {
+          const body = await res.json();
+          if (body?.error) msg = body.error;
+        } catch { /* ignore */ }
+        setErro(msg);
         setLoading(false);
         return;
       }
