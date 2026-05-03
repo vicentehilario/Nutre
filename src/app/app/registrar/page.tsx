@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/auth/AuthContext";
@@ -29,6 +29,14 @@ export default function Registrar() {
   const [step, setStep] = useState(0);
   const [erro, setErro] = useState<string | null>(null);
   const [resultado, setResultado] = useState<Resultado | null>(null);
+  const [precisaDescricao, setPrecisaDescricao] = useState(false);
+  const descricaoRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (precisaDescricao) {
+      setTimeout(() => descricaoRef.current?.focus(), 100);
+    }
+  }, [precisaDescricao]);
 
   function handleFoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -59,6 +67,7 @@ export default function Registrar() {
     setLoading(true);
     setStep(0);
     setErro(null);
+    setPrecisaDescricao(false);
     const userId = user.id;
     const supabase = createClient();
     let fotoUrl = null;
@@ -87,7 +96,11 @@ export default function Registrar() {
           const body = await res.json();
           if (body?.error) msg = body.error;
         } catch { /* ignore */ }
-        setErro(msg);
+        if (res.status === 422 && fotoUrl && !descricao.trim()) {
+          setPrecisaDescricao(true);
+        } else {
+          setErro(msg);
+        }
         setLoading(false);
         return;
       }
@@ -279,10 +292,11 @@ export default function Registrar() {
             </p>
           </div>
           <textarea
+            ref={descricaoRef}
             value={descricao}
-            onChange={(e) => setDescricao(e.target.value)}
+            onChange={(e) => { setDescricao(e.target.value); if (precisaDescricao) setPrecisaDescricao(false); }}
             rows={modo === "manual" ? 5 : 3}
-            className="w-full px-4 pb-4 text-[14px] text-[#111] focus:outline-none resize-none bg-transparent"
+            className={`w-full px-4 pb-4 text-[14px] text-[#111] focus:outline-none resize-none bg-transparent transition-all ${precisaDescricao ? "ring-2 ring-[#f59e0b] ring-inset" : ""}`}
             placeholder={
               modo === "foto"
                 ? "Ex: porção grande, comi tudo..."
@@ -296,6 +310,14 @@ export default function Registrar() {
             <p className="text-[12px] text-[#166534] leading-relaxed">
               💡 Quanto mais detalhada a descrição (alimento + quantidade), mais precisa será a análise da IA.
             </p>
+          </div>
+        )}
+
+        {precisaDescricao && (
+          <div className="bg-[#fffbeb] border border-[#fde68a] rounded-[16px] p-4 text-[13px] text-[#92400e] leading-relaxed">
+            <p className="font-bold mb-1">⚠️ Não consegui analisar a foto</p>
+            <p>Descreva o que você comeu no campo acima e toque em <strong>Analisar</strong> novamente — fica muito mais preciso assim!</p>
+            <p className="mt-1 text-[11px] text-[#b45309]">Ex: "150g de arroz, 120g de frango grelhado e salada"</p>
           </div>
         )}
 
