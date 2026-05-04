@@ -31,6 +31,7 @@ const FEATURES = [
   { label: "Gráficos de evolução",          gratis: false, premium: true,  dt: true  },
   { label: "Dieta personalizada pelo nutri", gratis: false, premium: false, dt: true  },
   { label: "Treino personalizado",          gratis: false, premium: false, dt: true  },
+  { label: "Comunidade exclusiva D&T",      gratis: false, premium: false, dt: true  },
 ];
 
 function FeatureCell({ v }: { v: boolean | string }) {
@@ -216,6 +217,37 @@ export default function Perfil() {
               </div>
             )}
           </>
+        )}
+
+        {/* Comunidade exclusiva — só Dieta & Treino */}
+        {profile?.plano === "dieta_treino" && (
+          <div className="rounded-[20px] overflow-hidden border-2 border-[#fed7aa]"
+               style={{ background: "linear-gradient(135deg, #1a3a20 0%, #2d5a3d 100%)" }}>
+            <div className="px-5 pt-5 pb-4">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-2xl">👥</span>
+                <div>
+                  <p className="text-[11px] font-bold text-[#86efac] uppercase tracking-widest">Exclusivo D&T</p>
+                  <p className="text-[17px] font-extrabold text-white leading-tight">Comunidade</p>
+                </div>
+              </div>
+              <p className="text-[13px] text-[#a7f3d0] leading-relaxed mb-4">
+                Você tem acesso ao grupo exclusivo de assinantes Dieta & Treino. Troque experiências, tire dúvidas e acompanhe os resultados de quem está na mesma jornada.
+              </p>
+              <a
+                href="https://chat.whatsapp.com/LINK_DO_GRUPO_AQUI"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-white rounded-[14px] py-3.5 text-[14px] font-bold"
+              >
+                <span>💬</span>
+                Entrar no grupo WhatsApp
+              </a>
+              <p className="text-[10px] text-[#6ee7b7] text-center mt-2 opacity-70">
+                Grupo moderado pelo Vicente · apenas assinantes D&T
+              </p>
+            </div>
+          </div>
         )}
 
         {/* Status da assinatura — para usuários pagos */}

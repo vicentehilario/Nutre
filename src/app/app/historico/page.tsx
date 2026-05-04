@@ -255,6 +255,20 @@ export default function Historico() {
     if (!confirm("Remover este registro?")) return;
     setDeletingId(refeicaoId);
     const supabase = createClient();
+
+    // Apaga foto do Storage antes de deletar o registro
+    const refeicao = days.flatMap((d) => d.refeicoes).find((r) => r.id === refeicaoId);
+    if (refeicao?.foto_url) {
+      try {
+        const url = new URL(refeicao.foto_url);
+        // URL format: .../storage/v1/object/public/refeicoes/{path}
+        const match = url.pathname.match(/\/public\/refeicoes\/(.+)$/);
+        if (match?.[1]) {
+          await supabase.storage.from("refeicoes").remove([match[1]]);
+        }
+      } catch { /* não bloqueia a deleção se o storage falhar */ }
+    }
+
     await supabase.from("refeicoes").delete().eq("id", refeicaoId);
     setDays((prev) =>
       prev.map((day) => ({

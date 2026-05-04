@@ -66,10 +66,12 @@ export async function POST(req: NextRequest) {
   let cacheHash: string | null = null;
   if (!fotoUrl && descricao?.trim()) {
     cacheHash = crypto.createHash("sha256").update(descricao.trim().toLowerCase()).digest("hex").slice(0, 32);
+    const cacheCutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
     const { data: cached } = await supabaseAdmin
       .from("analise_cache")
       .select("result")
       .eq("hash", cacheHash)
+      .gt("created_at", cacheCutoff)
       .single();
     if (cached?.result) {
       return NextResponse.json(cached.result);

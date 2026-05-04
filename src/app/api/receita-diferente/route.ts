@@ -94,6 +94,7 @@ function formatRecipe(r: Receita) {
     ingredientes: r.ingredientes,
     preparo: r.preparo,
     dica: r.dica ?? "Adapte os ingredientes ao que tiver em casa — sempre fica gostoso!",
+    tags: r.tags ?? [],
     macros: r.calorias
       ? {
           kcal: r.calorias,

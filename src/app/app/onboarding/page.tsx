@@ -107,19 +107,28 @@ export default function Onboarding() {
     const actMult = ACTIVITY_OPTIONS.find((o) => o.value === nivelAtividade)?.mult ?? 1.55;
     const bmr = calcHarrisBenedict(sexo, p, a, i);
 
-    await supabase.from("profiles").update({
-      objetivo,
-      sexo,
-      idade: i,
-      altura_cm: a,
-      peso_kg: p,
-      nivel_atividade: nivelAtividade,
-      get_kcal: tdee,
-      meta_calorica: caloria,
-      meta_proteina: proteina,
-      bmr_kcal: Math.round(bmr),
-      refeicoes_por_dia: 4,
-    }).eq("id", user.id);
+    const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
+
+    await Promise.all([
+      supabase.from("profiles").update({
+        objetivo,
+        sexo,
+        idade: i,
+        altura_cm: a,
+        peso_kg: p,
+        nivel_atividade: nivelAtividade,
+        get_kcal: tdee,
+        meta_calorica: caloria,
+        meta_proteina: proteina,
+        bmr_kcal: Math.round(bmr),
+        refeicoes_por_dia: 4,
+      }).eq("id", user.id),
+      // Registra peso inicial no histórico de evolução
+      supabase.from("peso_registros").upsert(
+        { user_id: user.id, peso: p, data: hoje },
+        { onConflict: "user_id,data" }
+      ),
+    ]);
 
     localStorage.setItem("nutre_onboarding_v1", "done");
     setSaving(false);

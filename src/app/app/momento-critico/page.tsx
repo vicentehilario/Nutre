@@ -14,8 +14,33 @@ type ResultadoReceita = {
   ingredientes: string[];
   preparo: string[];
   dica: string;
+  tags?: string[];
   macros: Macros;
 };
+
+// Imagens por categoria de receita (Unsplash, free to use)
+const TAG_IMAGE_MAP: Record<string, string> = {
+  "cafe-da-manha": "https://images.unsplash.com/photo-1484723091739-30990a9d8f90?w=600&h=240&fit=crop&q=75",
+  "proteico":      "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=600&h=240&fit=crop&q=75",
+  "doce":          "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=600&h=240&fit=crop&q=75",
+  "leve":          "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=240&fit=crop&q=75",
+  "pos-treino":    "https://images.unsplash.com/photo-1571748982800-fa51082c2224?w=600&h=240&fit=crop&q=75",
+  "salgado":       "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=240&fit=crop&q=75",
+  "bebida":        "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=600&h=240&fit=crop&q=75",
+  "lanche":        "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&h=240&fit=crop&q=75",
+  "baixo-carb":    "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&h=240&fit=crop&q=75",
+  "vegetariano":   "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=240&fit=crop&q=75",
+  "almoco":        "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=240&fit=crop&q=75",
+};
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&h=240&fit=crop&q=75";
+
+function getRecipeImage(tags?: string[]): string {
+  if (!tags) return DEFAULT_IMAGE;
+  for (const tag of tags) {
+    if (TAG_IMAGE_MAP[tag]) return TAG_IMAGE_MAP[tag];
+  }
+  return DEFAULT_IMAGE;
+}
 
 const CONTEXTO_TAGS = [
   { label: "🥩 Proteico", value: "Proteico" },
@@ -28,25 +53,36 @@ const CONTEXTO_TAGS = [
 
 function ReceitaCard({ receita, index }: { receita: ResultadoReceita; index: number }) {
   const [expandido, setExpandido] = useState(false);
+  const imgUrl = getRecipeImage(receita.tags);
   return (
     <div className="bg-white rounded-[20px] border border-[#f0f0f0] overflow-hidden">
-      {/* Header com nome */}
-      <div className="bg-[#ea580c] px-5 pt-4 pb-3">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] font-bold text-orange-200 uppercase tracking-widest">
+      {/* Foto da categoria */}
+      <div className="relative h-36 overflow-hidden">
+        <img
+          src={imgUrl}
+          alt={receita.nome}
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#ea580c]/80 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 px-4 pb-3 pt-6">
+          <span className="text-[10px] font-bold text-orange-200 uppercase tracking-widest block mb-0.5">
             Ideia {index + 1}
           </span>
-          {receita.macros && (
-            <div className="flex gap-2">
-              <span className="text-[11px] font-bold text-orange-100">{receita.macros.kcal} kcal</span>
-              {receita.macros.proteina && (
-                <span className="text-[11px] text-orange-200">P {receita.macros.proteina}g</span>
-              )}
-            </div>
-          )}
+          <p className="text-[16px] font-extrabold text-white leading-tight">{receita.nome}</p>
         </div>
-        <p className="text-[17px] font-extrabold text-white leading-tight">{receita.nome}</p>
-        <p className="text-[12px] text-orange-100 mt-1 leading-snug">{receita.porque}</p>
+        {receita.macros && (
+          <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm rounded-full px-2.5 py-1 flex gap-2">
+            <span className="text-[11px] font-bold text-white">{receita.macros.kcal} kcal</span>
+            {receita.macros.proteina && (
+              <span className="text-[11px] text-orange-200">P {receita.macros.proteina}g</span>
+            )}
+          </div>
+        )}
+      </div>
+      {/* Porque */}
+      <div className="bg-[#ea580c] px-5 pt-3 pb-3">
+        <p className="text-[12px] text-orange-100 leading-snug">{receita.porque}</p>
       </div>
 
       {/* Macros completos */}
