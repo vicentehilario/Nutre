@@ -235,7 +235,7 @@ export default function Perfil() {
                 Você tem acesso ao grupo exclusivo de assinantes Dieta & Treino. Troque experiências, tire dúvidas e acompanhe os resultados de quem está na mesma jornada.
               </p>
               <a
-                href="https://chat.whatsapp.com/LINK_DO_GRUPO_AQUI"
+                href="https://chat.whatsapp.com/EygyLiCYJvy6XArV12Ep4q"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-white rounded-[14px] py-3.5 text-[14px] font-bold"
