@@ -3,6 +3,26 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
+// Offer code → plan details for commission calculation
+const OFFER_INFO: Record<string, { nome: string; preco: number; tipo: "mensal" | "anual" }> = {
+  "5sks6hjc": { nome: "Premium Mensal", preco: 47, tipo: "mensal" },
+  "w71953zf": { nome: "Premium Anual", preco: 397, tipo: "anual" },
+  "arsue9iw": { nome: "Dieta & Treino", preco: 97, tipo: "mensal" },
+};
+
+function calcComissao(u: User): number {
+  const info = u.offer_code ? OFFER_INFO[u.offer_code] : null;
+  if (!info) return 0;
+  const renovacoes = u.renovacoes ?? 0;
+  return parseFloat((info.preco * 0.1 * (1 + renovacoes)).toFixed(2));
+}
+
+function mesesAtivo(plano_ativado_em: string | null): number {
+  if (!plano_ativado_em) return 0;
+  const diff = Date.now() - new Date(plano_ativado_em).getTime();
+  return Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+}
+
 interface User {
   id: string;
   nome: string;
@@ -15,6 +35,11 @@ interface User {
   refeicoes_7d: number;
   ativo_hoje: boolean;
   custo_30d_usd: number;
+  cupom: string | null;
+  afiliado: string | null;
+  renovacoes: number | null;
+  plano_ativado_em: string | null;
+  offer_code: string | null;
 }
 
 interface Stats {
@@ -180,6 +205,77 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* Influencer panel */}
+        {(() => {
+          const influencerData: Record<string, { clientes: User[]; comissaoTotal: number }> = {};
+          for (const u of users) {
+            const key = u.afiliado ?? (u.cupom ? `Cupom: ${u.cupom}` : null);
+            if (!key) continue;
+            if (!influencerData[key]) influencerData[key] = { clientes: [], comissaoTotal: 0 };
+            influencerData[key].clientes.push(u);
+            influencerData[key].comissaoTotal += calcComissao(u);
+          }
+          const influencers = Object.entries(influencerData).sort((a, b) => b[1].comissaoTotal - a[1].comissaoTotal);
+          if (influencers.length === 0) return null;
+          return (
+            <div className="bg-white rounded-[16px] border border-[#ebebeb] overflow-hidden">
+              <div className="px-5 py-4 border-b border-[#f5f5f5] flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold text-[#111] uppercase tracking-wide">Painel de Influenciadores</p>
+                  <p className="text-[11px] text-[#aaa] mt-0.5">10% de comissão por venda e renovação</p>
+                </div>
+              </div>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-[#f5f5f5]">
+                    <th className="text-left px-5 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Influenciador / Cupom</th>
+                    <th className="text-center px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Clientes</th>
+                    <th className="text-left px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Planos</th>
+                    <th className="text-right px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Renovações totais</th>
+                    <th className="text-right px-5 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Comissão acumulada</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {influencers.map(([nome, info], i) => {
+                    const renovacoesTotal = info.clientes.reduce((s, u) => s + (u.renovacoes ?? 0), 0);
+                    const planoBreakdown = info.clientes.reduce<Record<string, number>>((acc, u) => {
+                      const label = u.offer_code ? (OFFER_INFO[u.offer_code]?.nome ?? u.plano) : u.plano;
+                      acc[label] = (acc[label] ?? 0) + 1;
+                      return acc;
+                    }, {});
+                    return (
+                      <tr key={nome} className={`border-b border-[#f9f9f9] ${i % 2 === 0 ? "" : "bg-[#fdfdfd]"}`}>
+                        <td className="px-5 py-3.5">
+                          <p className="font-semibold text-[#111] text-[13px]">{nome}</p>
+                          <p className="text-[11px] text-[#aaa]">
+                            Cupons: {[...new Set(info.clientes.map(u => u.cupom).filter(Boolean))].join(", ") || "—"}
+                          </p>
+                        </td>
+                        <td className="px-4 py-3.5 text-center">
+                          <span className="text-[13px] font-bold text-[#111]">{info.clientes.length}</span>
+                        </td>
+                        <td className="px-4 py-3.5">
+                          <div className="text-[11px] text-[#555]">
+                            {Object.entries(planoBreakdown).map(([p, n]) => (
+                              <span key={p} className="block">{n}× {p}</span>
+                            ))}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3.5 text-right">
+                          <span className="text-[13px] font-semibold text-[#111]">{renovacoesTotal}</span>
+                        </td>
+                        <td className="px-5 py-3.5 text-right">
+                          <span className="text-[13px] font-bold text-[#16a34a]">R$ {info.comissaoTotal.toFixed(2)}</span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          );
+        })()}
+
         {/* Filters + search */}
         <div className="flex gap-3 items-center flex-wrap">
           <div className="flex gap-1 bg-white border border-[#ebebeb] rounded-xl p-1">
@@ -212,8 +308,9 @@ export default function AdminDashboard() {
               <tr className="border-b border-[#f5f5f5]">
                 <th className="text-left px-5 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Usuário</th>
                 <th className="text-left px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Plano</th>
+                <th className="text-left px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Origem</th>
+                <th className="text-center px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Meses / Renov.</th>
                 <th className="text-center px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Streak</th>
-                <th className="text-center px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Fotos hoje</th>
                 <th className="text-center px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Ref. 7d</th>
                 <th className="text-left px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Último reg.</th>
                 <th className="text-right px-4 py-3 text-xs font-bold text-[#aaa] uppercase tracking-wide">Custo 30d</th>
@@ -239,13 +336,29 @@ export default function AdminDashboard() {
                       <option value="dieta_treino">Dieta + Treino</option>
                     </select>
                   </td>
-                  <td className="px-4 py-3.5 text-center">
-                    <span className="text-[13px] font-bold text-[#111]">🔥 {u.streak}</span>
+                  <td className="px-4 py-3.5">
+                    {u.afiliado || u.cupom ? (
+                      <>
+                        <p className="text-[12px] font-semibold text-[#111]">{u.afiliado ?? "—"}</p>
+                        {u.cupom && <p className="text-[11px] text-[#aaa]">{u.cupom}</p>}
+                        {u.offer_code && <p className="text-[10px] text-[#bbb]">{OFFER_INFO[u.offer_code]?.nome ?? u.offer_code}</p>}
+                      </>
+                    ) : (
+                      <span className="text-[12px] text-[#ccc]">Orgânico</span>
+                    )}
                   </td>
                   <td className="px-4 py-3.5 text-center">
-                    <span className={`text-[13px] font-bold ${u.fotos_hoje > 0 ? "text-[#111]" : "text-[#ccc]"}`}>
-                      {u.fotos_hoje}
-                    </span>
+                    {u.plano_ativado_em ? (
+                      <>
+                        <p className="text-[12px] font-semibold text-[#111]">{mesesAtivo(u.plano_ativado_em)}m</p>
+                        <p className="text-[11px] text-[#aaa]">{u.renovacoes ?? 0} renov.</p>
+                      </>
+                    ) : (
+                      <span className="text-[12px] text-[#ccc]">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3.5 text-center">
+                    <span className="text-[13px] font-bold text-[#111]">🔥 {u.streak}</span>
                   </td>
                   <td className="px-4 py-3.5 text-center">
                     <span className={`text-[13px] font-bold ${u.refeicoes_7d > 0 ? "text-[#16a34a]" : "text-[#ccc]"}`}>
@@ -288,7 +401,7 @@ export default function AdminDashboard() {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-[#bbb] text-sm">
+                  <td colSpan={9} className="text-center py-12 text-[#bbb] text-sm">
                     Nenhum usuário encontrado
                   </td>
                 </tr>

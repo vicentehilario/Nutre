@@ -31,7 +31,7 @@ export async function GET(_req: NextRequest) {
   const [profilesRes, refeicoesRes, custosRes] = await Promise.all([
     supabaseAdmin
       .from("profiles")
-      .select("id, nome, email, plano, streak, fotos_hoje, ultimo_registro, created_at")
+      .select("id, nome, email, plano, streak, fotos_hoje, ultimo_registro, created_at, cupom, afiliado, renovacoes, plano_ativado_em, offer_code")
       .order("created_at", { ascending: false }),
     supabaseAdmin
       .from("refeicoes")
