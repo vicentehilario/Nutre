@@ -13,6 +13,15 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   themeColor: "#16a34a",
   metadataBase: new URL(BASE_URL),
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/api/icons/32", sizes: "32x32", type: "image/png" },
+      { url: "/api/icons/16", sizes: "16x16", type: "image/png" },
+    ],
+    apple: { url: "/api/icons/180", sizes: "180x180", type: "image/png" },
+    shortcut: "/favicon.svg",
+  },
   openGraph: {
     title: "Nutre — seu nutri pessoal",
     description: "Tire uma foto da sua refeição e descubra calorias e macros na hora — com a orientação do nutricionista Vicente Hilário por trás de cada resposta.",
