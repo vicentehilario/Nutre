@@ -295,6 +295,91 @@ export default function Perfil() {
           </div>
         )}
 
+        {/* Mudar de plano — para usuários pagos */}
+        {isPago && profile && (
+          <div className="bg-white rounded-[20px] border border-[#f0f0f0] overflow-hidden">
+            <div className="px-5 pt-5 pb-3 border-b border-[#f5f5f5]">
+              <p className="text-[14px] font-bold text-[#111]">Mudar de plano</p>
+              <p className="text-[11px] text-[#aaa] mt-0.5">Clique no plano desejado para contratar no Hotmart. Cancele o plano atual pelo portal do Hotmart antes de trocar.</p>
+            </div>
+            <div className="p-4 space-y-2.5">
+              {profile.plano !== "premium" && (
+                <>
+                  <a
+                    href="https://go.hotmart.com/R105181472H?off=5sks6hjc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between w-full px-4 py-3.5 rounded-[16px] bg-[#f0fdf4] border border-[#bbf7d0]"
+                  >
+                    <div className="text-left">
+                      <p className="text-[14px] font-bold text-[#15803d]">Premium Mensal</p>
+                      <p className="text-[11px] text-[#86efac]">Registros ilimitados + histórico</p>
+                    </div>
+                    <p className="text-[16px] font-extrabold text-[#15803d]">R$ 47/mês</p>
+                  </a>
+                  <a
+                    href="https://go.hotmart.com/R105181472H?off=w71953zf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between w-full px-4 py-3.5 rounded-[16px] bg-[#f0fdf4] border border-[#bbf7d0]"
+                  >
+                    <div className="text-left">
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-[14px] font-bold text-[#15803d]">Premium Anual</p>
+                        <span className="text-[10px] font-bold text-white bg-[#16a34a] px-1.5 py-0.5 rounded-full">-30%</span>
+                      </div>
+                      <p className="text-[11px] text-[#86efac]">Equivale a R$ 33/mês</p>
+                    </div>
+                    <p className="text-[16px] font-extrabold text-[#15803d]">R$ 397/ano</p>
+                  </a>
+                </>
+              )}
+              {profile.plano === "premium" && (
+                <a
+                  href="https://go.hotmart.com/R105181472H?off=w71953zf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between w-full px-4 py-3.5 rounded-[16px] bg-[#f0fdf4] border border-[#bbf7d0]"
+                >
+                  <div className="text-left">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-[14px] font-bold text-[#15803d]">Premium Anual</p>
+                      <span className="text-[10px] font-bold text-white bg-[#16a34a] px-1.5 py-0.5 rounded-full">-30%</span>
+                    </div>
+                    <p className="text-[11px] text-[#86efac]">Economize R$ 167 por ano · Equivale a R$ 33/mês</p>
+                  </div>
+                  <p className="text-[16px] font-extrabold text-[#15803d]">R$ 397/ano</p>
+                </a>
+              )}
+              {profile.plano !== "dieta_treino" && (
+                <a
+                  href="https://go.hotmart.com/R105181472H?off=arsue9iw"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between w-full px-4 py-3.5 rounded-[16px] bg-[#fff7ed] border border-[#fed7aa]"
+                >
+                  <div className="text-left">
+                    <p className="text-[14px] font-bold text-[#c2410c]">Dieta & Treino</p>
+                    <p className="text-[11px] text-[#ea580c] opacity-80">App + dieta + treino personalizados</p>
+                  </div>
+                  <p className="text-[16px] font-extrabold text-[#c2410c]">R$ 97/mês</p>
+                </a>
+              )}
+              {profile.plano === "dieta_treino" && (
+                <a
+                  href={`https://wa.me/5528999888498?text=${encodeURIComponent("Olá! Gostaria de mudar meu plano Dieta & Treino para outro plano.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between w-full bg-[#fafafa] border border-[#e5e5e5] rounded-[12px] px-4 py-3"
+                >
+                  <span className="text-[13px] font-semibold text-[#333]">Fazer downgrade — falar com suporte</span>
+                  <span className="text-[#aaa] text-sm">→</span>
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Notificações push */}
         {permission !== "unsupported" && (
           <div className="bg-white rounded-[20px] border border-[#f0f0f0] p-5">

@@ -14,7 +14,7 @@ function calcComissao(u: User): number {
   const info = u.offer_code ? OFFER_INFO[u.offer_code] : null;
   if (!info) return 0;
   const renovacoes = u.renovacoes ?? 0;
-  return parseFloat((info.preco * 0.1 * (1 + renovacoes)).toFixed(2));
+  return parseFloat((info.preco * 0.15 * (1 + renovacoes)).toFixed(2));
 }
 
 function mesesAtivo(plano_ativado_em: string | null): number {
