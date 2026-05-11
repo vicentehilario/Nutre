@@ -3,10 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { AuthChangeEvent } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 
-type Stage = "verificando" | "pronto" | "expirado" | "sucesso";
+type Stage = "verificando" | "pronto" | "sem-sessao" | "sucesso";
 
 export default function ResetSenha() {
   const router = useRouter();
@@ -18,39 +17,9 @@ export default function ResetSenha() {
 
   useEffect(() => {
     const supabase = createClient();
-
-    async function init() {
-      // PKCE flow: Supabase envia ?code= na URL (padrão v2)
-      const url = new URL(window.location.href);
-      const code = url.searchParams.get("code");
-
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error) { setStage("expirado"); return; }
-        setStage("pronto");
-        // Limpa o code da URL sem recarregar
-        window.history.replaceState({}, "", "/reset-senha");
-        return;
-      }
-
-      // Fallback: hash-based flow (legacy)
-      const { data } = await supabase.auth.getSession();
-      if (data.session) { setStage("pronto"); return; }
-
-      const { data: listener } = supabase.auth.onAuthStateChange((event: AuthChangeEvent) => {
-        if (event === "PASSWORD_RECOVERY") setStage("pronto");
-      });
-
-      // Se após 4s ainda não resolveu, link expirou
-      const timeout = setTimeout(() => setStage("expirado"), 4000);
-
-      return () => {
-        listener.subscription.unsubscribe();
-        clearTimeout(timeout);
-      };
-    }
-
-    init();
+    supabase.auth.getSession().then((res: Awaited<ReturnType<typeof supabase.auth.getSession>>) => {
+      setStage(res.data.session ? "pronto" : "sem-sessao");
+    });
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -65,7 +34,7 @@ export default function ResetSenha() {
     const { error } = await supabase.auth.updateUser({ password: senha });
 
     if (error) {
-      setErro("Não foi possível salvar a nova senha. Tente solicitar um novo link.");
+      setErro("Não foi possível salvar. Tente solicitar um novo link.");
       setLoading(false);
       return;
     }
@@ -81,20 +50,20 @@ export default function ResetSenha() {
           <div className="flex justify-center">
             <div className="w-12 h-12 rounded-full border-4 border-[#f0f0f0] border-t-green-600 animate-spin" />
           </div>
-          <p className="text-sm text-gray-500">Verificando link...</p>
+          <p className="text-sm text-gray-500">Verificando sessão...</p>
         </div>
       </main>
     );
   }
 
-  if (stage === "expirado") {
+  if (stage === "sem-sessao") {
     return (
       <main className="min-h-full flex flex-col items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm text-center space-y-4">
           <p className="text-3xl">⏰</p>
-          <p className="text-base font-bold text-gray-800">Link expirado</p>
+          <p className="text-base font-bold text-gray-800">Link expirado ou inválido</p>
           <p className="text-sm text-gray-500 leading-relaxed">
-            Este link é válido por 1 hora. Solicite um novo para continuar.
+            O link é válido por 1 hora e para uso único. Solicite um novo para continuar.
           </p>
           <Link
             href="/esqueci-senha"
